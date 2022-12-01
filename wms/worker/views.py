@@ -1,24 +1,33 @@
 
 from django.shortcuts import render, HttpResponse, redirect
 from django.forms import modelform_factory
-from website.models import inventory,products,newInventory
+from website.models import inventory,products,newInventory,user
 from website.views import curr
 
 def menu(request):
     return render(request,"worker/menu.html")
 
-inventory_form=modelform_factory(inventory,fields=("location","sku","amount","serial"))
+inventory_form=modelform_factory(inventory,exclude=['available'])
 
 def new_inventory(request):
     msg=''
     if request.method == "POST" :
         form=inventory_form(request.POST) 
         if form.is_valid():
-            if addNewInv(request.POST.dict()):
+            result=addNewInv(request.POST.dict())
+            if result==0:
                 form.save()
-                return redirect('menu')
-            else:
+                inv=inventory.objects.get(available=-1)
+                inv.available=inv.amount
+                inv.save()
+                form.clean()
+                msg="Inventory created succsessfully"
+                return render(request,"worker/new_inventory.html",{"form":form,'message':msg})
+            elif result==1:
                 msg="Item with serial number"
+                return render(request,"worker/new_inventory.html",{"form":form,'message':msg})
+            elif result==2:
+                msg="Inventory created succsessfully"
                 return render(request,"worker/new_inventory.html",{"form":form,'message':msg})
         else:
             return render(request,"worker/new_inventory.html",{"form":form})
@@ -27,20 +36,20 @@ def new_inventory(request):
         return render(request,"worker/new_inventory.html",{"form":form})
     
 def addNewInv(form):
-    product=products.objects.get(sku=form['sku'])
-    if product.serial_item ==1 :
-        if form['serial']!=0 and form['amout']==1:
-            newInventory.objects.create(amount=form['amout'],sku=form['sku'],user=curr.username).save()
-            return True
+    product=products.objects.get(sku=int(form['sku']))
+    if product.serial_item == 1 :
+        if form['serial']!='' and int(form['amount'])==1:
+            return 0
         else:
-            return False
-
+            return 1
     inv=inventory.objects.filter(sku=form['sku']).filter(location=form['location'])
-    
     if len(inv)!=0:
-        inv.amount+=int(form['amout'])
-        inv.available+=int(form['amout'])
+        inv=inv.first()
+        inv.amount+=int(form['amount'])
+        inv.available+=int(form['amount'])
         inv.save()
-        return False
-    return True
+        return 2
     
+    return 0
+
+

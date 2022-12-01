@@ -12,7 +12,7 @@ p{
 }
 
 input{
-    width: 160px;
+    width: 100px;
     height: 20px;
     border-radius: 5px;
 }
@@ -64,7 +64,6 @@ button{
 
 .inline {
     display: inline-block; 
-    padding-top: 2em;
     padding-left: 2em;
 }
 
@@ -81,4 +80,24 @@ form{
     border-radius: 20px;
 }
 
+table.customTable {
+    width: 83%;
+    background-color: #C4C4C4;
+    border-collapse: collapse;
+    border-width: 2px;
+    border-color: #0A1F47;
+    border-style: solid;
+    color: #FFFFFF;
+  }
+  
+  table.customTable td, table.customTable th {
+    border-width: 2px;
+    border-color: #0A1F47;
+    border-style: solid;
+    padding: 5px;
+  }
+  
+  table.customTable thead {
+    background-color: #0A1F47;
+  }
 

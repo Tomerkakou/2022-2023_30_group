@@ -5,22 +5,28 @@
 
        {% block content %}
        <div class="inline">
-        <form method="post" class="login_form">
-            <p>Username:</p>
-            <input type="text" id="username" name="username" value="">
-            <p>Full name:</p>
-            <input type="text" id="fullname" name="fullname" value="">
-            <p>Email:</p>
-            <input type="text" id="email" name="email" value="">
-            <p>Role:</p>
-            <input type="text" id="role" name="role" value="">
+        <form method="post" class="inline">
+            Username:
+            <input type="search" id="username" name="username" value="">
+            Full name:
+            <input type="search" id="fullname" name="fullname" value="">
+            Email:
+            <input type="search" id="email" name="email" value="">
+            Role:
+            <select name="role" id="role">
+                <option value="">All</option>
+                <option value="0">Manager</option>
+                <option value="1">Worker</option>
+                <option value="2">Student</option>
+              </select>
             {% csrf_token %}
             <button type="submit" name="search">Search</button>
      
         </form>
         <form action="{% url 'createuser' %}"><button type="submit">Create user</button></form>
        </div>
-       <div >
+       <div style="height: 225px;
+       overflow:auto;">
        <table class="customTable">
             <thead>
                 <tr>
@@ -36,7 +42,7 @@
                 <tr>
                     <td>{{user.username}}</td>
                     <td>{{user.name}}</td>
-                    <td>{{user.role}}</td>
+                    <td>{{user.get_role}}</td>
                     <td>{{user.email}}</td>
                     <td> <form method="POST">{% csrf_token %}<button type="submit" name="{{user.username}}">Delete</button></form></td>
                 </tr>

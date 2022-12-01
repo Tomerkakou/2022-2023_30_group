@@ -19,25 +19,15 @@ class user(models.Model):
     password=models.CharField(max_length=50)
     email=models.CharField(max_length=50,unique=True,validators=[EmailValidator(message='Invaild Email')])
     name=models.CharField(max_length=50)
-    role=models.IntegerField(choices=user_types, default=3)
+    role=models.IntegerField(choices=user_types, default=2)
     status=models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.username} is a {self.role}"
 
-    def role_redirect(self):
+    def get_role(self):
         return user_types[self.role][1]
 
-    def login(self,name,password):
-        try:
-            print("name =",name)
-            print("pass=",password)
-            obj= user.objects.get(username=name)
-            print(obj)
-            if obj.password == password:
-                return obj
-        except:
-            return None
 
 class products(models.Model):
     
@@ -63,8 +53,8 @@ class inventory(models.Model):
     sku=models.ForeignKey(products,on_delete=models.CASCADE)
     location=models.ForeignKey(locations,on_delete=models.CASCADE)
     amount=models.IntegerField(validators=[MinValueValidator(0,message='amount must be greater than 0')])
-    available=models.IntegerField(default=amount)
-    serial=models.IntegerField(unique=True,default=0)
+    available=models.IntegerField(default=-1)
+    serial=models.IntegerField(unique=True,default=None,blank=True)
 
 
 class newInventory(models.Model):

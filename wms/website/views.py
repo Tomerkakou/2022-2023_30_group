@@ -16,7 +16,7 @@ def start(request,msg=''):
             msg="Invaild username or password"
             return render(request,"website/login.html",{'message':msg})
         if curr is not None:
-            return redirect(f"{curr.role_redirect()}/menu/")
+            return redirect(f"{curr.get_role()}/menu/")
     else:
         return render(request,"website/login.html",{'message':msg})
     
@@ -24,7 +24,7 @@ def start(request,msg=''):
 def next(request):
     return HttpResponse("workd!")
 
-user_form=modelform_factory(user,fields=("username","password","email","name"))
+user_form=modelform_factory(user,exclude=['status','role'])
 
 def register(request):
     if request.method == "POST" :
