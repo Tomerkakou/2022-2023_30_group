@@ -3,12 +3,12 @@ from enum import Enum
 from datetime import datetime
 from django.core.validators import EmailValidator , MinValueValidator
 
-user_types = (
+user_types = ( 
     (0, "manager"),
     (1, "worker"),
-    (2, "Customer"))
+    (2, "student"))
 
-categories=(
+categories=(# update in changes in show inventory
         (0,"Photographic products"),
         (1,"Writing Tools"),)
 
@@ -39,6 +39,8 @@ class products(models.Model):
     serial_item=models.IntegerField(choices=((0,'No'),(1,'Yes')))
     def __str__(self):
         return f"{self.sku}-{self.name}"
+    def return_category(self):
+        return categories[self.category][1]
 
 class locations(models.Model):
     location=models.CharField(max_length=6,primary_key=True)

@@ -1,0 +1,45 @@
+{% extends "manager/menu.html" %}
+{% block title %}
+
+       {% endblock %}
+
+       {% block content %}
+       <div class="inline">
+        <form method="post" class="inline">
+            Sku:
+            <input type="search" id="sku" name="sku" value="">
+            Category:
+            <select name="category" id="category">
+                <option value="">All</option>
+                <option value="0">Photographic products</option>
+                <option value="1">Writing Tools</option>
+              </select>
+            {% csrf_token %}
+            <button type="submit" name="search">Search</button>
+     
+        </form>
+       </div>
+       <div style="height: 225px;
+       overflow:auto;">
+       <table class="customTable">
+            <thead>
+                <tr>
+                    <th>Sku</th>
+                    <th>Item name</th>
+                    <th>Category</th>
+                    <th>Available amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inv in inventorys %}
+                <tr>
+                    <td>{{inv.sku.sku}}</td>
+                    <td>{{inv.sku.name}}</td>
+                    <td>{{inv.sku.return_category}}</td>
+                    <td>{{inv.amount}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+       </table>
+    </div>
+       {% endblock %}

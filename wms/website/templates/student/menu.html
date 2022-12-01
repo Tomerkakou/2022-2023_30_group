@@ -4,7 +4,7 @@
     <head>
         </style>
         <title>
-            Manager
+            Student
             {% block title %}
        {% endblock %}
         </title>
@@ -13,10 +13,9 @@
     <body>
         <div class="menu" class="inline">
                 <br>
-                <form action="{% url 'newproduct' %}"><button type="submit">New product</button></form>
-                <form action="{% url 'newlocation' %}"><button type="submit">New Location</button></form>
-                <form><button type="submit">Inventory</button></form>
-                <form action="{% url 'showusers' %}"><button type="submit">User managment</button></form>
+                <form><button type="submit">Orders</button></form>
+                <form><button type="submit">New order</button></form>
+                <form action="{% url 'inventory' %}"><button type="submit">Inventory</button></form>
                 <form><button type="submit">Reports</button></form>
                 <a href="{% url 'login' %}">Disconnect</a>
         </div>
