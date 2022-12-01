@@ -1,0 +1,14 @@
+{% extends "worker/menu.html" %}
+{% block title %}
+    new inventory
+{% endblock %}
+{% block content %}
+       
+<form method="POST"><table>
+    {{form}}
+</table> 
+{% csrf_token %}
+<button type="submit">add</button>
+ </form>
+ <p style="color:red">{{message}}</p>
+ {% endblock %}

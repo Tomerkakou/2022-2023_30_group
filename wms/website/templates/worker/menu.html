@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Worker
+            {% block title %}
+       {% endblock %}
+        </title>
+        <link rel="stylesheet" href="{% static 'website/style.css' %}">
+    </head>
+    <body>
+        <div class="menu" class="inline">
+                <br>
+                <form><button type="submit">Products</button></form>
+                <form action= "{% url 'newinventory' %}"><button type="submit">New inventory</button></form>
+                <form><button type="submit">Inventory</button></form>
+                <form><button type="submit">Returns</button></form>
+                <form><button type="submit">Orders</button></form>
+                <form><button type="submit">Reports</button></form>
+                <a href="{% url 'login' %}">Disconnect</a>
+        </div>
+        <div class="implent_div">
+       {% block content %}
+       {% endblock %}
+        </div>
+    </body>
+</html>

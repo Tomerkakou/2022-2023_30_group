@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            table.customTable {
+    width: 83%;
+    background-color: #C4C4C4;
+    border-collapse: collapse;
+    border-width: 2px;
+    border-color: #0A1F47;
+    border-style: solid;
+    color: #FFFFFF;
+  }
+  
+  table.customTable td, table.customTable th {
+    border-width: 2px;
+    border-color: #0A1F47;
+    border-style: solid;
+    padding: 5px;
+  }
+  
+  table.customTable thead {
+    background-color: #0A1F47;
+  }
+  .inline {
+    display: inline-block; 
+    padding-top: 2em;
+    padding-left: 2em;
+}
+        </style>
+        <title>
+            Manager
+            {% block title %}
+       {% endblock %}
+        </title>
+        <link rel="stylesheet" href="{% static 'website/style.css' %}">
+    </head>
+    <body>
+        <div class="menu" class="inline">
+                <br>
+                <form action="{% url 'newproduct' %}"><button type="submit">New product</button></form>
+                <form action="{% url 'newlocation' %}"><button type="submit">New Location</button></form>
+                <form><button type="submit">Inventory</button></form>
+                <form action="{% url 'showusers' %}"><button type="submit">User managment</button></form>
+                <form><button type="submit">Reports</button></form>
+                <a href="{% url 'login' %}">Disconnect</a>
+        </div>
+        <div class="implent_div">
+       {% block content %}
+       {% endblock %}
+        </div>
+    </body>
+</html>

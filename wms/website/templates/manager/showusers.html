@@ -1,0 +1,47 @@
+{% extends "manager/menu.html" %}
+{% block title %}
+
+       {% endblock %}
+
+       {% block content %}
+       <div class="inline">
+        <form method="post" class="login_form">
+            <p>Username:</p>
+            <input type="text" id="username" name="username" value="">
+            <p>Full name:</p>
+            <input type="text" id="fullname" name="fullname" value="">
+            <p>Email:</p>
+            <input type="text" id="email" name="email" value="">
+            <p>Role:</p>
+            <input type="text" id="role" name="role" value="">
+            {% csrf_token %}
+            <button type="submit" name="search">Search</button>
+     
+        </form>
+        <form action="{% url 'createuser' %}"><button type="submit">Create user</button></form>
+       </div>
+       <div >
+       <table class="customTable">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Full name</th>
+                    <th>Role</th>
+                    <th>Email</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{user.username}}</td>
+                    <td>{{user.name}}</td>
+                    <td>{{user.role}}</td>
+                    <td>{{user.email}}</td>
+                    <td> <form method="POST">{% csrf_token %}<button type="submit" name="{{user.username}}">Delete</button></form></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+       </table>
+    </div>
+       {% endblock %}
