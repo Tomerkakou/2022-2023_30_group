@@ -8,6 +8,8 @@
         <form method="post" class="inline">
             Sku:
             <input type="search" id="sku" name="sku" value="">
+            Product name:
+            <input type="search" id="name" name="name" value="">
             Category:
             <select name="category" id="category">
                 <option value="">All</option>
@@ -33,8 +35,8 @@
             <tbody>
                 {% for inv in inventorys %}
                 <tr>
-                    <td>{{inv.sku.sku}}</td>
-                    <td>{{inv.sku.name}}</td>
+                    <td>{{inv.sku_id}}</td>
+                    <td>{{inv.name}}</td>
                     <td>{{inv.sku.return_category}}</td>
                     <td>{{inv.amount}}</td>
                 </tr>
