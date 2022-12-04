@@ -73,7 +73,7 @@ class newInventory(models.Model):
 class orders(models.Model):
     order_number=models.AutoField(primary_key=True) 
     create_date = models.DateTimeField(default=datetime.now()) 
-    return_date = models.DateTimeField(default=datetime().now()+timedelta(days=20)) 
+    return_date = models.DateTimeField(default=datetime.now()+timedelta(days=20)) 
     user_id = models.ForeignKey(user, on_delete=models.PROTECT)
     status = models.IntegerField(choices=status, default=0)
 
@@ -81,7 +81,7 @@ class specific_order(models.Model):
         order_id=models.ForeignKey(orders ,on_delete=models.CASCADE) 
         sku = models.ForeignKey(products, on_delete=models.PROTECT)  
         amount = models.IntegerField(validators=[MinValueValidator(0,message='amount must be greater than 0')])
-        inventory_id=models.ForeignKey(inventory,on_delete=models.SET_NULL)
+        inventory_id=models.ForeignKey(inventory,on_delete=models.SET_NULL,null=True)
         completed = models.BooleanField(default = False)
 
 

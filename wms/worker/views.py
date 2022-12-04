@@ -2,7 +2,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.forms import modelform_factory
 from website.models import inventory,products,newInventory,user
-from website.views import curr
 
 def menu(request):
     return render(request,"worker/menu.html")

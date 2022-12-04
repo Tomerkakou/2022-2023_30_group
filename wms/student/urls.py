@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from student.views import menu,showInventory
 from website.views import start
-from website.views import curr
 
 urlpatterns = [
     path('',start,name='login'),

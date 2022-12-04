@@ -27,7 +27,7 @@ button{
     font-size: large;
     color :rgb(38, 39, 39);
     margin:5px;
-    cursor: auto;
+    cursor: pointer;
 }
 .login{
     position: fixed;
@@ -53,7 +53,16 @@ button{
     padding-left: 2em;
 }
 
-
+.register{
+    position: fixed;
+    width: 500px;
+    height: 360px;
+    left: 500px;
+    top: 99px;
+    background: #BFF7BA;
+    opacity: 0.7;
+    border-radius: 20px;
+}
 .menu{
     width: 874.39px;
     height: 87px;
