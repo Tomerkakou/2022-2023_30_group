@@ -1,4 +1,5 @@
 {% extends "template.html" %}
+{% load bootstrap_icons %}
 {% block title %}
 User managment
 {% endblock %}
@@ -11,7 +12,7 @@ User managment
 {% endblock %}
 {% block left_bar %}
 <div class="well">
-    <li><a href="{% url 'createuser' %}">Create user</a></li>
+    <li syle=""><a href="{% url 'createuser' %}">{% bs_icon 'person-add' size='3em' %}</a></li>
   </div>
 {% endblock %}
 {% block main %}
@@ -31,41 +32,39 @@ User managment
             <option value="2">Student</option>
         </select>
         {% csrf_token %}
-        <button type="submit" name="search" class="mybutton">Search</button>
-        <br>
+        <button type="submit" name="search" class="mybutton">{% bs_icon 'search' %}</button>
     
 </div>
 <div class="mask d-flex align-items-center h-100">
-    <div style="height: 350px;
-        overflow:auto;">
-    <div class="container-fluid text-center">
-      <div class="row justify-content-center">
-        <div class="col-12">
-          <div class="card shadow-2-strong" style="background-color: #f5f7fa;">
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-borderless mb-0">
-                  <thead>
-                    <tr>
-                      <th scope="col">Username</th>
-                      <th scope="col">Full name</th>
-                      <th scope="col">Role</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Delete</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for user in users %}
-                    <tr>
+  <br>
+    <div style="height: 350px; overflow:auto;">
+      <div class="container-fluid text-center">
+        <div class="row justify-content-center">
+          <div class="col-12">
+            <div class="card shadow-2-strong" style="background-color: #f5f7fa;">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-borderless mb-0">
+                    <thead>
+                      <tr >
+                        <th scope="col">Username</th>
+                        <th scope="col">Full name</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for user in users %}
+                      <tr>
                         <td>{{user.username}}</td>
                         <td>{{user.name}}</td>
                         <td>{{user.get_role}}</td>
                         <td>{{user.email}}</td>
                       <td>
-                        <button type="submit" name="{{user.username}}" class="btn btn-danger btn-sm px-3">
-                         x <i class="fas fa-times"></i>
+                        <button type="submit" name="{{user.username}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
+                          <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
                         </button>
-                       
                       </td>
                     </tr>
                     {% endfor %}

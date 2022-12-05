@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from worker.views import menu,new_inventory
+from worker.views import menu,inventory_receipt
 from website.views import start
 
 urlpatterns = [
     path('',start,name='login'),
     path('worker/menu/',menu,name='menu'),
-    path('worker/menu/new_inventory/',new_inventory,name='newinventory')
+    path('worker/menu/new_inventory/',inventory_receipt,name='newinventory')
 ]
