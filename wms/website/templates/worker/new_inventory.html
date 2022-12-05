@@ -1,14 +1,24 @@
-{% extends "worker/menu.html" %}
+{% extends "template.html" %}
 {% block title %}
-    new inventory
+new inventory
 {% endblock %}
-{% block content %}
-       
-<form method="POST"><table>
-    {{form}}
-</table> 
-{% csrf_token %}
-<button type="submit">add</button>
- </form>
- <p style="color:red">{{message}}</p>
- {% endblock %}
+{% block active %}
+        <li><a href="#">Products</a></li>
+        <li><a href="#">Inventory</a></li>
+        <li class="active1"><a href="{% url 'newinventory' %}" style="color:white;">New inventory</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Orders</a></li>
+        <li><a href="#">Reports</a></li>
+{% endblock %}
+{% block main %}
+    <form method="POST">
+        <br>
+        <table>
+         {{form}}
+        </table> 
+        {% csrf_token %}
+        <button type="submit" class="mybutton">Add</button>
+    </form>
+    <p style="color:rgb(38, 0, 255)">{{message}}</p>
+    <p style="color:red">{{message2}}</p>
+{% endblock %}

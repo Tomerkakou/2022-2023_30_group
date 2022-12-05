@@ -1,28 +1,14 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>
-            Worker
-            {% block title %}
-       {% endblock %}
-        </title>
-        <link rel="stylesheet" href="{% static 'website/style.css' %}">
-    </head>
-    <body>
-        <div class="menu" class="inline">
-                <br>
-                <form><button type="submit">Products</button></form>
-                <form action= "{% url 'newinventory' %}"><button type="submit">New inventory</button></form>
-                <form><button type="submit">Inventory</button></form>
-                <form><button type="submit">Returns</button></form>
-                <form><button type="submit">Orders</button></form>
-                <form><button type="submit">Reports</button></form>
-                <a href="{% url 'login' %}">Disconnect</a>
-        </div>
-        <div class="implent_div">
-       {% block content %}
-       {% endblock %}
-        </div>
-    </body>
-</html>
+{% extends "template.html" %}
+{% block title %}
+Manager
+{% endblock %}
+{% block active %}
+        <li><a href="#">Products</a></li>
+        <li><a href="#">Inventory</a></li>
+        <li><a href="{% url 'newinventory' %}">New inventory</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Orders</a></li>
+        <li><a href="#">Reports</a></li>
+{% endblock %}
+{% block main %}
+{% endblock %}

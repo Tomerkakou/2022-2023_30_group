@@ -1,10 +1,11 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.forms import modelform_factory
 from website.models import products,locations,user
+import manager.function
 
 def menu(request):
-    return render(request,"manager/menu.html")
-# Create your views here.
+    return render(request,"manager/menu.html",{"msg":request.COOKIES['user']})
+
 
 product_form =modelform_factory(products,exclude=[])
 
@@ -20,6 +21,7 @@ def newProduct(request):
         form=product_form()
         return render(request,"manager/new_product.html",{"form":form})
 
+
 location_form=modelform_factory(locations,exclude=[])
 
 def newLocation(request):
@@ -34,32 +36,16 @@ def newLocation(request):
         form=location_form()
         return render(request,"manager/new_location.html",{"form":form})
 
+
 def showUsers(request):
     users=None
     if request.method == "POST":
+        data=request.POST.dict()
         if 'search' in request.POST:
-            search=request.POST.dict()
-            users=user.objects.filter(status=1)
-            u_list=list()
-            for i in users:
-                flag=1
-                if search['username']!='' and str(i.username)!=search['username']:
-                    flag=0
-                if search['fullname']!='' and str(i.name)!=search['name']:
-                    flag=0
-                if search['email']!='' and str(i.email)!=search['email']:
-                    flag=0
-                if search['role']!='' and str(i.role)!=search['role']:
-                    flag=0
-                if flag==1:
-                    u_list.append(i)
-            return render(request,"manager/showusers.html",{"users":u_list})
+            return render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']})
         else:
-            for i in user.objects.all() :
-                if str(i.username) in request.POST:
-                    i.status=0
-                    i.save()
-            return render(request,"manager/showusers.html",{"users":users})    
+            manager.function.deleteUser(list(data)[5])
+            return render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']})    
     else:
         return render(request,"manager/showusers.html",{"users":users})
     
@@ -72,7 +58,7 @@ def createuser(request,msg=''):
         form=user_form(request.POST) 
         if form.is_valid():
             form.save()
-            msg='User successfully created'
+            msg='User created successfully'
             return render(request,"manager/createuser.html",{"form":form,"message":msg})
         else:
             return render(request,"manager/createuser.html",{"form":form,"message":msg})
