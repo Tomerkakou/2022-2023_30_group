@@ -44,3 +44,34 @@ def addNewInv(form):
         return False
     return True
     
+def showInventory(request): 
+    l_inventory = None
+    if request.method == "POST": 
+        #if 'search' in request.Post:   
+        seacrh = request.POST.dict() #what is this func 
+        l_inventory = inventory.objects.all()
+        i_list = list()
+        for i in l_inventory: 
+            flag = 1 
+            if seacrh['sku'] != '' and str(i.sku)!=seacrh['sku']:
+                flag = 0 
+            if seacrh['location'] != '' and str(i.location)!=seacrh['location']:
+                flag = 0 
+            if seacrh['amount'] != '' and str(i.amount)!=seacrh['amount']:
+                flag = 0 
+            if seacrh['available'] != '' and str(i.available)!=seacrh['available']:
+                flag = 0 
+            if seacrh['serial'] != '' and str(i.serial)!=seacrh['serial']:
+                flag = 0 
+            if flag == 1:
+                i_list.append(i) #add inventory to the list  
+        if i_list == None:
+            msg='Missing product'
+            return render(request,"worker/show inventory.html",{"form":i_list,"message":msg}) 
+        else:
+            return render(request,"manager/showInventory.html",{"l_inventory":i_list})  
+    else:
+        return render(request,"manager/showInventory.html",{"l_inventory":l_inventory})
+
+
+                
