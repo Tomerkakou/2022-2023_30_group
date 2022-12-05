@@ -1,4 +1,4 @@
-       {% extends "template.html" %}
+{% extends "template.html" %}
 {% load bootstrap_icons %}
 {% block title %}
 Inventory
@@ -13,7 +13,7 @@ Inventory
 <div class="inline">
     <form method="post" class="inline">
         <br>
-        <input type="search" id="sku" name="sku"  placeholder="Sku">
+        <input type="number" id="sku" name="sku"  placeholder="Sku">
       
         <input type="search" id="name" name="name" placeholder="Product name">
         Category:
