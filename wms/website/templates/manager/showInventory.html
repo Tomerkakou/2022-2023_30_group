@@ -25,6 +25,7 @@ User managment
           </select>
         {% csrf_token %}
         <button type="submit" name="search" class="mybutton">{% bs_icon 'search' %}</button>
+      </form>
 </div>
 <div class="mask d-flex align-items-center h-100">
   <br>
@@ -52,7 +53,7 @@ User managment
                     <tbody>
                       {% for inv in inventorys %}
                       <tr>
-                        <td>{{inv.sku_id}</td>
+                        <td>{{inv.sku_id}}</td>
                         <td>{{inv.location}}</td>
                         <td>{{inv.name}}</td>
                         <td>{{inv.sku.return_category}}</td>
@@ -60,14 +61,18 @@ User managment
                         <td>{{inv.available}}</td>
                         <td>{{inv.serial}}</td>
                       <td>
-                        <input type="number" id="input-{{inv.id}}" name="input-{{inv.id}}"  placeholder="new amount" min="0">
-                        <button type="submit" name="{{inv.id}}" style="background-color: #f5f7fa; color:rgb(0, 0, 0); border: #f5f7fa;">
+                        <form method="POST">
+                        <input type="number" id="{{inv.id}}" name="{{inv.id}}"  placeholder="new amount" min="0">
+                        {% csrf_token %}
+                        <button type="submit" name="{{inv.id}}-button" style="background-color: #f5f7fa; color:rgb(0, 0, 0); border: #f5f7fa;">
                           <i class="fas fa-times">{% bs_icon 'plus-square-dotted' %}</i>
                         </button>
+        
+                      </form>
                       </td>
                     </tr>
                     {% endfor %}
-                  </form>
+                  
                   </tbody>
                 </table>
               </div>

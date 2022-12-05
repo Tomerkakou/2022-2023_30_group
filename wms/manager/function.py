@@ -39,8 +39,9 @@ def getInventory(data):
                                         ON inventory.sku_id = website_products.sku
                                         WHERE id>0{filter1}{filter2}{filter3}{filter4};""") 
 
-def updateAmount(id,newAmount):
-    inven=inventory.objects.get(id)
+def updateAmount(idInv,newAmount):
+    newAmount=int(newAmount)
+    inven=inventory.objects.get(id=idInv)
     if (inven.amount-inven.available)<=newAmount:
         inven.available=inven.available+(newAmount-inven.amount)
         inven.amount=newAmount

@@ -69,11 +69,15 @@ def createuser(request,msg=''):
 
 def showInventory(request):
     if request.method == "POST":
-        data=request.POST.dict()
+        data=request.POST.dict()       
+        #define place for message 
+        #fix search again by same filters
+        #filter still need fixing 
         if 'search' in request.POST:
             return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location']})
         else:
-            message=manager.function.updateAmount()
-            return render(request,"manager/showusers.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location']})    
+            key=list(data)[0]
+            message=manager.function.updateAmount(key,data[key])
+            return render(request,"manager/showInventory.html")    
     else:
-        return render(request,"manager/showInvntory.html",{'inventorys':None})
+        return render(request,"manager/showInventory.html",{'inventorys':None})
