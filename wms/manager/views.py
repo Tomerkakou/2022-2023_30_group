@@ -65,3 +65,15 @@ def createuser(request,msg=''):
     else:
         form=user_form()
         return render(request,"manager/createuser.html",{"form":form,"message":msg})
+
+
+def showInventory(request):
+    if request.method == "POST":
+        data=request.POST.dict()
+        if 'search' in request.POST:
+            return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location']})
+        else:
+            message=manager.function.updateAmount()
+            return render(request,"manager/showusers.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location']})    
+    else:
+        return render(request,"manager/showInvntory.html",{'inventorys':None})
