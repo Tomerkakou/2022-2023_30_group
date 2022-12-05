@@ -82,7 +82,7 @@ h6 span{
   color: #ffeba7;
   background-color: #102770;
   font-family: 'unicons';
-  content: '\eb4f';
+  content: '\2196';
   z-index: 20;
   top: -10px;
   left: -10px;
@@ -281,22 +281,6 @@ h6 span{
   box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
 }
 
-
-
-
-.logo {
-	position: absolute;
-	top: 30px;
-	right: 30px;
-	display: block;
-	z-index: 100;
-	transition: all 250ms linear;
-}
-.logo img {
-	height: 26px;
-	width: auto;
-	display: block;
-}
         </style>
     </head>
     <body>
@@ -318,11 +302,11 @@ h6 span{
                                                 <h4 class="mb-4 pb-3">Log In</h4>
                                                 <div class="form-group">
                                                     <input type="text" name="username" class="form-style" placeholder="Your Username" id="username" autocomplete="off">
-                                                    <i class="input-icon uil uil-lock-alt"></i>
+                                                    <i class="input-icon uil">{% bs_icon 'person' size='1.2em' %}</i>
                                                 </div>	
                                                 <div class="form-group mt-2">
                                                     <input type="password" name="password" class="form-style" placeholder="Your Password" id="password" autocomplete="off">
-                                                    <i class="input-icon uil uil-lock-alt"></i>
+                                                    <i class="input-icon uil">{% bs_icon 'lock' size='1.2em' %}</i>
                                                 </div>
                                                 {% csrf_token %}
                                                 <button  type="submit" class="btn mt-4" name="login">Login</button>
@@ -339,19 +323,19 @@ h6 span{
                                                 <form method="POST">
                                                     <div class="form-group">
                                                         <input type="text" name="reg_username" class="form-style" placeholder="Your Username" id="reg_username" autocomplete="off">
-                                                        <i class="input-icon uil uil-user"></i>
+                                                        <i class="input-icon uil">{% bs_icon 'person' size='1.2em' %}</i>
                                                     </div>	
                                                     <div class="form-group mt-2">
                                                         <input type="email" name="reg_email" class="form-style" placeholder="Your Email" id="reg_email" autocomplete="off">
-                                                        <i class="input-icon uil uil-at"></i>
+                                                        <i class="input-icon uil uil-at">{% bs_icon 'envelope-at' size='1.2em' %}</i>
                                                     </div>	
                                                     <div class="form-group mt-2">
                                                         <input type="password" name="reg_pass" class="form-style" placeholder="Your Password" id="reg_pass" autocomplete="off">
-                                                        <i class="input-icon uil uil-lock-alt"></i>
+                                                        <i class="input-icon uil">{% bs_icon 'lock' size='1.2em' %}</i>
                                                     </div>
                                                     <div class="form-group mt-2">
-                                                        <input type="password" name="reg_name" class="form-style" placeholder="Your Full name" id="reg_name" autocomplete="off">
-                                                        <i class="input-icon uil uil-lock-alt"></i>
+                                                        <input type="text" name="reg_name" class="form-style" placeholder="Your Full name" id="reg_name" autocomplete="off">
+                                                        <i class="input-icon uil">{% bs_icon 'person' size='1.2em' %}</i>
                                                     </div>
                                                     {% csrf_token %}
                                                     <button type="submit" class="btn mt-4" name="register">Sign up</button>

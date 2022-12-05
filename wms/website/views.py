@@ -10,7 +10,7 @@ def start(request):
             current=function.login(login_data)
             if current:
                 response=redirect(f"{current.get_role()}/menu/")
-                response.set_cookie('user',current)
+                response.set_cookie('user',current.username)
                 return response
             else:
                 return render(request,"website/login.html",{'message':"Invalid username or password"})

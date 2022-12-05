@@ -1,4 +1,5 @@
 {% extends "template.html" %}
+{% load bootstrap_icons %}
 {% block title %}
 User managment
 {% endblock %}
@@ -11,7 +12,7 @@ User managment
 {% endblock %}
 {% block left_bar %}
 <div class="well">
-    <li><a href="{% url 'showusers' %}">User table</a></li>
+    <li><a href="{% url 'showusers' %}">{% bs_icon 'people' size='3em' %}</a></li>
   </div>
 {% endblock %}
 {% block main %}

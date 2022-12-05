@@ -27,9 +27,6 @@ class user(models.Model):
     role=models.IntegerField(choices=user_types, default=2)
     status=models.BooleanField(default=True)
 
-    def __str__(self):
-        return f"{self.username} is a {self.role}"
-
     def get_role(self):
         return user_types[self.role][1]
 
@@ -61,6 +58,10 @@ class inventory(models.Model):
     amount=models.IntegerField(validators=[MinValueValidator(0,message='amount must be greater than 0')])
     available=models.IntegerField(default=-1)
     serial=models.IntegerField(unique=True,default=None,blank=True)
+
+    def setAvailable(self):
+        self.available=self.amount
+        self.save()
 
 
 class newInventory(models.Model):
