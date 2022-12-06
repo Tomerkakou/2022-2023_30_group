@@ -14,7 +14,7 @@ def newProduct(request):
         form=product_form(request.POST) 
         if form.is_valid():
             form.save()
-            return redirect('menu')
+            return render(request,"manager/new_location.html",{"form":form,"message":"New product created successfully"})
         else:
             return render(request,"manager/new_product.html",{"form":form})
     else:
@@ -29,7 +29,7 @@ def newLocation(request):
         form=location_form(request.POST) 
         if form.is_valid():
             form.save()
-            return redirect('menu')
+            return render(request,"manager/new_location.html",{"form":form,"message":"Location created successfully"})
         else:
             return render(request,"manager/new_location.html",{"form":form})
     else:
@@ -42,9 +42,15 @@ def showUsers(request):
     if request.method == "POST":
         data=request.POST.dict()
         if 'search' in request.POST:
-            return render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']})
+            response=render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']})
+            response.set_cookie("u",data['username'])
+            response.set_cookie("f",data['fullname'])
+            response.set_cookie("e",data['email'])
+            response.set_cookie("r",data['role'])
+            return response
         else:
-            manager.function.deleteUser(list(data)[5])
+            manager.function.deleteUser(list(data)[1])
+            data={'username':request.COOKIES['u'],'fullname':request.COOKIES['f'],'email':request.COOKIES['e'],'role':request.COOKIES['r']}
             return render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']})    
     else:
         return render(request,"manager/showusers.html",{"users":users})
