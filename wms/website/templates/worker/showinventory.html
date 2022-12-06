@@ -1,78 +1,51 @@
-{% extends "template.html" %}
-{% load bootstrap_icons %}
+{% extends "worker/menu.html" %}
 {% block title %}
-Inventory
-{% endblock %}
-{% block active %}
-       <li><a href="#">Products</a></li>
-       <li class="active1"><a href="{% url 'showinventory' %}" style="color:white;">Inventory</a></li>
-       <li><a href="{% url 'newinventory' %}">New inventory</a></li>
-       <li><a href="#">Returns</a></li>
-       <li><a href="#">Orders</a></li>
-       <li><a href="#">Reports</a></li>
+            show inventory
+       {% endblock %}
+
+       {% block content %}
+       <div class="inline">
+        <form method="post" class="login_form">   <!--מה זה ? -->
+            <p>sku:</p>
+            <input type="text" id="sku" name="sku" value="">
+            <p>location:</p>
+            <input type="text" id="location" name="location" value="">
+            <p>amount:</p>
+            <input type="text" id="amount" name="amount" value="">
+            <p>available:</p>
+            <input type="text" id="available" name="available" value=""> 
+            <p>serial:</p>
+            <input type="text" id="serial" name="serial" value=""> 
+            {% csrf_token %} 
+            <button type="submit" name="search">Search</button>
+     
+        </form>
+        <form action="{% url 'showInventory' %}"><button type="submit">Show inventory</button></form>
+       </div>
+       <div >
+       <table class="customTable">
+            <thead>
+                <tr>
+                    <th>Sku</th>
+                    <th>Location</th>
+                    <th>Amount</th>
+                    <th>Available</th>
+                    <th>Serial</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inventory in l_inventory %}
+                <tr>
+                    <td>{{inventory.Sku}}</td>
+                    <td>{{inventory.Location}}</td>
+                    <td>{{inventory.Amount}}</td>
+                    <td>{{inventory.Available}}</td>
+                    <td>{{inventory.Serial}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+       </table>
+    </div>
+    <form action="{% url 'showInventory' %}"><button type="submit">Return</button></form>
+
         {% endblock %}
-{% block main %}
-<div class="inline">
-    <form method="post" class="inline">
-        <br>
-        <input type="number" id="sku" name="sku" value="{{u}}" placeholder="Sku">
-      
-        <input type="search" id="location" name="location" value="{{f}}" placeholder="Location">
-        
-        <input type="number" id="serial" name="serial" value="{{e}}" placeholder="Serial">
-        Category:
-        <select name="category" id="category">
-            <option value="">All</option>
-            <option value="0">Photographic products</option>
-            <option value="1">Writing Tools</option>
-        </select>
-        {% csrf_token %}
-        <button type="submit" id=search name="search" class="mybutton">{% bs_icon 'search' %}</button>
-    </form>
-</div>
-<div class="mask d-flex align-items-center h-100">
-  <br>
-    <div style="height: 350px; overflow:auto;">
-      <div class="container-fluid text-center">
-        <div class="row justify-content-center">
-          <div class="col-12">
-            <div class="card shadow-2-strong" style="background-color: #f5f7fa;">
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-borderless mb-0">
-                    <thead>
-                      <tr >
-                        <th scope="col">Sku</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Serial</th>
-                        <th scope="col">Product name</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Available</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        {% for inv in l_inventory %}
-                        <tr>
-                            <td><li><a href="{% url 'showproduct' inv.sku.sku %}">{{inv.sku.sku}}</a></li></td>
-                            <td>{{inv.sku.return_category}}</td>
-                            <td>{{inv.serial}}</td>
-                            <td>{{inv.sku.name}}</td>
-                            <td>{{inv.location}}</td>
-                            <td>{{inv.amount}}</td>
-                            <td>{{inv.available}}</td>
-                        </tr>
-                        {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    </div>
-</div>
-{% endblock %}
-
-
