@@ -1,3 +1,14 @@
 from django.shortcuts import render
+from student import function
 
-# Create your views here.
+def menu(request):
+    return render(request,"student/menu.html")
+    
+def showInventory(request):
+    if request.method == "POST":
+        if 'search' in request.POST:
+            return render(request,"student/showinventory.html",{"inventorys":function.sumInventory(request.POST.dict())})
+        else:
+            return render(request,"student/showinventory.html")    
+    else:
+        return render(request,"student/showinventory.html")

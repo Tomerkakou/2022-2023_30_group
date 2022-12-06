@@ -1,0 +1,12 @@
+{% extends "template.html" %}
+{% block title %}
+Student
+{% endblock %}
+{% block active %}
+<li><a href="#">Orders</a></li>
+        <li><a href="#">New order</a></li>
+        <li><a href="{% url 'inventory' %}">Inventory</a></li>
+        <li><a href="#">Reports</a></li>
+{% endblock %}
+{% block main %}
+{% endblock %}
