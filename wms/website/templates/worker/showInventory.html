@@ -1,0 +1,51 @@
+{% extends "worker/menu.html" %}
+{% block title %}
+            show inventory
+       {% endblock %}
+
+       {% block content %}
+       <div class="inline">
+        <form method="post" class="login_form">   <!--מה זה ? -->
+            <p>sku:</p>
+            <input type="text" id="sku" name="sku" value="">
+            <p>location:</p>
+            <input type="text" id="location" name="location" value="">
+            <p>amount:</p>
+            <input type="text" id="amount" name="amount" value="">
+            <p>available:</p>
+            <input type="text" id="available" name="available" value=""> 
+            <p>serial:</p>
+            <input type="text" id="serial" name="serial" value=""> 
+            {% csrf_token %} 
+            <button type="submit" name="search">Search</button>
+     
+        </form>
+        <form action="{% url 'showInventory' %}"><button type="submit">Show inventory</button></form>
+       </div>
+       <div >
+       <table class="customTable">
+            <thead>
+                <tr>
+                    <th>Sku</th>
+                    <th>Location</th>
+                    <th>Amount</th>
+                    <th>Available</th>
+                    <th>Serial</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inventory in l_inventory %}
+                <tr>
+                    <td>{{inventory.Sku}}</td>
+                    <td>{{inventory.Location}}</td>
+                    <td>{{inventory.Amount}}</td>
+                    <td>{{inventory.Available}}</td>
+                    <td>{{inventory.Serial}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+       </table>
+    </div>
+    <form action="{% url 'showInventory' %}"><button type="submit">Return</button></form>
+
+        {% endblock %}
