@@ -3,7 +3,7 @@
 Manager
 {% endblock %}
 {% block active %}
-        <li><a href="#">Products</a></li>
+        <li class="active1"a><a href="#" style="color:white;">Products</a></li>
         <li><a href="{% url 'showinventory' %}">Inventory</a></li>
         <li><a href="{% url 'newinventory' %}">New inventory</a></li>
         <li><a href="#">Returns</a></li>
@@ -11,4 +11,16 @@ Manager
         <li><a href="#">Reports</a></li>
 {% endblock %}
 {% block main %}
+<div>
+    <br>
+    Sku: {{product.sku}}
+    <br>
+    Product name: {{product.name}} 
+    <br>
+    Price : {{product.price}}
+    <br>
+    Category : {{product.return_category}}
+    <br>
+    Descripstion:  {{product.descprition}}
+</div>
 {% endblock %}

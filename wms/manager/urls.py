@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from manager.views import menu ,newProduct , newLocation,showUsers,createuser
 from website.views import start
-from website.views import curr
 urlpatterns = [
     path('',start,name='login'),
     path('manager/menu/',menu,name='menu'),

@@ -1,15 +1,28 @@
-{% extends "manager/menu.html" %}
+{% extends "template.html" %}
+{% load bootstrap_icons %}
 {% block title %}
-    new product
+User managment
 {% endblock %}
-{% block content %}
-       
-<form method="POST"><table>
-    {{form}}
-</table> 
-{% csrf_token %}
-<button type="submit">Create</button>
-<p>{{message}}</p>
- </form>
- <form action="{% url 'showusers' %}"><button type="submit">Return</button></form>
- {% endblock %}
+{% block active %}
+        <li><a href="{% url 'newproduct' %}">New product</a></li>
+        <li><a href="{% url 'newlocation' %}">New Location</a></li>
+        <li><a href="#">Inventory</a></li>
+        <li class="active1"><a href="{% url 'showusers' %}" style="color:white;">User managment</a></li>
+        <li><a href="#">Reports</a></li>
+{% endblock %}
+{% block left_bar %}
+<div class="well">
+    <li><a href="{% url 'showusers' %}">{% bs_icon 'people' size='3em' %}</a></li>
+  </div>
+{% endblock %}
+{% block main %}
+    <form method="POST">
+      <br>
+      <table>
+        {{form}}
+      </table> 
+    {% csrf_token %}
+    <button type="submit" class="mybutton">Create</button>
+    <h4 style="color:blue;">{{message}}</h4>
+    </form>
+{% endblock %}
