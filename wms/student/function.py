@@ -1,6 +1,7 @@
 from website.models import inventory
-def sumInventory(data):
+from django.db.models import Sum
 
+def sumInventory(data):
             filter1=''
             filter2=''
             filter3=''
@@ -20,4 +21,3 @@ def sumInventory(data):
                                         ON inventory.sku_id = website_products.sku
                                         WHERE amount>0{filter1}{filter2}{filter3};""")
             return inv
-            

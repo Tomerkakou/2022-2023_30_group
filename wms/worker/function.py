@@ -24,3 +24,17 @@ def addNewInv(data,form,user):
     
     newInventory.objects.create(sku=product,user_id=user,amount=data['amount'])      
     return 'The inventory has been successfully received'
+
+def getInventory(data):
+    
+    kwargs={}
+    if data['sku'] != '':
+        kwargs['sku__sku']=data['sku']
+    if data['location'] != '':
+        kwargs['location__location']=data['location']
+    if data['serial'] != '':
+        kwargs['serial']=data['serial'] 
+    if data['category'] != '':
+        kwargs['sku__category']=data['category']
+
+    return inventory.objects.filter(**kwargs).order_by('sku','location','-amount')

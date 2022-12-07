@@ -29,22 +29,18 @@ def inventory_receipt(request):
 def showInventory(request): 
     if request.method == "POST": 
         if 'search' in request.POST:   
-            seacrh = request.POST.dict()
-            kwargs={}
-            if seacrh['sku'] != '':
-                kwargs['sku__sku']=seacrh['sku']
-            if seacrh['location'] != '':
-                kwargs['location__location']=seacrh['location']
-            if seacrh['serial'] != '':
-                kwargs['serial']=seacrh['serial'] 
-            if seacrh['category'] != '':
-                kwargs['sku__category']=seacrh['category']
-            i_list=inventory.objects.filter(**kwargs).order_by('sku','location','-amount')
-            return render(request,"worker/showinventory.html",{"l_inventory":i_list})  
+            search = request.POST.dict()
+            response=render(request,"worker/showinventory.html",{"l_inventory":function.getInventory(search)})  
+            response.set_cookie('s',search['sku'])
+            response.set_cookie('l',search['location'])
+            response.set_cookie('se',search['serial'])
+            response.set_cookie('c',search['caregory'])
+            return response
+        else:
+            pass#when change location is added 
     else:
         return render(request,"worker/showinventory.html",{"l_inventory":inventory.objects.all()})
 
-def showProduct(request,id):
-    product=products.objects.get(sku=id)
-    return render(request,"worker/product.html",{"product":product})
+
+
 

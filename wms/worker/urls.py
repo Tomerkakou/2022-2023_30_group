@@ -23,5 +23,5 @@ urlpatterns = [
     path('worker/menu/',menu,name='menu'),
     path('worker/menu/new_inventory/',inventory_receipt,name='newinventory'),
     path('worker/menu/inventory/',showInventory,name='showinventory'),
-    path('worker/menu/<int:id>/',showProduct,name='showproduct')
+    
 ]

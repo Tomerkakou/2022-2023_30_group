@@ -15,8 +15,8 @@ User managment
     <form method="post" class="inline">
         <br>
         <input type="number" id="sku" name="sku"  placeholder="Sku" value="{{s}}">
-        <input type="search" id="location" name="location"  placeholder="Location" value="{{n}}">
-        <input type="search" id="name" name="name" placeholder="Product name" value="{{l}}">
+        <input type="search" id="location" name="location"  placeholder="Location" value="{{l}}">
+        <input type="search" id="name" name="name" placeholder="Product name" value="{{n}}">
         Category:
         <select name="category" id="category">
             <option value="">All</option>
@@ -25,6 +25,7 @@ User managment
           </select>
         {% csrf_token %}
         <button type="submit" name="search" class="mybutton">{% bs_icon 'search' %}</button>
+        {{message}}
       </form>
 </div>
 <div class="mask d-flex align-items-center h-100">
@@ -55,20 +56,21 @@ User managment
                       <tr>
                         <td>{{inv.sku_id}}</td>
                         <td>{{inv.location}}</td>
-                        <td>{{inv.name}}</td>
+                        <td>{{inv.sku.name}}</td>
                         <td>{{inv.sku.return_category}}</td>
                         <td>{{inv.amount}}</td>
                         <td>{{inv.available}}</td>
                         <td>{{inv.serial}}</td>
                       <td>
-                        <form method="POST">
-                        <input type="number" id="{{inv.id}}" name="{{inv.id}}"  placeholder="new amount" min="0">
-                        {% csrf_token %}
-                        <button type="submit" name="{{inv.id}}-button" style="background-color: #f5f7fa; color:rgb(0, 0, 0); border: #f5f7fa;">
-                          <i class="fas fa-times">{% bs_icon 'plus-square-dotted' %}</i>
-                        </button>
-        
+                        {% if inv.serial is None %}
+                          <form method="POST">
+                          <input type="number" id="{{inv.id}}" name="{{inv.id}}"  placeholder="new amount" min="0">
+                          {% csrf_token %}
+                          <button type="submit" name="{{inv.id}}-button" style="background-color: #f5f7fa; color:rgb(17, 121, 182); border: #f5f7fa;">
+                            <i class="fas fa-times">{% bs_icon 'plus-square-fill' %}</i>
+                          </button>
                       </form>
+                      {% endif %}
                       </td>
                     </tr>
                     {% endfor %}
