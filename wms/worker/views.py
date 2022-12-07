@@ -24,8 +24,27 @@ def inventory_receipt(request):
     else:
         form=inventory_form()
         return render(request,"worker/new_inventory.html",{"form":form})
-    
 
 
+def showInventory(request): 
+    if request.method == "POST": 
+        if 'search' in request.POST:   
+            seacrh = request.POST.dict()
+            kwargs={}
+            if seacrh['sku'] != '':
+                kwargs['sku__sku']=seacrh['sku']
+            if seacrh['location'] != '':
+                kwargs['location__location']=seacrh['location']
+            if seacrh['serial'] != '':
+                kwargs['serial']=seacrh['serial'] 
+            if seacrh['category'] != '':
+                kwargs['sku__category']=seacrh['category']
+            i_list=inventory.objects.filter(**kwargs).order_by('sku','location','-amount')
+            return render(request,"worker/showinventory.html",{"l_inventory":i_list})  
+    else:
+        return render(request,"worker/showinventory.html",{"l_inventory":inventory.objects.all()})
 
+def showProduct(request,id):
+    product=products.objects.get(sku=id)
+    return render(request,"worker/product.html",{"product":product})
 
