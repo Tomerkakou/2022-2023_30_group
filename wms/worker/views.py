@@ -34,7 +34,7 @@ def showInventory(request):
             response.set_cookie('s',search['sku'])
             response.set_cookie('l',search['location'])
             response.set_cookie('se',search['serial'])
-            response.set_cookie('c',search['caregory'])
+            response.set_cookie('c',search['category'])
             return response
         else:
             pass#when change location is added 
