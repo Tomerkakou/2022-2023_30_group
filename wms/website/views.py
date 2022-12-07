@@ -1,6 +1,6 @@
 from django.shortcuts import render ,redirect
 import website.function as function
-
+from website.models import products
 
             
 def start(request):
@@ -19,4 +19,6 @@ def start(request):
     else:
         return render(request,"website/login.html")
 
-
+def showProduct(request,id):
+    product=products.objects.get(sku=id)
+    return render(request,"website/product.html",{"product":product})

@@ -33,7 +33,7 @@ User managment
         </select>
         {% csrf_token %}
         <button type="submit" name="search" class="mybutton">{% bs_icon 'search' %}</button>
-    
+      </form>
 </div>
 <div class="mask d-flex align-items-center h-100">
   <br>
@@ -62,13 +62,15 @@ User managment
                         <td>{{user.get_role}}</td>
                         <td>{{user.email}}</td>
                       <td>
+                        <form method="POST" onsubmit="return confirm('Are you sure?');">
+                          {% csrf_token %}
                         <button type="submit" name="{{user.username}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
                           <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
                         </button>
+                      </form>
                       </td>
                     </tr>
                     {% endfor %}
-                  </form>
                   </tbody>
                 </table>
               </div>

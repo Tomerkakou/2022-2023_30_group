@@ -57,7 +57,7 @@ class inventory(models.Model):
     location=models.ForeignKey(locations,on_delete=models.CASCADE)
     amount=models.IntegerField(validators=[MinValueValidator(0,message='amount must be greater than 0')])
     available=models.IntegerField(default=-1)
-    serial=models.IntegerField(unique=True,default=None,blank=True)
+    serial=models.IntegerField(unique=True,default=None,null=True,blank=True)
 
     def setAvailable(self):
         self.available=self.amount
