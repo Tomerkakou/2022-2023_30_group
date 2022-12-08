@@ -5,7 +5,7 @@ New product
 {% block active %}
         <li class="active1"><a href="{% url 'newproduct' %}" style="color:white;">New product</a></li>
         <li><a href="{% url 'newlocation' %}">New Location</a></li>
-        <li><a href="#">Inventory</a></li>
+        <li><a href="{% url 'Inventory' %}">Inventory</a></li>
         <li><a href="{% url 'showusers' %}">User managment</a></li>
         <li><a href="#">Reports</a></li>
 {% endblock %}

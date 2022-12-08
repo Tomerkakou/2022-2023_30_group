@@ -30,7 +30,7 @@ def showInventory(request):
     if request.method == "POST": 
         if 'search' in request.POST:   
             search = request.POST.dict()
-            response=render(request,"worker/showinventory.html",{"l_inventory":function.getInventory(search)})  
+            response=render(request,"worker/showinventory.html",{"l_inventory":function.getInventory(search),'s':search['sku'],'l':search['location'],'se':search['serial']})  
             response.set_cookie('s',search['sku'])
             response.set_cookie('l',search['location'])
             response.set_cookie('se',search['serial'])
