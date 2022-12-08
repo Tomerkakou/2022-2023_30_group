@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from worker.views import menu,inventory_receipt,showInventory,showProduct
+from worker.views import menu,inventory_receipt,showInventory ,showProduct
 from website.views import start
 
 urlpatterns = [
