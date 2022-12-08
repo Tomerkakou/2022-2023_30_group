@@ -46,6 +46,11 @@ def showInventory(request):
 def showProduct(request,id):
     p=products.objects.get(sku=id)
     form=productForm(initial={'sku':p.sku,'name':p.name,'descprition':p.descprition,'price':p.price,'category':p.category,'serial_item':p.serial_item})
-    return render(request,"worker/product.html",{"product":form})
+    return render(request,"worker/product.html",{"product":form,'title':str(p)})
 
-
+def productSearch(request):
+    if request.method == 'POST':
+        data=request.POST.dict()
+        return render(request,"worker/productsearch.html",{'products':function.getProducts(data)})
+    else:
+        return render(request,"worker/productsearch.html")

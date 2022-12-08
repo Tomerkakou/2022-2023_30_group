@@ -1,11 +1,11 @@
 {% extends "template.html" %}
 {% load bootstrap_icons %}
 {% block title %}
-Inventory
+Products
 {% endblock %}
 {% block active %}
-       <li><a href="{% url 'searchroduct' %}">Products</a></li>
-       <li class="active1"><a href="{% url 'showinventory' %}" style="color:white;">Inventory</a></li>
+       <li class="active1"><a href="{% url 'searchroduct' %}"  style="color:white;">Products</a></li>
+       <li><a href="{% url 'showinventory' %}">Inventory</a></li>
        <li><a href="{% url 'newinventory' %}">New inventory</a></li>
        <li><a href="#">Returns</a></li>
        <li><a href="#">Orders</a></li>
@@ -17,9 +17,8 @@ Inventory
         <br>
         <input type="number" id="sku" name="sku" value="{{s}}" placeholder="Sku">
       
-        <input type="search" id="location" name="location" value="{{l}}" placeholder="Location">
+        <input type="search" id="name" name="name" value="{{n}}" placeholder="Product name">
         
-        <input type="number" id="serial" name="serial" value="{{se}}" placeholder="Serial">
         Category:
         <select name="category" id="category">
             <option value="">All</option>
@@ -42,25 +41,13 @@ Inventory
                   <table class="table table-borderless mb-0">
                     <thead>
                       <tr >
-                        <th scope="col">Sku</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Serial</th>
-                        <th scope="col">Product name</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Available</th>
+                        <th scope="col">Product</th>
                       </tr>
                     </thead>
                     <tbody>
-                        {% for inv in l_inventory %}
+                        {% for p in products %}
                         <tr>
-                            <td><li><a href="{% url 'showproduct' inv.sku.sku %}">{{inv.sku.sku}}</a></li></td>
-                            <td>{{inv.sku.return_category}}</td>
-                            <td>{{inv.serial}}</td>
-                            <td>{{inv.sku.name}}</td>
-                            <td>{{inv.location}}</td>
-                            <td>{{inv.amount}}</td>
-                            <td>{{inv.available}}</td>
+                            <td><li><a href="{% url 'showproduct' p.sku %}">{{p}}</a></li></td>
                         </tr>
                         {% endfor %}
                   </tbody>

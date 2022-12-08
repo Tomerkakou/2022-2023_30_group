@@ -1,15 +1,15 @@
 {% extends "template.html" %}
 {% block title %}
-Manager
+{{title}}
 {% endblock %}
 {% block active %}
-        
+        <li class="active1"a><a href="#" style="color:white;">Products</a></li>
         <li><a href="{% url 'showinventory' %}">Inventory</a></li>
         <li><a href="{% url 'newinventory' %}">New inventory</a></li>
         <li><a href="#">Returns</a></li>
         <li><a href="#">Orders</a></li>
         <li><a href="#">Reports</a></li>
-        <li class="active1"a><a href="#" style="color:white;">Products</a></li>
+       
 {% endblock %}
 {% block main %}
 <div>

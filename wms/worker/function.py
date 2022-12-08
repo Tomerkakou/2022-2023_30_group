@@ -38,3 +38,14 @@ def getInventory(data):
         kwargs['sku__category']=data['category']
 
     return inventory.objects.filter(**kwargs).order_by('sku','location','-amount')
+
+def getProducts(data):
+    kwargs={}
+    if data['sku'] != '':
+        kwargs['sku']=data['sku']
+    if data['name'] != '':
+        kwargs['name__contains']=data['name']
+    if data['category'] != '':
+        kwargs['category']=data['category']
+
+    return products.objects.filter(**kwargs).order_by('sku','category')
