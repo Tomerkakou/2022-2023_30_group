@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'wms.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'app_db',
-        'USER': 'db_user',
-        'PASSWORD': 'db_user_pass',
-        'HOST': 'localhost',
+        'NAME': 'logistic',
+        'USER': 'tomer',
+        'PASSWORD': 't38tTNsQg2PBltlg',
+        'HOST': 'rendit-db.crfj8gkk0yln.eu-central-1.rds.amazonaws.com',
         'PORT': '3306',
         'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
     }
