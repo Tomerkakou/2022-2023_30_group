@@ -13,12 +13,10 @@ def start(request):
                 response.set_cookie('user',current.username)
                 return response
             else:
-                return render(request,"website/login.html",{'message':"Invalid username or password"})
+                return render(request,"website/login-register.html",{'message':"Invalid username or password"})
         elif "register" in request.POST :
-            return render(request,"website/login.html",{'message2': function.register(request.POST.dict())})
+            return render(request,"website/login-register.html",{'message2': function.register(request.POST.dict())})
     else:
-        return render(request,"website/login.html")
+        return render(request,"website/login-register.html")
 
-def showProduct(request,id):
-    product=products.objects.get(sku=id)
-    return render(request,"website/product.html",{"product":product})
+

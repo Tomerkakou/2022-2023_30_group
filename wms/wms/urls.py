@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path ,include
 
-from website.views import start ,showProduct
+from website.views import start 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,5 +24,5 @@ urlpatterns = [
     path('',include('manager.urls')),
     path('',include('worker.urls')),
     path('',include('student.urls')),
-    path('<int:id>/',showProduct,name='showproduct')
+    
 ]

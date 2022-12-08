@@ -41,6 +41,8 @@ def showInventory(request):
     else:
         return render(request,"worker/showinventory.html",{"l_inventory":inventory.objects.all()})
 
-
+def showProduct(request,id):
+    product=products.objects.get(sku=id)
+    return render(request,"worker/product.html",{"product":product})
 
 
