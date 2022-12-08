@@ -6,7 +6,7 @@ from worker import function
 from worker.forms import inventoryForm
 from manager.forms import productForm
 def menu(request):
-    return render(request,"worker/menu.html")
+    return render(request,"worker/menu.html",{'user_name':request.COOKIES['user']})
 
 
 

@@ -15,12 +15,12 @@ categories=(# update in changes in show inventory
 status=( 
     (0, "waiting"),
     (1, "completed"),
-    (2, "collected"))
+    (2, "collected"),)
 
 class user(models.Model):
     
 
-    username=models.CharField(max_length=50,primary_key=True)
+    username=models.CharField(max_length=50,unique=True)
     password=models.CharField(max_length=50)
     email=models.CharField(max_length=50,unique=True,validators=[EmailValidator(message='Invaild Email')])
     name=models.CharField(max_length=50)

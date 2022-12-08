@@ -1,15 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render,HttpResponse
 import manager.function
 from manager.forms import productForm,locationForm,userForm
+from website.models import user
+
 def menu(request):
-    return render(request,"manager/menu.html",{"msg":request.COOKIES['user']})
+    return render(request,"manager/menu.html")
 
 def newProduct(request):
     if request.method == "POST" :
         form=productForm(request.POST) 
         if form.is_valid():
             form.save()
-            return render(request,"manager/new_location.html",{"form":form,"message":"New product created successfully"})
+            return render(request,"manager/new_product.html",{"form":form,"message":"New product created successfully"})
         else:
             return render(request,"manager/new_product.html",{"form":form})
     else:
@@ -47,7 +49,8 @@ def showUsers(request):
             return render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']})    
     else:
         return render(request,"manager/showusers.html",{"users":users})
-    
+
+
 
 
 

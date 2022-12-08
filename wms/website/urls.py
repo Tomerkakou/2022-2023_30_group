@@ -15,12 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from student.views import menu,showInventory
-from website.views import start
-
+from website.views import changeUser
 urlpatterns = [
-    path('',start,name='login'),
-    path('',include('website.urls')),
-    path('student/menu/',menu,name='student_menu'),
-    path('student/menu/inventory',showInventory,name='inventory'),
+    path('Personal_info/',changeUser,name='updateUser'),
 ]

@@ -1,4 +1,4 @@
-from website.models import inventory,products,newInventory,user
+from website.models import inventory,products,newInventory
 def addNewInv(data,form,user):
     product=products.objects.get(sku=int(data['sku']))
     if product.serial_item == 1 :
