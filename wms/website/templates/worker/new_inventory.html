@@ -13,10 +13,8 @@ new inventory
 {% block main %}
     <form method="POST">
         <br>
-        <table>
-         {{form}}
-        </table> 
         {% csrf_token %}
+        {{form.as_p}}
         <button type="submit" class="mybutton">Add</button>
     </form>
     <p style="color:rgb(38, 0, 255)">{{message}}</p>

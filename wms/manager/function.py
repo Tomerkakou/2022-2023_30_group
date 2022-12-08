@@ -42,6 +42,6 @@ def updateAmount(idInv,newAmount):
             inven.delete()
         else:
             inven.save()
-        return f"{inven.sku.name} in {inven.location} updated to {newAmount}"
+        return f"#{inven.sku.name} in {inven.location} updated to {newAmount}"
     else:
-        return "The new amount does not match the quantity ordered" 
+        return "#The new amount does not match the quantity ordered" 

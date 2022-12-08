@@ -15,11 +15,9 @@ New location
       {% endif %}
     <form method="POST">
         <br>
-        <table>
-        {{form}}
-        </table> 
-    {% csrf_token %}
-    <button type="submit" class="mybutton">Create</button>
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="mybutton">Create</button>
     </form>
 {% endblock %}
        

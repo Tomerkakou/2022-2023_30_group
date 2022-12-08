@@ -1,16 +1,18 @@
 
-from django.shortcuts import render, HttpResponse, redirect
-from django.forms import modelform_factory
+from django.shortcuts import render
+
 from website.models import inventory,products,newInventory,user
 from worker import function
+from worker.forms import inventoryForm
+from manager.forms import productForm
 def menu(request):
     return render(request,"worker/menu.html")
 
-inventory_form=modelform_factory(inventory,exclude=['available'])
+
 
 def inventory_receipt(request):
     if request.method == "POST" :
-        form=inventory_form(request.POST) 
+        form=inventoryForm(request.POST) 
         if form.is_valid():
             try:
                 msg=function.addNewInv(request.POST.dict(),form,user.objects.get(username=request.COOKIES['user']))
@@ -22,7 +24,7 @@ def inventory_receipt(request):
         else:
             return render(request,"worker/new_inventory.html",{"form":form})
     else:
-        form=inventory_form()
+        form=inventoryForm()
         return render(request,"worker/new_inventory.html",{"form":form})
 
 
@@ -42,7 +44,8 @@ def showInventory(request):
         return render(request,"worker/showinventory.html",{"l_inventory":inventory.objects.all()})
 
 def showProduct(request,id):
-    product=products.objects.get(sku=id)
-    return render(request,"worker/product.html",{"product":product})
+    p=products.objects.get(sku=id)
+    form=productForm(initial={'sku':p.sku,'name':p.name,'descprition':p.descprition,'price':p.price,'category':p.category,'serial_item':p.serial_item})
+    return render(request,"worker/product.html",{"product":form})
 
 
