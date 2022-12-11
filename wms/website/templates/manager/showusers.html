@@ -12,8 +12,10 @@ User managment
 {% endblock %}
 {% block left_bar %}
 <div class="well">
-    <li syle=""><a href="{% url 'createuser' %}">{% bs_icon 'person-add' size='3em' %}</a></li>
-  </div>
+  <ul>
+    <li><a href="{% url 'createuser' %}">{% bs_icon 'person-add' size='3em' %}</a></li>
+  </ul>
+</div>
 {% endblock %}
 {% block main %}
 <div class="inline">

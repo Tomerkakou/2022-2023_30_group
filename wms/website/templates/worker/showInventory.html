@@ -32,7 +32,7 @@ Inventory
 </div>
 <div class="mask d-flex align-items-center h-100">
   <br>
-    <div style="height: 350px; overflow:auto;">
+    <div style="height: 70vh; overflow:auto;">
       <div class="container-fluid text-center">
         <div class="row justify-content-center">
           <div class="col-12">
@@ -54,7 +54,7 @@ Inventory
                     <tbody>
                         {% for inv in l_inventory %}
                         <tr>
-                            <td><li><a href="{% url 'showproduct' inv.sku.sku %}">{{inv.sku.sku}}</a></li></td>
+                            <td><ul><li><a href="{% url 'showproduct' inv.sku.sku %}">{{inv.sku.sku}}</a></li></ul></td>
                             <td>{{inv.sku.return_category}}</td>
                             <td>{{inv.serial}}</td>
                             <td>{{inv.sku.name}}</td>
