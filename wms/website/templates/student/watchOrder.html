@@ -1,7 +1,7 @@
 {% extends "template.html" %}
 {% load bootstrap_icons %}
 {% block title %}
-Inventory
+{{order.order_number}}
 {% endblock %}
 {% block active %}
 <li><a href="#">Orders</a></li>
@@ -11,20 +11,12 @@ Inventory
 {% endblock %}
 {% block main %}
 <div class="inline">
-    <form method="post" class="inline">
-        <br>
-        <input type="number" id="sku" name="sku"  placeholder="Sku">
-      
-        <input type="search" id="name" name="name" placeholder="Product name">
-        Category:
-        <select name="category" id="category">
-            <option value="">All</option>
-            <option value="0">Photographic products</option>
-            <option value="1">Writing Tools</option>
-          </select>
-        {% csrf_token %}
-        <button type="submit" name="search" class="mybutton">{% bs_icon 'search' %}</button>
-    </form>
+    <br>
+    Order number: {{order.order_number}}
+    Create date: {{order.create_date}}
+    created By: {{order.user_id.name}}
+    Status: {{order.status}}
+    <br>
 </div>
 <div class="mask d-flex align-items-center h-100">
   <br>
@@ -40,19 +32,27 @@ Inventory
                       <tr >
                         <th scope="col">Sku</th>
                         <th scope="col">Item name</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Available amount</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
                       </tr>
                     </thead>
                     <tbody>
-                        {% for inv in inventorys %}
+                        {% for o in o_list %}
                         <tr>
-                            <td>{{inv.sku_id}}</td>
-                            <td>{{inv.name}}</td>
-                            <td>{{inv.sku.return_category}}</td>
-                            <td>{{inv.amount}}</td>
+                            <td>{{o.sku.sku}}</td>
+                            <td>{{o.sku.name}}</td>
+                            <td>{{o.amount}}</td>
+                            <td>{{o.getStatus}}</td>
                         </tr>
                         {% endfor %}
+                        <tr>
+                            <form method="POST">
+                                <td><input type="number" placeholder="Sku" name="sku"></td>
+                                <td>-----</td>
+                                <td><input type="number" placeholder="Amount" name="amount"></td>
+                                <td><button type="submit" id=newItem name="newItem" style="background-color: #f5f7fa; color:rgb(5, 167, 45); border: #f5f7fa;">{% bs_icon 'plus-square-fill' %}</button></td>
+                            </form>
+                        </tr>
                   </tbody>
                 </table>
               </div>

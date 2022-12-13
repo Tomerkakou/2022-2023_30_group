@@ -1,6 +1,6 @@
 {% extends "template.html" %}
 {% block title %}
-Student
+New order
 {% endblock %}
 {% block active %}
 <li><a href="#">Orders</a></li>
@@ -9,4 +9,10 @@ Student
         <li><a href="#">Reports</a></li>
 {% endblock %}
 {% block main %}
+    <form method="POST">
+        <br>
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="mybutton">Add</button>
+    </form>
 {% endblock %}

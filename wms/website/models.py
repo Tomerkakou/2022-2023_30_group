@@ -85,6 +85,12 @@ class specific_order(models.Model):
         inventory_id=models.ForeignKey(inventory,on_delete=models.SET_NULL,null=True)
         completed = models.BooleanField(default = False)
 
+        def getStatus(self):
+            if self.completed==0:
+                return 'Waiting'
+            else:
+                return 'Completed'
+
 
 
 

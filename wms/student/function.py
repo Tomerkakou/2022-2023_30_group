@@ -1,4 +1,4 @@
-from website.models import inventory
+from website.models import inventory,specific_order,products
 from django.db.models import Sum
 
 def sumInventory(data):
@@ -21,3 +21,8 @@ def sumInventory(data):
                                         ON inventory.sku_id = website_products.sku
                                         WHERE amount>0{filter1}{filter2}{filter3};""")
             return inv
+
+def getOrderlist(order):
+    
+    return specific_order.objects.filter(order_id=order)
+    
