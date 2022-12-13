@@ -18,8 +18,6 @@ status=(
     (2, "collected"))
 
 class user(models.Model):
-    
-
     username=models.CharField(max_length=50,primary_key=True)
     password=models.CharField(max_length=50)
     email=models.CharField(max_length=50,unique=True,validators=[EmailValidator(message='Invaild Email')])
@@ -29,7 +27,8 @@ class user(models.Model):
 
     def get_role(self):
         return user_types[self.role][1]
-
+    def get_username(self):
+        return self.username
 
 class products(models.Model):
     
@@ -39,6 +38,7 @@ class products(models.Model):
     descprition=models.TextField()
     category=models.IntegerField(choices=categories)
     serial_item=models.IntegerField(choices=((0,'No'),(1,'Yes')))
+    
     def __str__(self):
         return f"{self.sku}-{self.name}"
     def return_category(self):
