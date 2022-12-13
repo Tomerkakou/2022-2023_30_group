@@ -1,9 +1,10 @@
+
 {% extends "template.html" %}
 {% block title %}
-Manager
+Worker
 {% endblock %}
 {% block active %}
-        <li><a href="#">Products</a></li>
+        <li><a href="{% url 'searchroduct' %}">Products</a></li>
         <li><a href="{% url 'showinventory' %}">Inventory</a></li>
         <li><a href="{% url 'newinventory' %}">New inventory</a></li>
         <li><a href="#">Returns</a></li>
@@ -12,3 +13,4 @@ Manager
 {% endblock %}
 {% block main %}
 {% endblock %}
+

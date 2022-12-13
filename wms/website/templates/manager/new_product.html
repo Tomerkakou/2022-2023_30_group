@@ -5,21 +5,20 @@ New product
 {% block active %}
         <li class="active1"><a href="{% url 'newproduct' %}" style="color:white;">New product</a></li>
         <li><a href="{% url 'newlocation' %}">New Location</a></li>
-        <li><a href="#">Inventory</a></li>
+        <li><a href="{% url 'Inventory' %}">Inventory</a></li>
         <li><a href="{% url 'showusers' %}">User managment</a></li>
         <li><a href="#">Reports</a></li>
 {% endblock %}
 {% block main %}
-{% if message != None %}
-      <script>alert("{{message}}");</script>
-      {% endif %}
-    <form method="POST">
-        <br>
-        <table>
-         {{form}}
-        </table> 
-        {% csrf_token %}
-        <button type="submit" class="mybutton">Create</button>
-    </form>
+    {% if message != None %}
+    <script>alert("{{message}}");</script>
+    {% endif %}
+    <div class="form-group">
+        <form method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit" class="mybutton">Create</button>
+        </form>
+    </div>
 {% endblock %}
 

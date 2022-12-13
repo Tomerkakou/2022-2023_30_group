@@ -15,12 +15,11 @@ categories=(# update in changes in show inventory
 status=( 
     (0, "waiting"),
     (1, "completed"),
-    (2, "collected"))
+    (2, "collected"),)
 
 class user(models.Model):
-    
-
-    username=models.CharField(max_length=50,primary_key=True)
+    username=models.CharField(max_length=50,unique=True)
+    username=models.CharField(max_length=50,unique=True)
     password=models.CharField(max_length=50)
     email=models.CharField(max_length=50,unique=True,validators=[EmailValidator(message='Invaild Email')])
     name=models.CharField(max_length=50)
@@ -29,7 +28,8 @@ class user(models.Model):
 
     def get_role(self):
         return user_types[self.role][1]
-
+    def get_username(self):
+        return self.username
 
 class products(models.Model):
     
@@ -39,6 +39,7 @@ class products(models.Model):
     descprition=models.TextField()
     category=models.IntegerField(choices=categories)
     serial_item=models.IntegerField(choices=((0,'No'),(1,'Yes')))
+    
     def __str__(self):
         return f"{self.sku}-{self.name}"
     def return_category(self):
@@ -55,7 +56,7 @@ class inventory(models.Model):
 
     sku=models.ForeignKey(products,on_delete=models.CASCADE)
     location=models.ForeignKey(locations,on_delete=models.CASCADE)
-    amount=models.IntegerField(validators=[MinValueValidator(0,message='amount must be greater than 0')])
+    amount=models.IntegerField(validators=[MinValueValidator(1,message='amount must be greater than 0')])
     available=models.IntegerField(default=-1)
     serial=models.IntegerField(unique=True,default=None,null=True,blank=True)
 

@@ -1,7 +1,7 @@
 from website.models import products,locations,user,inventory
 
 def getUsers(data):
-    kwargs={}
+    kwargs={'status':1}
     if data['username'] != '':
         kwargs['username']=data['username']
     if data['fullname'] != '':
@@ -42,6 +42,6 @@ def updateAmount(idInv,newAmount):
             inven.delete()
         else:
             inven.save()
-        return f"{inven.sku.name} in {inven.location} updated to {newAmount}"
+        return f"#{inven.sku.name} in {inven.location} updated to {newAmount}"
     else:
-        return "The new amount does not match the quantity ordered" 
+        return "#The new amount does not match the quantity ordered" 

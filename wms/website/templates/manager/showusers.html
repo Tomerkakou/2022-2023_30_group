@@ -4,16 +4,18 @@
 User managment
 {% endblock %}
 {% block active %}
-<li><a href="{% url 'newproduct' %}">New product</a></li>
+        <li><a href="{% url 'newproduct' %}">New product</a></li>
         <li><a href="{% url 'newlocation' %}">New Location</a></li>
-        <li><a href="#">Inventory</a></li>
+        <li><a href="{% url 'Inventory' %}">Inventory</a></li>
         <li class="active1"><a href="{% url 'showusers' %}" style="color:white;">User managment</a></li>
         <li><a href="#">Reports</a></li>
 {% endblock %}
 {% block left_bar %}
 <div class="well">
-    <li syle=""><a href="{% url 'createuser' %}">{% bs_icon 'person-add' size='3em' %}</a></li>
-  </div>
+  <ul>
+    <li><a href="{% url 'createuser' %}">{% bs_icon 'person-add' size='3em' %}</a></li>
+  </ul>
+</div>
 {% endblock %}
 {% block main %}
 <div class="inline">
