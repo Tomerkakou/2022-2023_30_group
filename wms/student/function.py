@@ -25,4 +25,31 @@ def sumInventory(data):
 def getOrderlist(order):
     
     return specific_order.objects.filter(order_id=order)
+
+def newOrder_spec(data,order_obj):
+    try:
+        amount_orderd=int(data['amount'])
+        product=products.objects.get(sku=data['sku'])
+    except:
+        return 'Invalid sku'
+    res=inventory.objects.filter(sku=product).aggregate(Sum('available'))
+    if res['available__sum']<amount_orderd or amount_orderd<1:
+        return 'Invalid amount'
+    else:
+        
+        inv_list=list(inventory.objects.filter(sku=product,available__gt=0).order_by('available'))
+        index=0
+        while amount_orderd >0:
+            inv=inv_list[index]
+            if amount_orderd<=inv.available:
+                curr_amount=amount_orderd
+            else:
+                curr_amount=inv.available
+            specific_order.objects.create(order_id=order_obj,sku=product,amount=curr_amount,inventory_id=inv)
+            inv.available=inv.available-curr_amount
+            amount_orderd=amount_orderd-curr_amount
+            inv.save()
+            index+=1
+        return None
+            
     

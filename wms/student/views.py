@@ -20,8 +20,11 @@ def newOrder(request):
         return redirect('watchorder',order.order_number)
 
 def watchOrder(request,order_id):
+    order=orders.objects.get(order_number=order_id)
     if request.method=='POST':
-        pass#inventory choose
+        if 'newItem' in request.POST:
+            return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order),'message':function.newOrder_spec(request.POST.dict(),order)})
+        else:
+            pass#delete item
     else:
-        order=orders.objects.get(order_number=order_id)
         return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)})

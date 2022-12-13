@@ -37,6 +37,15 @@
                       </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                          <form method="POST">
+                              <td><input type="number" placeholder="Sku" name="sku"></td>
+                              <td>-----</td>
+                              <td><input type="number" placeholder="Amount" name="amount"></td>
+                              {% csrf_token %}
+                              <td><button type="submit" id=newItem name="newItem" style="background-color: #f5f7fa; color:rgb(5, 167, 45); border: #f5f7fa;">{% bs_icon 'plus-square-fill' size=1.5em %}</button></td>
+                          </form>
+                        </tr>
                         {% for o in o_list %}
                         <tr>
                             <td>{{o.sku.sku}}</td>
@@ -45,14 +54,6 @@
                             <td>{{o.getStatus}}</td>
                         </tr>
                         {% endfor %}
-                        <tr>
-                            <form method="POST">
-                                <td><input type="number" placeholder="Sku" name="sku"></td>
-                                <td>-----</td>
-                                <td><input type="number" placeholder="Amount" name="amount"></td>
-                                <td><button type="submit" id=newItem name="newItem" style="background-color: #f5f7fa; color:rgb(5, 167, 45); border: #f5f7fa;">{% bs_icon 'plus-square-fill' %}</button></td>
-                            </form>
-                        </tr>
                   </tbody>
                 </table>
               </div>

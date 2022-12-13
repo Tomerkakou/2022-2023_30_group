@@ -23,6 +23,6 @@ urlpatterns = [
     path('',include('website.urls')),
     path('student/menu/',menu,name='student_menu'),
     path('student/menu/inventory',showInventory,name='inventory'),
-    path('student/menu/newOrder',newOrder,name='neworder'),
-    path('student/menu/<int:order_id>',watchOrder,name='watchorder'),
+    #path('student/menu/newOrder',newOrder,name='neworder'),
+    path('student/menu/orders/<int:order_id>/',watchOrder,name='watchorder'),
 ]
