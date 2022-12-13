@@ -18,7 +18,7 @@ status=(
     (2, "collected"),)
 
 class user(models.Model):
-    username=models.CharField(max_length=50,primary_key=True)
+    username=models.CharField(max_length=50,unique=True)
     username=models.CharField(max_length=50,unique=True)
     password=models.CharField(max_length=50)
     email=models.CharField(max_length=50,unique=True,validators=[EmailValidator(message='Invaild Email')])
