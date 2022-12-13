@@ -1,29 +1,32 @@
 {% extends "template.html" %}
 {% load bootstrap_icons %}
 {% block title %}
-Inventory
+Products
 {% endblock %}
 {% block active %}
-<li><a href="#">Orders</a></li>
-        <li><a href="#">New order</a></li>
-        <li class="active1"><a href="{% url 'inventory' %}" style="color:white;">Inventory</a></li>
-        <li><a href="#">Reports</a></li>
-{% endblock %}
+       <li class="active1"><a href="{% url 'searchroduct' %}"  style="color:white;">Products</a></li>
+       <li><a href="{% url 'showinventory' %}">Inventory</a></li>
+       <li><a href="{% url 'newinventory' %}">New inventory</a></li>
+       <li><a href="#">Returns</a></li>
+       <li><a href="#">Orders</a></li>
+       <li><a href="#">Reports</a></li>
+        {% endblock %}
 {% block main %}
 <div class="inline">
     <form method="post" class="inline">
         <br>
-        <input type="number" id="sku" name="sku"  placeholder="Sku">
+        <input type="number" id="sku" name="sku" value="{{s}}" placeholder="Sku">
       
-        <input type="search" id="name" name="name" placeholder="Product name">
+        <input type="search" id="name" name="name" value="{{n}}" placeholder="Product name">
+        
         Category:
         <select name="category" id="category">
             <option value="">All</option>
             <option value="0">Photographic products</option>
             <option value="1">Writing Tools</option>
-          </select>
+        </select>
         {% csrf_token %}
-        <button type="submit" name="search" class="mybutton">{% bs_icon 'search' %}</button>
+        <button type="submit" id=search name="search" class="mybutton">{% bs_icon 'search' %}</button>
     </form>
 </div>
 <div class="mask d-flex align-items-center h-100">
@@ -38,19 +41,13 @@ Inventory
                   <table class="table table-borderless mb-0">
                     <thead>
                       <tr >
-                        <th scope="col">Sku</th>
-                        <th scope="col">Item name</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Available amount</th>
+                        <th scope="col">Product</th>
                       </tr>
                     </thead>
                     <tbody>
-                        {% for inv in inventorys %}
+                        {% for p in products %}
                         <tr>
-                            <td>{{inv.sku_id}}</td>
-                            <td>{{inv.name}}</td>
-                            <td>{{inv.sku.return_category}}</td>
-                            <td>{{inv.amount}}</td>
+                            <td><ul><li><a href="{% url 'showproduct' p.sku %}">{{p}}</a></li></ul></td>
                         </tr>
                         {% endfor %}
                   </tbody>
@@ -64,3 +61,5 @@ Inventory
     </div>
 </div>
 {% endblock %}
+
+

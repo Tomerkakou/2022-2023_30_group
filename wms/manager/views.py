@@ -1,39 +1,34 @@
-from django.shortcuts import render, HttpResponse, redirect
-from django.forms import modelform_factory
-from website.models import products,locations,user
+from django.shortcuts import render,HttpResponse
 import manager.function
+from manager.forms import productForm,locationForm,userForm
+from website.models import user
 
 def menu(request):
-    return render(request,"manager/menu.html",{"msg":request.COOKIES['user']})
-
-
-product_form =modelform_factory(products,exclude=[])
+    return render(request,"manager/menu.html")
 
 def newProduct(request):
     if request.method == "POST" :
-        form=product_form(request.POST) 
+        form=productForm(request.POST) 
         if form.is_valid():
             form.save()
-            return render(request,"manager/new_location.html",{"form":form,"message":"New product created successfully"})
+            return render(request,"manager/new_product.html",{"form":form,"message":"New product created successfully"})
         else:
             return render(request,"manager/new_product.html",{"form":form})
     else:
-        form=product_form()
+        form=productForm()
         return render(request,"manager/new_product.html",{"form":form})
 
 
-location_form=modelform_factory(locations,exclude=[])
-
 def newLocation(request):
     if request.method == "POST" :
-        form=location_form(request.POST) 
+        form=locationForm(request.POST) 
         if form.is_valid():
             form.save()
             return render(request,"manager/new_location.html",{"form":form,"message":"Location created successfully"})
         else:
             return render(request,"manager/new_location.html",{"form":form})
     else:
-        form=location_form()
+        form=locationForm()
         return render(request,"manager/new_location.html",{"form":form})
 
 
@@ -54,14 +49,15 @@ def showUsers(request):
             return render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']})    
     else:
         return render(request,"manager/showusers.html",{"users":users})
-    
 
-user_form=modelform_factory(user,exclude=['status'])
+
+
+
 
 
 def createuser(request,msg=''):
     if request.method == "POST" :
-        form=user_form(request.POST) 
+        form=userForm(request.POST) 
         if form.is_valid():
             form.save()
             msg='User created successfully'
@@ -69,7 +65,7 @@ def createuser(request,msg=''):
         else:
             return render(request,"manager/createuser.html",{"form":form,"message":msg})
     else:
-        form=user_form()
+        form=userForm()
         return render(request,"manager/createuser.html",{"form":form,"message":msg})
 
 

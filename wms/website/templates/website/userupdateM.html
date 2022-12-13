@@ -1,0 +1,15 @@
+
+{% extends "manager/menu.html" %}
+
+{% block title %}
+    {{user.username}}
+{% endblock %}
+{% block main %}
+<form method="POST">
+    <br>
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit" class="mybutton">Update</button>
+    <h4 style="color:blue;">{{message}}</h4>
+  </form>
+{% endblock %}

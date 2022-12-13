@@ -5,7 +5,7 @@ New location
 {% block active %}
         <li><a href="{% url 'newproduct' %}">New product</a></li>
         <li class="active1"><a href="{% url 'newlocation' %}" style="color:white;">New Location</a></li>
-        <li><a href="#">Inventory</a></li>
+        <li><a href="{% url 'Inventory' %}">Inventory</a></li>
         <li><a href="{% url 'showusers' %}">User managment</a></li>
         <li><a href="#">Reports</a></li>
 {% endblock %}
@@ -15,11 +15,9 @@ New location
       {% endif %}
     <form method="POST">
         <br>
-        <table>
-        {{form}}
-        </table> 
-    {% csrf_token %}
-    <button type="submit" class="mybutton">Create</button>
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="mybutton">Create</button>
     </form>
 {% endblock %}
        
