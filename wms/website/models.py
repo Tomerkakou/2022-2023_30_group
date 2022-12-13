@@ -79,6 +79,15 @@ class orders(models.Model):
     user_id = models.ForeignKey(user, on_delete=models.PROTECT)
     status = models.IntegerField(choices=status, default=0)
 
+    def return_status(self):
+        return status[self.status][1]
+
+    def str_create_date(self):
+        return self.create_date.strftime("%d/%m/%Y")
+
+    def str_return_date(self):
+        return self.return_date.strftime("%d/%m/%Y")
+
 class specific_order(models.Model): 
         order_id=models.ForeignKey(orders ,on_delete=models.CASCADE) 
         sku = models.ForeignKey(products, on_delete=models.PROTECT)  

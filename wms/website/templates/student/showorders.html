@@ -4,23 +4,25 @@
 Inventory
 {% endblock %}
 {% block active %}
-        <li><a href="{% url 'orders' %}">Orders</a></li>
+        <li class="active1"><a href="{% url 'orders' %}" style="color:white;">Orders</a></li>
         <li><a href="#">New order</a></li>
-        <li class="active1"><a href="{% url 'inventory' %}" style="color:white;">Inventory</a></li>
+        <li><a href="{% url 'inventory' %}">Inventory</a></li>
         <li><a href="#">Reports</a></li>
 {% endblock %}
 {% block main %}
 <div class="inline">
     <form method="post" class="inline">
         <br>
-        <input type="number" id="sku" name="sku"  placeholder="Sku">
-      
-        <input type="search" id="name" name="name" placeholder="Product name">
-        Category:
-        <select name="category" id="category">
+        <input type="number" id="order_number" name="order_number"  placeholder="Order number">
+        <input type="text" id="user_id" name="user_id" placeholder="User name">
+        <input type="date" id="create_date" name="create_date" placeholder="Create date">
+        <input type="date" id="return_date" name="return_date"  placeholder="Return date">
+        Status:
+        <select name="status" id="status">
             <option value="">All</option>
-            <option value="0">Photographic products</option>
-            <option value="1">Writing Tools</option>
+            <option value="0">Waiting</option>
+            <option value="1">Completed</option>
+            <option value="2">Collected</option>
           </select>
         {% csrf_token %}
         <button type="submit" name="search" class="mybutton">{% bs_icon 'search' %}</button>
@@ -38,19 +40,21 @@ Inventory
                   <table class="table table-borderless mb-0">
                     <thead>
                       <tr >
-                        <th scope="col">Sku</th>
-                        <th scope="col">Item name</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Available amount</th>
+                        <th scope="col">Order number</th>
+                        <th scope="col">User name</th>
+                        <th scope="col">Create date</th>
+                        <th scope="col">Return date</th>
+                        <th scope="col">Status</th>
                       </tr>
                     </thead>
                     <tbody>
-                        {% for inv in inventorys %}
+                        {% for order in orders %}
                         <tr>
-                            <td>{{inv.sku_id}}</td>
-                            <td>{{inv.name}}</td>
-                            <td>{{inv.sku.return_category}}</td>
-                            <td>{{inv.amount}}</td>
+                            <td>{{order.order_number}}</td>
+                            <td>{{order.user_id.name}}</td>
+                            <td>{{order.str_create_date}}</td>
+                            <td>{{order.str_return_date}}</td>
+                            <td>{{order.return_status}}</td>
                         </tr>
                         {% endfor %}
                   </tbody>
