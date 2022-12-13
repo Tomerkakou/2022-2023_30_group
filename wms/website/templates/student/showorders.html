@@ -50,7 +50,7 @@ Inventory
                     <tbody>
                         {% for order in orders %}
                         <tr>
-                            <td>{{order.order_number}}</td>
+                            <td><ul><li><a href="{% url 'watchorder' order.order_number %}">{{order.order_number}}</a></li></ul></td>
                             <td>{{order.user_id.name}}</td>
                             <td>{{order.str_create_date}}</td>
                             <td>{{order.str_return_date}}</td>
