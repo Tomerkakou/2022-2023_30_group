@@ -47,7 +47,7 @@ Products
                     <tbody>
                         {% for p in products %}
                         <tr>
-                            <td><ul><li><a href="{% url 'showproduct' p.sku %}">{{p}}</a></li></ul></td>
+                            <td><a href="{% url 'showproduct' p.sku %}">{{p}}</a></td>
                         </tr>
                         {% endfor %}
                   </tbody>
