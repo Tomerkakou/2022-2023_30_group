@@ -1,0 +1,93 @@
+{% extends "template.html" %}
+{% load bootstrap_icons %}
+{% block title %}
+{{order.order_number}}
+{% endblock %}
+{% block active %}
+        <li class="active1"><a href="{% url 'orders' %}" style="color:white;">Orders</a></li>
+        <li><a href="{% url 'inventory' %}">Inventory</a></li>
+        <li><a href="#">Reports</a></li>
+{% endblock %}
+{% block left_bar %}
+<div class="well">
+    <ul><li><a href="{% url 'orders' %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)" name="neworder" id="neworder">{% bs_icon 'list-ul' size='3em' %}<p>Return to orders list</p></a></li></ul>
+</div>
+{% endblock %}
+{% block main %}
+<div class="inline">
+    <br>
+      Order number: 
+      <input type="number" value="{{order.order_number}}">
+      Created By:
+      <input type="text" value="{{order.user_id.name}}">
+      Create date:
+      <input type="text" value="{{order.str_create_date}}">
+      Return date:
+      <input type="text" value="{{order.str_return_date}}">
+      Status:
+      <input type="text" value="{{order.return_status}}">
+    <br>
+</div>
+<div class="mask d-flex align-items-center h-100">
+  <br>
+    <div style="height: 70vh; overflow:auto;">
+      <div class="container-fluid text-center">
+        <div class="row justify-content-center">
+          <div class="col-12">
+            <div class="card shadow-2-strong" style="background-color: #f5f7fa;">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-borderless mb-0">
+                    <thead>
+                      <tr >
+                        <th scope="col">Sku</th>
+                        <th scope="col">Item name</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Delete item</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                          <form method="POST">
+                              <td><input type="number" placeholder="Sku" name="sku"></td>
+                              <td>
+                                {% if message != None %}
+                                  <p style="color:red">{{message}}</p>
+                                {% endif %} 
+                              </td>
+                              <td><input type="number" placeholder="Amount" name="amount"></td>
+                              {% csrf_token %}
+                              <td><button type="submit" id=newItem name="newItem" style="background-color: #f5f7fa; color:rgb(5, 167, 45); border: #f5f7fa;">{% bs_icon 'plus-square-fill' size=1.5em %}</button></td>
+                              <td>-----</td>
+                          </form>
+                        </tr>
+                        {% for o in o_list %}
+                        <tr>
+                            <td>{{o.sku.sku}}</td>
+                            <td>{{o.sku.name}}</td>
+                            <td>{{o.amount}}</td>
+                            <td>{{o.getStatus}}</td>
+                            <td>
+                              {% if o.completed == 0 %}
+                              <form method="POST" onsubmit="return confirm('Are you sure?');">
+                                {% csrf_token %}
+                                <button type="submit" name="{{o.id}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
+                                  <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
+                                </button>
+                              </form>
+                              {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
