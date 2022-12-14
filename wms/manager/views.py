@@ -92,8 +92,10 @@ def showInventory(request):
             return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location'], 'message':message})   
     else:
         return render(request,"manager/showInventory.html",{'inventorys':None})
+
 def reports(request):
     return render(request,'manager/reports.html')
+    
 def inventoryToExel(request):
     response=HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'

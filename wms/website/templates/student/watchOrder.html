@@ -14,18 +14,13 @@
 </div>
 {% endblock %}
 {% block main %}
-<div class="inline">
+<div style="font-family: 'Tahoma'; font-style: normal; font-weight: bold; font-size: 13px;">
     <br>
-      Order number: 
-      <input type="number" value="{{order.order_number}}">
-      Created By:
-      <input type="text" value="{{order.user_id.name}}">
-      Create date:
-      <input type="text" value="{{order.str_create_date}}">
-      Return date:
-      <input type="text" value="{{order.str_return_date}}">
-      Status:
-      <input type="text" value="{{order.return_status}}">
+      Order number: {{order.order_number}} &nbsp;&nbsp;&nbsp;&nbsp;
+      Created By: {{order.user_id.name}} &nbsp;&nbsp;&nbsp;&nbsp;
+      Create date: {{order.str_create_date}} &nbsp;&nbsp;&nbsp;&nbsp;
+      Return date: {{order.str_return_date}} &nbsp;&nbsp;&nbsp;&nbsp;
+      Status: {{order.return_status}}
     <br>
 </div>
 <div class="mask d-flex align-items-center h-100">
