@@ -3,6 +3,7 @@ import website.function as function
 from website.models import user
 from website.forms import user_updateForm
 
+
             
 def start(request):
     if request.method=="POST":
@@ -15,11 +16,11 @@ def start(request):
                 response.set_cookie('role',current.role)
                 return response
             else:
-                return render(request,"website/login-register.html",{'message':"Invalid username or password"})
+                return render(request,"website/login-register.html",{'message':"Invalid username or password"},status=401)
         elif "register" in request.POST :
             return render(request,"website/login-register.html",{'message2': function.register(request.POST.dict())})
     else:
-        return render(request,"website/login-register.html")
+        return render(request,"website/login-register.html",status=200)
 
 
 def changeUser(request):
@@ -35,11 +36,11 @@ def changeUser(request):
         if form.is_valid():
             form.save()
             msg='User updated successfully'
-            response=render(request,f"website/userupdate{x}.html",{"form":form,"message":msg})
+            response=render(request,f"website/userupdate{x}.html",{"form":form,"message":msg},status=200)
             response.set_cookie('user',form.cleaned_data['username'])
             return response
         else:
-            return render(request,f"website/userupdate{x}.html",{"form":form})
+            return render(request,f"website/userupdate{x}.html",{"form":form},status=400)
     else:
         form=user_updateForm(instance=u)#initial={'username':u.username,'password':u.password,'email':u.email,'name':u.name})
-        return render(request,f"website/userupdate{x}.html",{"form":form}) 
+        return render(request,f"website/userupdate{x}.html",{"form":form},status=200) 
