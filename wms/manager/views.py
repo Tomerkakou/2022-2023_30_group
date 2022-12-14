@@ -1,7 +1,10 @@
 from django.shortcuts import render,HttpResponse
 import manager.function
 from manager.forms import productForm,locationForm,userForm
-from website.models import user
+from website.models import user,inventory,products,categories
+from datetime import datetime
+import xlwt
+from django.db.models import Sum
 
 def menu(request):
     return render(request,"manager/menu.html")
@@ -89,3 +92,43 @@ def showInventory(request):
             return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location'], 'message':message})   
     else:
         return render(request,"manager/showInventory.html",{'inventorys':None})
+def reports(request):
+    return render(request,'manager/reports.html')
+def inventoryToExel(request):
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Full inventory')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['Sku','item name','Total amount','Total available','Category']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+
+    sum_inventory=inventory.objects.raw(f"""SELECT inventory.id ,inventory.sku_id, inventory.sum_available,inventory.sum_amount, website_products.category ,website_products.name
+                                        FROM  (SELECT id, sku_id ,SUM(available) as sum_available ,SUM(amount) as sum_amount
+		                                FROM website_inventory
+		                                GROUP BY sku_id) AS inventory
+                                        RIGHT JOIN website_products 
+                                        ON inventory.sku_id = website_products.sku;""")
+
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    for row in sum_inventory:
+        if row.sku_id is None:
+            continue
+        row_num+=1
+        ws.write(row_num,0,row.sku_id,style)
+        ws.write(row_num,1,row.name,style)
+        ws.write(row_num,2,row.sum_amount,style)
+        ws.write(row_num,3,row.sum_available,style)
+        ws.write(row_num,4,categories[row.category][1],style)
+
+    wb.save(response)
+
+    return response
+    
+
+
