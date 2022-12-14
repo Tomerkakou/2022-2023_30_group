@@ -1,13 +1,19 @@
 {% extends "template.html" %}
 {% block title %}
-Manager
+New product
 {% endblock %}
 {% block active %}
-<li><a href="{% url 'newproduct' %}">New product</a></li>
+        <li><a href="{% url 'newproduct' %}" >New product</a></li>
         <li><a href="{% url 'newlocation' %}">New Location</a></li>
         <li><a href="{% url 'Inventory' %}">Inventory</a></li>
         <li><a href="{% url 'showusers' %}">User managment</a></li>
-        <li><a href="{% url 'reports' %}">Reports</a></li>
+        <li class="active1"><a href="{% url 'reports' %}"style="color:white;">Reports</a></li>
 {% endblock %}
 {% block main %}
+<br>
+<div class="well">
+    <ul>
+      <li><a href="{% url 'inventory-exel' %}">Export inventory report to EXCELS</a></li>
+    </ul>
+</div>
 {% endblock %}

@@ -7,7 +7,7 @@ New product
         <li><a href="{% url 'newlocation' %}">New Location</a></li>
         <li><a href="{% url 'Inventory' %}">Inventory</a></li>
         <li><a href="{% url 'showusers' %}">User managment</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a href="{% url 'reports' %}">Reports</a></li>
 {% endblock %}
 {% block main %}
     {% if message != None %}
