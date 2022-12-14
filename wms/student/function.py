@@ -74,4 +74,18 @@ def newOrder_spec(data,order_obj):
         return None
             
     
+def deleteItem(id_num):
+    if id_num is int:
+        item=specific_order.objects.get(id=id_num)
+    else:
+        item=id_num
+    item.inventory_id.available+=item.amount
+    item.inventory_id.save()
+    item.delete()
 
+def deleteOrder(or_num):
+    order=orders.objects.get(order_number=or_num)
+    o_list=specific_order.objects.filter(order_id=order)
+    for i in o_list:
+        deleteItem(i)
+    order.delete()
