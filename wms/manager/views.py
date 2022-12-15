@@ -64,9 +64,6 @@ def createuser(request,msg=''):
 def showInventory(request):
     if request.method == "POST":
         data=request.POST.dict()       
-        #define place for message 
-        #fix search again by same filters
-        #filter still need fixing 
         if 'search' in request.POST:
             response= render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location']})
             response.set_cookie('s',data['sku'])

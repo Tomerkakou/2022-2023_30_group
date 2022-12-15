@@ -33,6 +33,8 @@ def getInventory(data):
         
  
 def updateAmount(idInv,newAmount):
+    """ unit tests in manager/tests.py """
+
     newAmount=int(newAmount)
     inven=get_object_or_404(inventory,id=idInv)
     if (inven.amount-inven.available)<=newAmount:
