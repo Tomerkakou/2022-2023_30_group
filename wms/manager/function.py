@@ -1,4 +1,5 @@
 from website.models import products,locations,user,inventory
+from django.shortcuts import get_object_or_404
 
 def getUsers(data):
     kwargs={'status':1}
@@ -33,7 +34,7 @@ def getInventory(data):
  
 def updateAmount(idInv,newAmount):
     newAmount=int(newAmount)
-    inven=inventory.objects.get(id=idInv)
+    inven=get_object_or_404(inventory,id=idInv)
     if (inven.amount-inven.available)<=newAmount:
         inven.available=inven.available+(newAmount-inven.amount)
         inven.amount=newAmount
