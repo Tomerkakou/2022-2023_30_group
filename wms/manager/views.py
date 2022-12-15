@@ -9,33 +9,6 @@ from django.db.models import Sum
 def menu(request):
     return render(request,"manager/menu.html",status=200)
 
-def newProduct(request):
-    if request.method == "POST" :
-        form=productForm(request.POST) 
-        if form.is_valid():
-            form.save()
-            form=productForm()
-            return render(request,"manager/new_product.html",{"form":form,"message":"New product created successfully"},status=201)
-        else:
-            return render(request,"manager/new_product.html",{"form":form},status=400)
-    else:
-        form=productForm()
-        return render(request,"manager/new_product.html",{"form":form},status=200)
-
-
-def newLocation(request):
-    if request.method == "POST" :
-        form=locationForm(request.POST) 
-        if form.is_valid():
-            form.save()
-            form=locationForm()
-            return render(request,"manager/new_location.html",{"form":form,"message":"Location created successfully"},status=201)
-        else:
-            return render(request,"manager/new_location.html",{"form":form},status=400)
-    else:
-        form=locationForm()
-        return render(request,"manager/new_location.html",{"form":form},status=200)
-
 
 def showUsers(request):
     users=None
@@ -87,12 +60,7 @@ def showInventory(request):
             response.set_cookie('l',data['location'])
             response.set_cookie('n',data['name'])
             response.set_cookie('c',data['category'])
-            return response
-        else:
-            key=list(data)[0]
-            message=manager.function.updateAmount(key,data[key])
-            data={'sku':request.COOKIES['s'],'location':request.COOKIES['l'],'name':request.COOKIES['n'],'category':request.COOKIES['c']}
-            return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location'], 'message':message})   
+            return response  
     else:
         return render(request,"manager/showInventory.html",{'inventorys':None})
 

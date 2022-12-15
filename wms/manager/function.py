@@ -32,16 +32,4 @@ def getInventory(data):
         
  
 
-def updateAmount(idInv,newAmount):
-    newAmount=int(newAmount)
-    inven=inventory.objects.get(id=idInv)
-    if (inven.amount-inven.available)<=newAmount:
-        inven.available=inven.available+(newAmount-inven.amount)
-        inven.amount=newAmount
-        if inven.amount==0:
-            inven.delete()
-        else:
-            inven.save()
-        return f"#{inven.sku.name} in {inven.location} updated to {newAmount}"
-    else:
-        return "#The new amount does not match the quantity ordered" 
+

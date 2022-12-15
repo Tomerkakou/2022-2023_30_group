@@ -28,20 +28,6 @@ def inventory_receipt(request):
         return render(request,"worker/new_inventory.html",{"form":form},status=200)
 
 
-def showInventory(request): 
-    if request.method == "POST": 
-        if 'search' in request.POST:   
-            search = request.POST.dict()
-            response=render(request,"worker/showinventory.html",{"l_inventory":function.getInventory(search),'s':search['sku'],'l':search['location'],'se':search['serial']},status=200)  
-            response.set_cookie('s',search['sku'])
-            response.set_cookie('l',search['location'])
-            response.set_cookie('se',search['serial'])
-            response.set_cookie('c',search['category'])
-            return response
-        else:
-            pass#when change location is added 
-    else:
-        return render(request,"worker/showinventory.html",{"l_inventory":inventory.objects.all()},status=200)
 
 def showProduct(request,id):
     p=get_object_or_404(products,sku=id)
