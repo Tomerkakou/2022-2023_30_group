@@ -24,7 +24,8 @@ class Manager_tests(TestCase):
         data={'username':"",'fullname':"",'email':"","role":""}
         self.assertEqual(len(getUsers(data)),9) 
     
-    def update_amount_test(self):  
+    def update_amount_test(self): 
+        """ unit tests in manager/tests.py """
         loc = locations.objects.get(location="123456") 
         item = products.objects.get(sku=1234)
         inventory.objects.create(sku=item,location=loc,amount=50,available=20)
