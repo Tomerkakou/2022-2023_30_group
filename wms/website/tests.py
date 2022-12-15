@@ -35,8 +35,11 @@ class TestModels(TestCase):
             self.assertEqual(pen.return_category(),'Photographic products')
 
     def test_manager_locations(self):
-        check_location = locations.objects.get(location = 'A50362')
-        self.assertEqual(check_location.__str__(),"A50362")  
+        with self.subTest("checks get location and return as string"):
+            check_location = locations.objects.get(location = 'A50362')
+            self.assertEqual(check_location.__str__(),"A50362")  
+        with self.subTest("checks error when creating new location with new id"):
+            self.assertRaises(Exception,products.objects.create,'A50362')
     
     def test_login(self):
         data={'username':'matan1','password':'1234'}

@@ -9,6 +9,19 @@ from django.db.models import Sum
 def menu(request):
     return render(request,"manager/menu.html",status=200)
 
+def newLocation(request):
+    """unit test at website/models.py """
+    if request.method == "POST" :
+        form=locationForm(request.POST) 
+        if form.is_valid():
+            form.save()
+            form=locationForm()
+            return render(request,"manager/new_location.html",{"form":form,"message":"Location created successfully"},status=201)
+        else:
+            return render(request,"manager/new_location.html",{"form":form},status=400)
+    else:
+        form=locationForm()
+        return render(request,"manager/new_location.html",{"form":form},status=200)
 
 def showUsers(request):
     users=None

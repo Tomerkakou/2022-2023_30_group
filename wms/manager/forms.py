@@ -14,3 +14,9 @@ class userForm(forms.ModelForm):
             'name':forms.TextInput(attrs={'class':'form-control'}),
             'role':forms.Select(attrs={'class':'form-control'}),
         }
+
+class locationForm(forms.ModelForm):
+    class Meta:
+        model=locations
+        fields=('location',)
+        widgets={'location':forms.TextInput(attrs={'class':'form-control'})}
