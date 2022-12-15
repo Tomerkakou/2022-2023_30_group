@@ -60,7 +60,12 @@ def showInventory(request):
             response.set_cookie('l',data['location'])
             response.set_cookie('n',data['name'])
             response.set_cookie('c',data['category'])
-            return response  
+            return response 
+        else:
+            key=list(data)[0]
+            message=manager.function.updateAmount(key,data[key])
+            data={'sku':request.COOKIES['s'],'location':request.COOKIES['l'],'name':request.COOKIES['n'],'category':request.COOKIES['c']}
+            return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location'], 'message':message}) 
     else:
         return render(request,"manager/showInventory.html",{'inventorys':None})
 
