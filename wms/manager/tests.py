@@ -34,6 +34,8 @@ class Manager_tests(TestCase):
             self.assertEqual(updateAmount(0,20),"#{inv.sku.name} in {inv.location} updated to 20")
         with self.subTest("exception with invalid inventory id"):
             self.assertRaises(Exception,updateAmount,1,2)
+        with self.subTest("good updated amount"):
+            self.assertEqual(updateAmount(0,20),"#{inv.sku.name} in {inv.location} updated to 20")
 
         
 

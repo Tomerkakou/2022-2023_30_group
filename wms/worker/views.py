@@ -46,7 +46,7 @@ def inventory_receipt(request):
 
 def showProduct(request,id):
     p=get_object_or_404(products,sku=id)
-    form=productForm(initial={'sku':p.sku,'name':p.name,'descprition':p.descprition,'price':p.price,'category':p.category,'serial_item':p.serial_item})
+    form=productForm(initial={'sku':p.sku,'name':p.name,'description':p.description,'price':p.price,'category':p.category,'serial_item':p.serial_item})
     return render(request,"worker/product.html",{"product":form,'title':str(p)},status=200)
 
 def productSearch(request):

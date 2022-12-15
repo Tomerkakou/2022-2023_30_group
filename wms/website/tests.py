@@ -9,7 +9,7 @@ class TestModels(TestCase):
     def setUpTestData(cls):
         user.objects.create(username='matan1', password='1234', email='matan@gmail.com', name='matan', role=1, status=True)
         user.objects.create(username='osnat1', password='12345', email='os@gmail.com', name='osnat', role=2, status=False)
-        products.objects.create(sku = 1234, name= 'pencill', price= 50, descprition = 'pink pen do something',category = 0, serial_item=0)
+        products.objects.create(sku = 1234, name= 'pencill', price= 50, description = 'pink pen do something',category = 0, serial_item=0)
         locations.objects.create(location = 'A50362')
         
     def test_users_role(self):
@@ -25,14 +25,19 @@ class TestModels(TestCase):
         self.assertEqual(register(matan),"Username or Email already in use")  
 
 
-    def test_products(self):   
+    def test_products(self):    
         with self.subTest("checks product to str"):
             pen = products.objects.get(name = 'pencill')
             self.assertEqual(pen.__str__(),'1234-pencill')
-
         with self.subTest("checks return category"):
             pen = products.objects.get(name = 'pencill')
             self.assertEqual(pen.return_category(),'Photographic products')
+        with self.subTest("checks succsesfull creation of new product"):
+            compare=products.objects.get(name='pencill')
+            pro=products.objects.create(sku = 1234567, name= 'pencill123', price= 50, description = 'pink pen do something',category = 0, serial_item=0)
+            self.assertEqual(type(pro),type(compare))
+        with self.subTest("checks for error when creating new product with excisting sku"):
+            self.assertRaises(Exception,products.objects.create,sku = 1234, name= 'notebook', price= 50, description = 'pink notebook do something',category = 0, serial_item=0)
 
     def test_manager_locations(self):
         with self.subTest("checks get location and return as string"):
@@ -40,6 +45,10 @@ class TestModels(TestCase):
             self.assertEqual(check_location.__str__(),"A50362")  
         with self.subTest("checks error when creating new location with new id"):
             self.assertRaises(Exception,products.objects.create,'A50362')
+        with self.subTest("checks succsesfull creation of new locatio "):
+            loc=locations.objects.get(location='A50362')
+            new=locations.objects.create(location='A12345')
+            self.assertEqual(type(loc),type(new))
     
     def test_login(self):
         data={'username':'matan1','password':'1234'}

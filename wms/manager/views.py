@@ -42,7 +42,19 @@ def showUsers(request):
         return render(request,"manager/showusers.html",{"users":users},status=200)
 
 
-
+def newProduct(request):
+    """unit test at website/models.py """
+    if request.method == "POST" :
+        form=productForm(request.POST) 
+        if form.is_valid():
+            form.save()
+            form=productForm()
+            return render(request,"manager/new_product.html",{"form":form,"message":"New product created successfully"},status=201)
+        else:
+            return render(request,"manager/new_product.html",{"form":form},status=400)
+    else:
+        form=productForm()
+        return render(request,"manager/new_product.html",{"form":form},status=200)
 
 
 

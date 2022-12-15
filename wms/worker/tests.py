@@ -8,7 +8,7 @@ class TestWorker_function(TestCase):
     def setUpTestData(cls):
         x=locations.objects.create(location="A1")
         for prod in range(10):
-            y=products.objects.create(sku=prod,name=prod,price=10,descprition="csony ",category=0,serial_item=prod%2)
+            y=products.objects.create(sku=prod,name=prod,price=10,description="csony ",category=0,serial_item=prod%2)
             inventory.objects.create(sku=y,location=x,amount=10,available=10)
         
 
@@ -22,8 +22,12 @@ class TestWorker_function(TestCase):
         """show inventory test"""
         with self.subTest("clear search"):
             self.assertEqual(len(getInventory({'sku':"",'location':"",'category':"",'serial':""})),10)
-        with self.subTest("filter by one parmeters"):
+        with self.subTest("filter by one sku"):
             self.assertEqual(len(getInventory({'sku':"1",'location':"",'category':"",'serial':""})),1)
+        with self.subTest("filter by location"):
+            self.assertEqual(len(getInventory({'sku':"",'location':"A1",'category':"",'serial':""})),10)
+        with self.subTest("filter by category"):
+            self.assertEqual(len(getInventory({'sku':"",'location':"",'category':"1",'serial':""})),0)
 
     def test_addInventory(self):
         form1=inventoryForm(initial={'sku':1,'location':locations.objects.get(location='A1'),'amount':10,"serial":123})
