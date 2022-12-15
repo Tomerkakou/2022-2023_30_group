@@ -12,8 +12,8 @@ Create user
 {% endblock %}
 {% block left_bar %}
 <div class="well">
-    <li><a href="{% url 'showusers' %}">{% bs_icon 'people' size='3em' %}</a></li>
-  </div>
+    <ul><a href="{% url 'showusers' %}">{% bs_icon 'people' size='3em' %}<p>Return to user list</p></a></li>
+</div>
 {% endblock %}
 {% block main %}
     <form method="POST">

@@ -1,21 +1,26 @@
 {% extends "template.html" %}
 {% load bootstrap_icons %}
 {% block title %}
-{{order.order_number}}
+Order number: {{order.order_number}}
 {% endblock %}
 {% block active %}
-<li><a href="#">Orders</a></li>
-        <li><a href="{% url 'neworder' %}">New order</a></li>
-        <li class="active1"><a href="{% url 'inventory' %}" style="color:white;">Inventory</a></li>
+        <li class="active1"><a href="{% url 'orders' %}" style="color:white;">Orders</a></li>
+        <li><a href="{% url 'inventory' %}">Inventory</a></li>
         <li><a href="#">Reports</a></li>
 {% endblock %}
+{% block left_bar %}
+<div class="well">
+    <a href="{% url 'orders' %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)" name="neworder" id="neworder">{% bs_icon 'list-ul' size='3em' %}<p>Return to orders list</p></a>
+</div>
+{% endblock %}
 {% block main %}
-<div class="inline">
+<div style="font-family: 'Tahoma'; font-style: normal; font-weight: bold; font-size: 13px;">
     <br>
-    Order number: {{order.order_number}}
-    Create date: {{order.create_date}}
-    created By: {{order.user_id.name}}
-    Status: {{order.status}}
+      Order number: {{order.order_number}} &nbsp;&nbsp;&nbsp;&nbsp;
+      Created By: {{order.user_id.name}} &nbsp;&nbsp;&nbsp;&nbsp;
+      Create date: {{order.str_create_date}} &nbsp;&nbsp;&nbsp;&nbsp;
+      Return date: {{order.str_return_date}} &nbsp;&nbsp;&nbsp;&nbsp;
+      Status: {{order.return_status}}
     <br>
 </div>
 <div class="mask d-flex align-items-center h-100">
@@ -34,16 +39,22 @@
                         <th scope="col">Item name</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Delete item</th>
                       </tr>
                     </thead>
                     <tbody>
                         <tr>
                           <form method="POST">
                               <td><input type="number" placeholder="Sku" name="sku"></td>
-                              <td>-----</td>
+                              <td>
+                                {% if message != None %}
+                                  <p style="color:red">{{message}}</p>
+                                {% endif %} 
+                              </td>
                               <td><input type="number" placeholder="Amount" name="amount"></td>
                               {% csrf_token %}
                               <td><button type="submit" id=newItem name="newItem" style="background-color: #f5f7fa; color:rgb(5, 167, 45); border: #f5f7fa;">{% bs_icon 'plus-square-fill' size=1.5em %}</button></td>
+                              <td>-----</td>
                           </form>
                         </tr>
                         {% for o in o_list %}
@@ -52,6 +63,16 @@
                             <td>{{o.sku.name}}</td>
                             <td>{{o.amount}}</td>
                             <td>{{o.getStatus}}</td>
+                            <td>
+                              {% if o.completed == 0 %}
+                              <form method="POST" onsubmit="return confirm('Are you sure?');">
+                                {% csrf_token %}
+                                <button type="submit" name="{{o.id}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
+                                  <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
+                                </button>
+                              </form>
+                              {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                   </tbody>

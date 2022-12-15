@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render,HttpResponse,redirect
 import manager.function
 from manager.forms import productForm,locationForm,userForm
 from website.models import user,inventory,products,categories
@@ -7,19 +7,20 @@ import xlwt
 from django.db.models import Sum
 
 def menu(request):
-    return render(request,"manager/menu.html")
+    return render(request,"manager/menu.html",status=200)
 
 def newProduct(request):
     if request.method == "POST" :
         form=productForm(request.POST) 
         if form.is_valid():
             form.save()
-            return render(request,"manager/new_product.html",{"form":form,"message":"New product created successfully"})
+            form=productForm()
+            return render(request,"manager/new_product.html",{"form":form,"message":"New product created successfully"},status=201)
         else:
-            return render(request,"manager/new_product.html",{"form":form})
+            return render(request,"manager/new_product.html",{"form":form},status=400)
     else:
         form=productForm()
-        return render(request,"manager/new_product.html",{"form":form})
+        return render(request,"manager/new_product.html",{"form":form},status=200)
 
 
 def newLocation(request):
@@ -27,12 +28,13 @@ def newLocation(request):
         form=locationForm(request.POST) 
         if form.is_valid():
             form.save()
-            return render(request,"manager/new_location.html",{"form":form,"message":"Location created successfully"})
+            form=locationForm()
+            return render(request,"manager/new_location.html",{"form":form,"message":"Location created successfully"},status=201)
         else:
-            return render(request,"manager/new_location.html",{"form":form})
+            return render(request,"manager/new_location.html",{"form":form},status=400)
     else:
         form=locationForm()
-        return render(request,"manager/new_location.html",{"form":form})
+        return render(request,"manager/new_location.html",{"form":form},status=200)
 
 
 def showUsers(request):
@@ -40,7 +42,7 @@ def showUsers(request):
     if request.method == "POST":
         data=request.POST.dict()
         if 'search' in request.POST:
-            response=render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']})
+            response=render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']},status=200)
             response.set_cookie("u",data['username'])
             response.set_cookie("f",data['fullname'])
             response.set_cookie("e",data['email'])
@@ -49,9 +51,9 @@ def showUsers(request):
         else:
             manager.function.deleteUser(list(data)[1])
             data={'username':request.COOKIES['u'],'fullname':request.COOKIES['f'],'email':request.COOKIES['e'],'role':request.COOKIES['r']}
-            return render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']})    
+            return render(request,"manager/showusers.html",{"users":manager.function.getUsers(data),"u":data['username'],"f":data['fullname'],"e":data['email'],"r":data['role']},status=200)    
     else:
-        return render(request,"manager/showusers.html",{"users":users})
+        return render(request,"manager/showusers.html",{"users":users},status=200)
 
 
 
@@ -63,6 +65,7 @@ def createuser(request,msg=''):
         form=userForm(request.POST) 
         if form.is_valid():
             form.save()
+            form=userForm()
             msg='User created successfully'
             return render(request,"manager/createuser.html",{"form":form,"message":msg})
         else:
@@ -92,8 +95,10 @@ def showInventory(request):
             return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location'], 'message':message})   
     else:
         return render(request,"manager/showInventory.html",{'inventorys':None})
+
 def reports(request):
     return render(request,'manager/reports.html')
+    
 def inventoryToExel(request):
     response=HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'

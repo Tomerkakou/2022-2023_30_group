@@ -18,8 +18,6 @@ status=(
     (2, "collected"),)
 
 class user(models.Model):
-    
-
     username=models.CharField(max_length=50,unique=True)
     password=models.CharField(max_length=50)
     email=models.CharField(max_length=50,unique=True,validators=[EmailValidator(message='Invaild Email')])
@@ -29,16 +27,18 @@ class user(models.Model):
 
     def get_role(self):
         return user_types[self.role][1]
-
+    def get_username(self):
+        return self.username
 
 class products(models.Model):
     
     sku=models.IntegerField(primary_key=True)
     name=models.CharField(max_length=50 ,unique=True)
     price=models.FloatField()
-    descprition=models.TextField()
+    description=models.TextField()
     category=models.IntegerField(choices=categories)
     serial_item=models.IntegerField(choices=((0,'No'),(1,'Yes')))
+    
     def __str__(self):
         return f"{self.sku}-{self.name}"
     def return_category(self):
@@ -77,6 +77,15 @@ class orders(models.Model):
     return_date = models.DateTimeField(default=datetime.now()+timedelta(days=20)) 
     user_id = models.ForeignKey(user, on_delete=models.PROTECT)
     status = models.IntegerField(choices=status, default=0)
+
+    def return_status(self):
+        return status[self.status][1]
+
+    def str_create_date(self):
+        return self.create_date.strftime("%d/%m/%Y")
+
+    def str_return_date(self):
+        return self.return_date.strftime("%d/%m/%Y")
 
 class specific_order(models.Model): 
         order_id=models.ForeignKey(orders ,on_delete=models.CASCADE) 
