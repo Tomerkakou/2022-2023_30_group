@@ -19,7 +19,7 @@ def inventory_receipt(request):
             except:
                 msg2="Item with serial number"
                 return render(request,"worker/new_inventory.html",{"form":form,"message2":msg2},status=400)
-
+            form=inventoryForm()
             return render(request,"worker/new_inventory.html",{"form":form,"message":msg},status=201)
         else:
             return render(request,"worker/new_inventory.html",{"form":form},status=400)

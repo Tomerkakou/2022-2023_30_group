@@ -14,6 +14,7 @@ def newProduct(request):
         form=productForm(request.POST) 
         if form.is_valid():
             form.save()
+            form=productForm()
             return render(request,"manager/new_product.html",{"form":form,"message":"New product created successfully"},status=201)
         else:
             return render(request,"manager/new_product.html",{"form":form},status=400)
@@ -27,6 +28,7 @@ def newLocation(request):
         form=locationForm(request.POST) 
         if form.is_valid():
             form.save()
+            form=locationForm()
             return render(request,"manager/new_location.html",{"form":form,"message":"Location created successfully"},status=201)
         else:
             return render(request,"manager/new_location.html",{"form":form},status=400)
@@ -63,6 +65,7 @@ def createuser(request,msg=''):
         form=userForm(request.POST) 
         if form.is_valid():
             form.save()
+            form=userForm()
             msg='User created successfully'
             return render(request,"manager/createuser.html",{"form":form,"message":msg})
         else:
