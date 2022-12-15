@@ -19,6 +19,7 @@ class TestWorker_function(TestCase):
             self.assertEqual(len(getProducts({'sku':"1",'name':"",'category':""})),1)
     
     def test_inventory_search(self):
+        """show inventory test"""
         with self.subTest("clear search"):
             self.assertEqual(len(getInventory({'sku':"",'location':"",'category':"",'serial':""})),10)
         with self.subTest("filter by one parmeters"):
