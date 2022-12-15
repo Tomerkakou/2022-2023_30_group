@@ -8,7 +8,8 @@ from manager.forms import productForm
 def menu(request):
     return render(request,"worker/menu.html",{'user_name':request.COOKIES['user']},status=200)
 
-def showInventory(request): 
+def showInventory(request):
+    """ unit test on worker/tests.py test_inventory_search"""
     if request.method == "POST": 
         if 'search' in request.POST:   
             search = request.POST.dict()
