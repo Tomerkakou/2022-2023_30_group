@@ -1,7 +1,7 @@
 {% extends "template.html" %}
 {% load bootstrap_icons %}
 {% block title %}
-Inventory
+Orders
 {% endblock %}
 {% block active %}
         <li class="active1"><a href="{% url 'orders' %}" style="color:white;">Orders</a></li>
@@ -58,7 +58,7 @@ Inventory
                     <tbody>
                         {% for order in orders %}
                         <tr>
-                            <td><ul><li><a href="{% url 'watchorder' order.order_number %}">{{order.order_number}}</a></li></ul></td>
+                            <td><a href="{% url 'watchorder' order.order_number %}">{{order.order_number}}</a></td>
                             <td>{{order.user_id.name}}</td>
                             <td>{{order.str_create_date}}</td>
                             <td>{{order.str_return_date}}</td>

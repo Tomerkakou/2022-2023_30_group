@@ -8,12 +8,12 @@ User managment
         <li><a href="{% url 'newlocation' %}">New Location</a></li>
         <li><a href="{% url 'Inventory' %}">Inventory</a></li>
         <li class="active1"><a href="{% url 'showusers' %}" style="color:white;">User managment</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a href="{% url 'reports' %}">Reports</a></li>
 {% endblock %}
 {% block left_bar %}
 <div class="well">
   <ul>
-    <li><a href="{% url 'createuser' %}">{% bs_icon 'person-add' size='3em' %}<p>Create user</p></a></li>
+    <a href="{% url 'createuser' %}">{% bs_icon 'person-add' size='3em' %}<p>Create user</p></a>
   </ul>
 </div>
 {% endblock %}

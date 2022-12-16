@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path ,include
 import debug_toolbar
-from website.views import start 
+from website.views import start
 
 urlpatterns = [
     path('admin/', admin.site.urls),

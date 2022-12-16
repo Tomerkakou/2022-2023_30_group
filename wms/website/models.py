@@ -35,7 +35,7 @@ class products(models.Model):
     sku=models.IntegerField(primary_key=True)
     name=models.CharField(max_length=50 ,unique=True)
     price=models.FloatField()
-    descprition=models.TextField()
+    description=models.TextField()
     category=models.IntegerField(choices=categories)
     serial_item=models.IntegerField(choices=((0,'No'),(1,'Yes')))
     
