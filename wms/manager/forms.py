@@ -16,7 +16,6 @@ class productForm(forms.ModelForm):
             'serial_item':forms.Select(attrs={'class':'form-control'}),
         }
 
-
 class locationForm(forms.ModelForm):
     class Meta:
         model=locations

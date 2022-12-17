@@ -19,10 +19,15 @@ class TestWorker_function(TestCase):
             self.assertEqual(len(getProducts({'sku':"1",'name':"",'category':""})),1)
     
     def test_inventory_search(self):
+        """show inventory test"""
         with self.subTest("clear search"):
             self.assertEqual(len(getInventory({'sku':"",'location':"",'category':"",'serial':""})),10)
-        with self.subTest("filter by one parmeters"):
+        with self.subTest("filter by one sku"):
             self.assertEqual(len(getInventory({'sku':"1",'location':"",'category':"",'serial':""})),1)
+        with self.subTest("filter by location"):
+            self.assertEqual(len(getInventory({'sku':"",'location':"A1",'category':"",'serial':""})),10)
+        with self.subTest("filter by category"):
+            self.assertEqual(len(getInventory({'sku':"",'location':"",'category':"1",'serial':""})),0)
 
     def test_addInventory(self):
         form1=inventoryForm(initial={'sku':1,'location':locations.objects.get(location='A1'),'amount':10,"serial":123})

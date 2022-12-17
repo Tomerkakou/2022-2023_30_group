@@ -36,6 +36,7 @@ def newProduct(request):
 
 @login_required
 def newLocation(request):
+    """unit test at website/models.py """
     if not is_manager(request.user):
         raise Http404
     if request.method == "POST" :
@@ -72,7 +73,19 @@ def showUsers(request):
         return render(request,"manager/showusers.html",{"users":users},status=200)
 
 
-
+def newProduct(request):
+    """unit test at website/models.py """
+    if request.method == "POST" :
+        form=productForm(request.POST) 
+        if form.is_valid():
+            form.save()
+            form=productForm()
+            return render(request,"manager/new_product.html",{"form":form,"message":"New product created successfully"},status=201)
+        else:
+            return render(request,"manager/new_product.html",{"form":form},status=400)
+    else:
+        form=productForm()
+        return render(request,"manager/new_product.html",{"form":form},status=200)
 
 
 @login_required
@@ -98,21 +111,18 @@ def showInventory(request):
         raise Http404
     if request.method == "POST":
         data=request.POST.dict()       
-        #define place for message 
-        #fix search again by same filters
-        #filter still need fixing 
         if 'search' in request.POST:
             response= render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location']})
             response.set_cookie('s',data['sku'])
             response.set_cookie('l',data['location'])
             response.set_cookie('n',data['name'])
             response.set_cookie('c',data['category'])
-            return response
+            return response 
         else:
             key=list(data)[0]
             message=manager.function.updateAmount(key,data[key])
             data={'sku':request.COOKIES['s'],'location':request.COOKIES['l'],'name':request.COOKIES['n'],'category':request.COOKIES['c']}
-            return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location'], 'message':message})   
+            return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location'], 'message':message}) 
     else:
         return render(request,"manager/showInventory.html",{'inventorys':None})
 
