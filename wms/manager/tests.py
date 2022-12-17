@@ -1,13 +1,15 @@
 from django.test import TestCase
-from website.models import user,inventory,products,locations
+from website.models import user1,inventory,products,locations
 from manager.function import getUsers,deleteUser,updateAmount
+from django.contrib.auth.models import Group
 
 
 class Manager_tests(TestCase):
     @classmethod
     def setUpTestData(cls):
+        g=Group.objects.create(name='test')
         for i in range(10):
-            user.objects.create(username=str(i),password='1234',email=str(i)+'@gmail.com',name='user',role=i%3)
+            user1.objects.create(username=str(i),password='1234',email=str(i)+'@gmail.com',full_name='user',role=g)
         locations.objects.create(location="123456")
         products.objects.create(sku=1234,price=150,description="test item",name="test", category=1,serial_item=0) 
          
@@ -17,7 +19,9 @@ class Manager_tests(TestCase):
         data={'username':"",'fullname':"",'email':"","role":""}
         self.assertEqual(len(getUsers(data)),10)
         data['role']="1"
-        self.assertEqual(len(getUsers(data)),3)
+        self.assertEqual(len(getUsers(data)),10)
+        data['role']="0"
+        self.assertEqual(len(getUsers(data)),0)
     
     def delete_user(self):
         deleteUser('0')

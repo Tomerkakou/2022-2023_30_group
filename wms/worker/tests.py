@@ -1,7 +1,8 @@
 from django.test import TestCase
-from website.models import products,inventory,locations,user
+from website.models import products,inventory,locations,user1
 from worker.function import getInventory,getProducts,addNewInv
 from worker.forms import inventoryForm
+from django.contrib.auth.models import Group
 
 class TestWorker_function(TestCase):
     @classmethod
@@ -30,8 +31,9 @@ class TestWorker_function(TestCase):
             self.assertEqual(len(getInventory({'sku':"",'location':"",'category':"1",'serial':""})),0)
 
     def test_addInventory(self):
+        g=Group.objects.create(name='test')
         form1=inventoryForm(initial={'sku':1,'location':locations.objects.get(location='A1'),'amount':10,"serial":123})
-        u=user.objects.create(username='user1',password='123',email='1@gmail.com',name='user',role=1)
+        u=user1.objects.create(username='user1',password='123',email='1@gmail.com',full_name='user',role=g)
         with self.subTest("item with serial number"):
             self.assertRaises(ValueError,addNewInv,data={'sku':'1','serial':'123','amount':2},form=form1,user=u)
 

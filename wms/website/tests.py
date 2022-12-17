@@ -1,5 +1,6 @@
 from django.test import TestCase
-from website.models import user,products,locations
+from website.models import user1,products,locations
+from django.contrib.auth.models import Group
 from website.function import register,login
 
 # Create your tests here.
@@ -7,16 +8,12 @@ from website.function import register,login
 class TestModels(TestCase):
     @classmethod
     def setUpTestData(cls):
-        user.objects.create(username='matan1', password='1234', email='matan@gmail.com', name='matan', role=1, status=True)
-        user.objects.create(username='osnat1', password='12345', email='os@gmail.com', name='osnat', role=2, status=False)
+        g=Group.objects.create(name='test')
+        user1.objects.create(username='matan1', password='1234', email='matan@gmail.com', full_name='matan', role=g)
+        user1.objects.create(username='osnat1', password='12345', email='os@gmail.com', full_name='osnat' ,role=g)
         products.objects.create(sku = 1234, name= 'pencill', price= 50, description = 'pink pen do something',category = 0, serial_item=0)
         locations.objects.create(location = 'A50362')
         
-    def test_users_role(self):
-        matan=user.objects.get(name='matan')
-        osnat=user.objects.get(name='osnat')
-        self.assertEqual(matan.get_role(),'worker')
-        self.assertEqual(osnat.get_role(),'student')
 
     def test_student_register(self):
         matan={'reg_username':'','reg_pass':'1234','reg_name':'matan','reg_email':'matan@gmail.com'}
@@ -52,7 +49,7 @@ class TestModels(TestCase):
     
     def test_login(self):
         data={'username':'matan1','password':'1234'}
-        self.assertEqual(login(data),user.objects.get(username='matan1'))
+        self.assertEqual(login(data),user1.objects.get(username='matan1'))
         data={'username':'matan1','password':'invaild'}
         self.assertEqual(login(data),None) 
         data={'username':'matan1234','password':'1234'}
