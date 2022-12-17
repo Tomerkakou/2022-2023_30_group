@@ -7,6 +7,7 @@ from worker import function
 from worker.forms import inventoryForm
 from manager.forms import productForm
 
+
 def is_worker(user):
     return str(user.role)=='Worker'
 
@@ -14,7 +15,7 @@ def is_worker(user):
 def menu(request):
     if not is_worker(request.user):
         raise Http404
-    return render(request,"worker/menu.html",{'user_name':request.COOKIES['user']},status=200)
+    return render(request,"worker/menu.html",status=200)
 
 def showInventory(request):
     """ unit test on worker/tests.py test_inventory_search"""
