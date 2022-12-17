@@ -1,5 +1,7 @@
 from django import forms
 from website.models import products,locations,user
+from django.contrib.auth.models import User,Group
+
 class productForm(forms.ModelForm):
     class Meta:
         model=products
@@ -22,13 +24,29 @@ class locationForm(forms.ModelForm):
              
 
 class userForm(forms.ModelForm):
+    role = forms.ModelChoiceField(queryset=Group.objects.all(),
+                                   required=True,)
+    """
+    set field requierd and email uniqe
+    """
     class Meta:
-        model=user
-        fields=('username','password','email','name','role')
+        model=User
+        fields=('username','password','email','first_name')
         widgets={
             'username':forms.TextInput(attrs={'class':'form-control'}),
             'password':forms.PasswordInput(attrs={'class':'form-control'}),
-            'email':forms.EmailInput(attrs={'class':'form-control'}),
-            'name':forms.TextInput(attrs={'class':'form-control'}),
-            'role':forms.Select(attrs={'class':'form-control'}),
+            'email':forms.EmailInput(attrs={'class':'form-control'},required=True),
+            'first_name':forms.TextInput(attrs={'class':'form-control'},required=True),
         }
+    def save(self):
+        try:
+            data=self.clean()
+            curr=User.objects.create_user(username=data['username'],password=data['password'],first_name=data['first_name'],email=data['email'])
+            curr.groups.add(data['role'])
+            return curr
+        except:
+            raise ValueError
+        
+
+    
+

@@ -8,7 +8,7 @@ class TestWorker_function(TestCase):
     def setUpTestData(cls):
         x=locations.objects.create(location="A1")
         for prod in range(10):
-            y=products.objects.create(sku=prod,name=prod,price=10,descprition="csony ",category=0,serial_item=prod%2)
+            y=products.objects.create(sku=prod,name=prod,price=10,description="csony ",category=0,serial_item=prod%2)
             inventory.objects.create(sku=y,location=x,amount=10,available=10)
         
 

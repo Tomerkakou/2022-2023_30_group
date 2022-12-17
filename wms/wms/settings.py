@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-pjks3^sq6*-qkfh6-%-0q=)eghm5%h&3iqfbn0ds1y1m9=u*id'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'wms.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'logistic',
-        'USER': 'tomer',
-        'PASSWORD': 't38tTNsQg2PBltlg',
-        'HOST': 'rendit-db.crfj8gkk0yln.eu-central-1.rds.amazonaws.com',
+        'NAME': 'app_db',
+        'USER': 'db_user',
+        'PASSWORD': 'db_user_pass',
+        'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
     }
@@ -95,6 +95,10 @@ DATABASES = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
+    
+]
+
+"""
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
@@ -107,9 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-]
-
-
+    """
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -132,5 +134,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+LOGIN_URL = 'login'
 
 

@@ -2,8 +2,13 @@ from django.shortcuts import render ,redirect,HttpResponse
 import website.function as function
 from website.models import user
 from website.forms import user_updateForm
+from django.contrib.auth import login,logout
+from django.contrib.auth.models import User
 
 
+def log_out(request):
+    logout(request)
+    return redirect('login')
             
 def start(request):
     if request.method=="POST":
@@ -11,9 +16,9 @@ def start(request):
             login_data = request.POST.dict()
             current=function.login(login_data)
             if current:
-                response=redirect(f"{current.get_role()}_menu")
+                login(request,current)
+                response=redirect(f"{current.groups.first()}_menu")
                 response.set_cookie('user',current.username)
-                response.set_cookie('role',current.role)
                 return response
             else:
                 return render(request,"website/login-register.html",{'message':"Invalid username or password"},status=401)
