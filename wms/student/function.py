@@ -73,10 +73,11 @@ def newOrder_spec(data,order_obj):
             
     
 def deleteItem(id_num):
-    if id_num is int:
-        item=specific_order.objects.get(id=id_num)
-    else:
+    if isinstance(id_num,specific_order):
         item=id_num
+        
+    else:
+        item=specific_order.objects.get(id=id_num)
     item.inventory_id.available+=item.amount
     item.inventory_id.save()
     item.delete()

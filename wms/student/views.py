@@ -36,7 +36,7 @@ def watchOrder(request,order_id):
         if 'newItem' in request.POST:
             return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order),'message':function.newOrder_spec(request.POST.dict(),order)},status=201)
         else:
-            function.deleteItem(list(request.POST.dict())[1])
+            function.deleteItem(int(list(request.POST.dict())[1]))
             return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
     else:
         return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
