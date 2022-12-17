@@ -21,7 +21,6 @@ Orders
     <form method="post" class="inline">
         <br>
         <input type="number" id="order_number" name="order_number"  placeholder="Order number">
-        <input type="text" id="user_id" name="user_id" placeholder="User name">
         <input type="date" id="create_date" name="create_date" placeholder="Create date">
         <input type="date" id="return_date" name="return_date"  placeholder="Return date">
         Status:
@@ -59,7 +58,7 @@ Orders
                         {% for order in orders %}
                         <tr>
                             <td><a href="{% url 'watchorder' order.order_number %}">{{order.order_number}}</a></td>
-                            <td>{{order.user_id.name}}</td>
+                            <td>{{order.user_id.username}}</td>
                             <td>{{order.str_create_date}}</td>
                             <td>{{order.str_return_date}}</td>
                             <td>{{order.return_status}}</td>

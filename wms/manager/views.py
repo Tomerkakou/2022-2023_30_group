@@ -1,7 +1,7 @@
 from django.shortcuts import render,HttpResponse,redirect
 import manager.function
 from manager.forms import productForm,locationForm,userForm
-from website.models import user,inventory,products,categories
+from website.models import user1,inventory,products,categories
 from datetime import datetime
 import xlwt
 from django.db.models import Sum
@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 
 def is_manager(user):
-    return user.groups.filter(name='Manager').exists()
+    return str(user.role)=='Manager'
 
 @login_required
 def menu(request):

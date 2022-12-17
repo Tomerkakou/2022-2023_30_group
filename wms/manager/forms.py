@@ -1,6 +1,7 @@
 from django import forms
-from website.models import products,locations,user
+from website.models import products,locations,user1
 from django.contrib.auth.models import User,Group
+from django.contrib.auth.forms import UserCreationForm
 
 class productForm(forms.ModelForm):
     class Meta:
@@ -24,28 +25,21 @@ class locationForm(forms.ModelForm):
              
 
 class userForm(forms.ModelForm):
-    role = forms.ModelChoiceField(queryset=Group.objects.all(),
-                                   required=True,)
-    """
-    set field requierd and email uniqe
-    """
     class Meta:
-        model=User
-        fields=('username','password','email','first_name')
+        model=user1
+        fields=('username','password','email','full_name','role')
         widgets={
             'username':forms.TextInput(attrs={'class':'form-control'}),
             'password':forms.PasswordInput(attrs={'class':'form-control'}),
-            'email':forms.EmailInput(attrs={'class':'form-control'},required=True),
-            'first_name':forms.TextInput(attrs={'class':'form-control'},required=True),
+            'email':forms.EmailInput(attrs={'class':'form-control'}),
+            'full_name':forms.TextInput(attrs={'class':'form-control'}),
+            'role':forms.Select(attrs={'class':'form-control'})
         }
     def save(self):
-        try:
-            data=self.clean()
-            curr=User.objects.create_user(username=data['username'],password=data['password'],first_name=data['first_name'],email=data['email'])
-            curr.groups.add(data['role'])
-            return curr
-        except:
-            raise ValueError
+        data=self.clean()
+        user=user1.objects.create_user(username=data['username'],password=data['password'],full_name=data['full_name'],email=data['email'],role=data['role'])
+        user.set_password(data['password'])
+  
         
 
     

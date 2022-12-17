@@ -1,32 +1,31 @@
 
 from django.shortcuts import render,redirect,get_object_or_404
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
-from website.models import inventory,products,newInventory,user
+from django.http import Http404
+from website.models import inventory,products,newInventory
 from worker import function
 from worker.forms import inventoryForm
 from manager.forms import productForm
 
 def is_worker(user):
-    return user.groups.filter(name='Worker').exists()
+    return str(user.role)=='Worker'
 
 @login_required
 def menu(request):
     if not is_worker(request.user):
-        raise HttpResponseForbidden
+        raise Http404
     return render(request,"worker/menu.html",{'user_name':request.COOKIES['user']},status=200)
 
 
 @login_required
 def inventory_receipt(request):
     if not is_worker(request.user):
-        raise HttpResponseForbidden
+        raise Http404
     if request.method == "POST" :
         form=inventoryForm(request.POST) 
         if form.is_valid():
             try:
-                msg=function.addNewInv(request.POST.dict(),form,get_object_or_404(user,username=request.COOKIES['user']))
+                msg=function.addNewInv(request.POST.dict(),form,request.user)
             except:
                 msg2="Item with serial number"
                 return render(request,"worker/new_inventory.html",{"form":form,"message2":msg2},status=400)
@@ -41,7 +40,7 @@ def inventory_receipt(request):
 @login_required
 def showInventory(request): 
     if not is_worker(request.user):
-        raise HttpResponseForbidden
+        raise Http404
     if request.method == "POST": 
         if 'search' in request.POST:   
             search = request.POST.dict()
@@ -59,7 +58,7 @@ def showInventory(request):
 @login_required
 def showProduct(request,id):
     if not is_worker(request.user):
-        raise HttpResponseForbidden
+        raise Http404
     p=get_object_or_404(products,sku=id)
     form=productForm(initial={'sku':p.sku,'name':p.name,'description':p.description,'price':p.price,'category':p.category,'serial_item':p.serial_item})
     return render(request,"worker/product.html",{"product":form,'title':str(p)},status=200)
@@ -67,7 +66,7 @@ def showProduct(request,id):
 @login_required
 def productSearch(request):
     if not is_worker(request.user):
-        raise HttpResponseForbidden
+        raise Http404
     if request.method == 'POST':
         data=request.POST.dict()
         return render(request,"worker/productsearch.html",{'products':function.getProducts(data)},status=200)

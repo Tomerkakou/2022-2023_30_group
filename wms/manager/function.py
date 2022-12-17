@@ -1,21 +1,21 @@
-from website.models import products,locations,user,inventory
+from website.models import products,locations,user1,inventory
 
 def getUsers(data):
-    kwargs={'status':1}
+    kwargs={'is_active':True}
     if data['username'] != '':
         kwargs['username']=data['username']
     if data['fullname'] != '':
-        kwargs['name']=data['fullname']
+        kwargs['full_name']=data['fullname']
     if data['email'] != '':
         kwargs['email']=data['email'] 
     if data['role'] != '':
-        kwargs['role']=data['role']
-    return user.objects.filter(**kwargs)
+        kwargs['role__id']=data['role']
+    return user1.objects.filter(**kwargs)
  
 
 def deleteUser(userTodelete):
-    delete=user.objects.get(username=userTodelete)
-    delete.status=0
+    delete=user1.objects.get(username=userTodelete)
+    delete.is_active=False
     delete.save()
 
 def getInventory(data):

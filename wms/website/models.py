@@ -2,11 +2,8 @@ from django.db import models
 from enum import Enum
 from datetime import datetime, timedelta
 from django.core.validators import EmailValidator , MinValueValidator
+from django.contrib.auth.models import AbstractUser,Group
 
-user_types = ( 
-    (0, "manager"),
-    (1, "worker"),
-    (2, "student"))
 
 categories=(# update in changes in show inventory
         (0,"Photographic products"),
@@ -17,18 +14,12 @@ status=(
     (1, "completed"),
     (2, "collected"),)
 
-class user(models.Model):
+class user1(AbstractUser):
     username=models.CharField(max_length=50,unique=True)
-    password=models.CharField(max_length=50)
-    email=models.CharField(max_length=50,unique=True,validators=[EmailValidator(message='Invaild Email')])
-    name=models.CharField(max_length=50)
-    role=models.IntegerField(choices=user_types, default=2)
-    status=models.BooleanField(default=True)
+    email=models.EmailField(max_length=50,unique=True)
+    full_name=models.CharField(max_length=50)
+    role=models.ForeignKey(Group,on_delete=models.PROTECT)
 
-    def get_role(self):
-        return user_types[self.role][1]
-    def get_username(self):
-        return self.username
 
 class products(models.Model):
     
@@ -68,14 +59,14 @@ class newInventory(models.Model):
     sku = models.ForeignKey(products,on_delete = models.PROTECT)
     amount=models.IntegerField()
     dt=models.DateTimeField(default= datetime.now())
-    user_id=models.ForeignKey(user, on_delete = models.PROTECT)
+    user_id=models.ForeignKey(user1, on_delete = models.PROTECT)
 
 
 class orders(models.Model):
     order_number=models.AutoField(primary_key=True) 
     create_date = models.DateTimeField(default=datetime.now()) 
     return_date = models.DateTimeField(default=datetime.now()+timedelta(days=20)) 
-    user_id = models.ForeignKey(user, on_delete=models.PROTECT)
+    user_id = models.ForeignKey(user1, on_delete=models.PROTECT)
     status = models.IntegerField(choices=status, default=0)
 
     def return_status(self):

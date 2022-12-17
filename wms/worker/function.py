@@ -5,8 +5,7 @@ def addNewInv(data,form,user):
         if data['serial']=='' or int(data['amount'])>1:
             raise ValueError
         else:
-            form.save()
-            temp=inventory.objects.get(available=-1)
+            temp=form.save()
             temp.setAvailable()
     else:
         inv=inventory.objects.filter(sku=data['sku']).filter(location=data['location'])

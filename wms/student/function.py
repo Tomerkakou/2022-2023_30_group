@@ -25,13 +25,11 @@ def sumInventory(data):
             return inv
 
 
-def sumOrders(data):
+def sumOrders(data,user):
     print(data['create_date'])
-    kwargs={}
+    kwargs={'user_id':user}
     if data['order_number'] != '':
         kwargs['order_number']=data['order_number']
-    if data['user_id'] != '':
-        kwargs['user_id__username']=data['user_id']
     if data['create_date'] != '':
         date=data['create_date'].split('-')
         kwargs['create_date__gte']=datetime(int(date[0]),int(date[1]),int(date[2]))
