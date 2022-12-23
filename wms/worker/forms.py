@@ -1,5 +1,5 @@
 from django import forms
-from website.models import inventory
+from website.models import inventory,locations
 class inventoryForm(forms.ModelForm):
     class Meta:
         model=inventory

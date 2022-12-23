@@ -63,7 +63,7 @@ User managment
                       <td>
                         {% if inv.serial is None %}
                           <form method="POST">
-                          <input type="number" id="{{inv.id}}" name="{{inv.id}}"  placeholder="new amount" min="0">
+                          <input type="number" id="{{inv.id}}" name="{{inv.id}}"  placeholder="new amount" min="1">
                           {% csrf_token %}
                           <button type="submit" name="{{inv.id}}-button" style="background-color: #f5f7fa; color:rgb(17, 121, 182); border: #f5f7fa;">
                             <i class="fas fa-times">{% bs_icon 'plus-square-fill' %}</i>

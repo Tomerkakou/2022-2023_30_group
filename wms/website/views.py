@@ -4,7 +4,9 @@ from website.models import user1
 from django.contrib.auth import update_session_auth_hash
 from website.forms import user_updateForm,PasswordChangeCustomForm
 from django.contrib.auth import login,logout
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def log_out(request):
     logout(request)
     return redirect('login')
@@ -26,7 +28,7 @@ def start(request):
     else:
         return render(request,"website/login-register.html",status=200)
 
-
+@login_required
 def changeUser(request):
     u=request.user
     if u.role_id == 1:

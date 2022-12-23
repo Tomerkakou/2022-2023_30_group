@@ -51,7 +51,7 @@ def showOrders(request):
             order=orders.objects.create(user_id=u)
             return redirect('watchorder',order.order_number)
         if 'search' in request.POST:
-            return render(request,"student/showorders.html",{"orders":function.sumOrders(request.POST.dict(),u)},status=200)
+            return render(request,"student/showorders.html",{"orders":function.getOrders(request.POST.dict(),u)},status=200)
         else:
             function.deleteOrder(list(request.POST.dict())[1])
             return render(request,"student/showorders.html",status=200)    

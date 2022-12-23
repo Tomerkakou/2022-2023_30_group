@@ -15,7 +15,10 @@ def getUsers(data):
  
 
 def deleteUser(userTodelete):
-    delete=user1.objects.get(username=userTodelete)
+    try:
+        delete=user1.objects.get(username=userTodelete)
+    except:
+        return
     delete.is_active=False
     delete.save()
 

@@ -7,7 +7,7 @@ def sumInventory(data):
             filter1=''
             filter2=''
             filter3=''
-
+            
             if data['sku']!='':
                 filter1=f" AND sku_id='{data['sku']}'"
             if data['category']!='':
@@ -25,7 +25,7 @@ def sumInventory(data):
             return inv
 
 
-def sumOrders(data,user):
+def getOrders(data,user):
     print(data['create_date'])
     kwargs={'user_id':user}
     if data['order_number'] != '':
@@ -77,13 +77,19 @@ def deleteItem(id_num):
         item=id_num
         
     else:
-        item=specific_order.objects.get(id=id_num)
+        try:
+            item=specific_order.objects.get(id=id_num)
+        except:
+            return
     item.inventory_id.available+=item.amount
     item.inventory_id.save()
     item.delete()
 
 def deleteOrder(or_num):
-    order=orders.objects.get(order_number=or_num)
+    try:
+        order=orders.objects.get(order_number=or_num)
+    except:
+        return
     o_list=specific_order.objects.filter(order_id=order)
     for i in o_list:
         deleteItem(i)

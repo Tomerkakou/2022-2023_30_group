@@ -2,7 +2,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from website.models import inventory,products,newInventory
+from website.models import inventory,products,newInventory,orders
 from worker import function
 from worker.forms import inventoryForm
 from manager.forms import productForm
@@ -69,7 +69,7 @@ def showInventory(request):
         else:
             pass#when change location is added 
     else:
-        return render(request,"worker/showinventory.html",{"l_inventory":inventory.objects.all()},status=200)
+        return render(request,"worker/showinventory.html",status=200)
 
 @login_required
 def showProduct(request,id):
@@ -89,3 +89,27 @@ def productSearch(request):
         return render(request,"worker/productsearch.html",{'products':function.getProducts(data)},status=200)
     else:
         return render(request,"worker/productsearch.html",status=200)
+
+@login_required
+def showOrders(request):
+    if not is_worker(request.user):
+        raise Http404
+    if request.method == "POST":
+        if 'search' in request.POST:
+            return render(request,"worker/showorders.html",{"orders":function.getOrders(request.POST.dict())},status=200)   
+    else:
+        return render(request,"worker/showorders.html",status=200)
+
+@login_required
+def watchOrder(request,order_id):
+    if not is_worker(request.user):
+        raise Http404
+    order=get_object_or_404(orders,order_number=order_id)
+    if request.method=='POST':
+        data=request.POST.dict()
+        data.pop('csrfmiddlewaretoken')
+        data.pop('submit')
+        order.status=function.completeOrder_list(tuple(map(lambda x: int(x),data.keys())),order)
+        return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
+    else:
+        return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)

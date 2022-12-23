@@ -10,9 +10,9 @@ categories=(# update in changes in show inventory
         (1,"Writing Tools"),)
 
 status=( 
-    (0, "waiting"),
-    (1, "completed"),
-    (2, "collected"),)
+    (0, "Waiting"),
+    (1, "In progress"),
+    (2, "Completed"),)
 
 class user1(AbstractUser):
     username=models.CharField(max_length=50,unique=True)
@@ -53,6 +53,15 @@ class inventory(models.Model):
     def setAvailable(self):
         self.available=self.amount
         self.save()
+    def decAmount(self,val):
+        self.amount-=val
+        if self.amount==0:
+            self.delete()
+        self.save()
+    def changeLocation(self,new_location):
+        self.location=new_location
+        self.save()
+
 
 
 class newInventory(models.Model):
@@ -65,10 +74,13 @@ class newInventory(models.Model):
 class orders(models.Model):
     order_number=models.AutoField(primary_key=True) 
     create_date = models.DateTimeField(default=datetime.now()) 
-    return_date = models.DateTimeField(default=datetime.now()+timedelta(days=20)) 
+    return_date = models.DateTimeField(null=True) 
     user_id = models.ForeignKey(user1, on_delete=models.PROTECT)
     status = models.IntegerField(choices=status, default=0)
-
+    def complete_order(self):
+        self.status=2
+        self.return_date=datetime.now()+timedelta(days=20)
+        self.save()
     def return_status(self):
         return status[self.status][1]
 
@@ -76,6 +88,8 @@ class orders(models.Model):
         return self.create_date.strftime("%d/%m/%Y")
 
     def str_return_date(self):
+        if self.return_date is None:
+            return None
         return self.return_date.strftime("%d/%m/%Y")
 
 class specific_order(models.Model): 
@@ -90,6 +104,15 @@ class specific_order(models.Model):
                 return 'Waiting'
             else:
                 return 'Completed'
+        def complete(self):
+            if self.inventory_id.serial is None :
+                self.inventory_id.decAmount(self.amount)
+                self.completed=True
+                self.save()
+            else:
+                self.inventory_id.changeLocation(locations.objects.get(location='RETRNS'))
+                self.completed=True
+                self.save()
 
 
 
