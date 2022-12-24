@@ -20,7 +20,6 @@ def start(request):
             if current:
                 login(request,current)
                 return redirect(f"{current.role}_menu")
-            
             else:
                 return render(request,"website/login-register.html",{'message':"Invalid username or password"},status=401)
         elif "register" in request.POST :

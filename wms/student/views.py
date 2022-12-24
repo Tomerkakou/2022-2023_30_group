@@ -1,9 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from student import function
-from website.models import user1,orders
-from django.contrib.auth.models import User
+from website.models import orders
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from django.contrib import messages
 
 def is_student(user):
     return str(user.role)=='Student'
@@ -34,7 +34,8 @@ def watchOrder(request,order_id):
     order=get_object_or_404(orders,order_number=order_id)
     if request.method=='POST':
         if 'newItem' in request.POST:
-            return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order),'message':function.newOrder_spec(request.POST.dict(),order)},status=201)
+            messages.success(request,function.newOrder_spec(request.POST.dict(),order))
+            return redirect('watchorder',order_id=order_id)
         else:
             function.deleteItem(int(list(request.POST.dict())[1]))
             return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)

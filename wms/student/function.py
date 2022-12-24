@@ -33,9 +33,9 @@ def getOrders(data,user):
     if data['create_date'] != '':
         date=data['create_date'].split('-')
         kwargs['create_date__gte']=datetime(int(date[0]),int(date[1]),int(date[2]))
-    if data['return_date'] != '':
-        date=data['return_date'].split('-')
-        kwargs['return_date__lte']=datetime(int(date[0]),int(date[1]),int(date[2]))+timedelta(days=1)
+    if data['create_date_end'] != '':
+        date=data['create_date_end'].split('-')
+        kwargs['create_date__lte']=datetime(int(date[0]),int(date[1]),int(date[2]))+timedelta(days=1)
     if data['status'] != '':
         kwargs['status']=data['status']
 

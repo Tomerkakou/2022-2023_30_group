@@ -20,6 +20,7 @@ def deleteUser(userTodelete):
     except:
         return
     delete.is_active=False
+    delete.password=0
     delete.save()
 
 def getInventory(data):

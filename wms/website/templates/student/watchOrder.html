@@ -48,9 +48,9 @@ Order number: {{order.order_number}}
                             <form method="POST">
                                 <td><input type="number" placeholder="Sku" name="sku"></td>
                                 <td>
-                                  {% if message != None %}
+                                  {% for message in messages|slice:":1" %}
                                     <p style="color:red">{{message}}</p>
-                                  {% endif %} 
+                                  {% endfor %} 
                                 </td>
                                 <td><input type="number" placeholder="Amount" name="amount" min="1"></td>
                                 {% csrf_token %}
