@@ -4,17 +4,12 @@
 Orders
 {% endblock %}
 {% block active %}
-        <li class="active1"><a href="{% url 'orders' %}" style="color:white;">Orders</a></li>
-        <li><a href="{% url 'inventory' %}">Inventory</a></li>
-        <li><a href="#">Reports</a></li>
-{% endblock %}
-{% block left_bar %}
-<div class="well">
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)" name="neworder" id="neworder">{% bs_icon 'truck' size='3em' %}<p>Create new order</p></button>
-  </form>
-</div>
+      <li><a href="{% url 'searchroduct' %}">Products</a></li>
+      <li><a href="{% url 'showinventory' %}">Inventory</a></li>
+      <li><a href="{% url 'newinventory' %}">New inventory</a></li>
+      <li><a href="#">Returns</a></li>
+      <li class="active1"><a href="{% url 'ordersW' %}" style="color:white;">Orders</a></li>
+      <li><a href="#">Reports</a></li>
 {% endblock %}
 {% block main %}
 <div class="inline">
@@ -52,27 +47,16 @@ Orders
                         <th scope="col">Create date</th>
                         <th scope="col">Return date</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Delete order</th>
                       </tr>
                     </thead>
                     <tbody>
                         {% for order in orders %}
                         <tr>
-                            <td><a href="{% url 'watchorder' order.order_number %}">{{order.order_number}}</a></td>
+                            <td><a href="{% url 'watchorderW' order.order_number %}">{{order.order_number}}</a></td>
                             <td>{{order.user_id.username}}</td>
                             <td>{{order.str_create_date}}</td>
                             <td>{{order.str_return_date}}</td>
                             <td>{{order.return_status}}</td>
-                            <td>
-                              {% if order.status == 0 %}
-                              <form method="POST" onsubmit="return confirm('Are you sure?');">
-                                {% csrf_token %}
-                                <button type="submit" name="{{order.order_number}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
-                                  <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
-                                </button>
-                              </form>
-                              {% endif %}
-                            </td>
                         </tr>
                         {% endfor %}
                   </tbody>

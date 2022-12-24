@@ -7,7 +7,7 @@ def sumInventory(data):
             filter1=''
             filter2=''
             filter3=''
-
+            
             if data['sku']!='':
                 filter1=f" AND sku_id='{data['sku']}'"
             if data['category']!='':
@@ -25,19 +25,17 @@ def sumInventory(data):
             return inv
 
 
-def sumOrders(data):
+def getOrders(data,user):
     print(data['create_date'])
-    kwargs={}
+    kwargs={'user_id':user}
     if data['order_number'] != '':
         kwargs['order_number']=data['order_number']
-    if data['user_id'] != '':
-        kwargs['user_id__username']=data['user_id']
     if data['create_date'] != '':
         date=data['create_date'].split('-')
         kwargs['create_date__gte']=datetime(int(date[0]),int(date[1]),int(date[2]))
-    if data['return_date'] != '':
-        date=data['return_date'].split('-')
-        kwargs['return_date__lte']=datetime(int(date[0]),int(date[1]),int(date[2]))+timedelta(days=1)
+    if data['create_date_end'] != '':
+        date=data['create_date_end'].split('-')
+        kwargs['create_date__lte']=datetime(int(date[0]),int(date[1]),int(date[2]))+timedelta(days=1)
     if data['status'] != '':
         kwargs['status']=data['status']
 
@@ -75,16 +73,23 @@ def newOrder_spec(data,order_obj):
             
     
 def deleteItem(id_num):
-    if id_num is int:
-        item=specific_order.objects.get(id=id_num)
-    else:
+    if isinstance(id_num,specific_order):
         item=id_num
+        
+    else:
+        try:
+            item=specific_order.objects.get(id=id_num)
+        except:
+            return
     item.inventory_id.available+=item.amount
     item.inventory_id.save()
     item.delete()
 
 def deleteOrder(or_num):
-    order=orders.objects.get(order_number=or_num)
+    try:
+        order=orders.objects.get(order_number=or_num)
+    except:
+        return
     o_list=specific_order.objects.filter(order_id=order)
     for i in o_list:
         deleteItem(i)

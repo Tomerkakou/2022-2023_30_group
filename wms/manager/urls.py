@@ -20,7 +20,7 @@ from website.views import start
 urlpatterns = [
     path('',start,name='login'),
     path('',include('website.urls')),
-    path('manager/menu/',menu,name='manager_menu'),
+    path('manager/menu/',menu,name='Manager_menu'),
     path('manager/menu/newProduct/',newProduct,name='newproduct'),
     path('manager/menu/newLocation/',newLocation,name='newlocation'),
     path('manager/menu/Users/',showUsers,name='showusers'),

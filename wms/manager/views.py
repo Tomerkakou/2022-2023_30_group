@@ -1,15 +1,27 @@
 from django.shortcuts import render,HttpResponse,redirect
 import manager.function
 from manager.forms import productForm,locationForm,userForm
-from website.models import user,inventory,products,categories
+from website.models import user1,inventory,products,categories
 from datetime import datetime
 import xlwt
 from django.db.models import Sum
+from django.contrib.auth.models import User,Group
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
+def is_manager(user):
+    return str(user.role)=='Manager'
+
+@login_required
 def menu(request):
-    return render(request,"manager/menu.html",status=200)
+    if not is_manager(request.user):
+        raise Http404
+    return render(request,'manager/menu.html')
 
+@login_required
 def newProduct(request):
+    if not is_manager(request.user):
+        raise Http404
     if request.method == "POST" :
         form=productForm(request.POST) 
         if form.is_valid():
@@ -22,8 +34,11 @@ def newProduct(request):
         form=productForm()
         return render(request,"manager/new_product.html",{"form":form},status=200)
 
-
+@login_required
 def newLocation(request):
+    """unit test at website/models.py """
+    if not is_manager(request.user):
+        raise Http404
     if request.method == "POST" :
         form=locationForm(request.POST) 
         if form.is_valid():
@@ -36,8 +51,10 @@ def newLocation(request):
         form=locationForm()
         return render(request,"manager/new_location.html",{"form":form},status=200)
 
-
+@login_required
 def showUsers(request):
+    if not is_manager(request.user):
+        raise Http404
     users=None
     if request.method == "POST":
         data=request.POST.dict()
@@ -56,11 +73,25 @@ def showUsers(request):
         return render(request,"manager/showusers.html",{"users":users},status=200)
 
 
+def newProduct(request):
+    """unit test at website/models.py """
+    if request.method == "POST" :
+        form=productForm(request.POST) 
+        if form.is_valid():
+            form.save()
+            form=productForm()
+            return render(request,"manager/new_product.html",{"form":form,"message":"New product created successfully"},status=201)
+        else:
+            return render(request,"manager/new_product.html",{"form":form},status=400)
+    else:
+        form=productForm()
+        return render(request,"manager/new_product.html",{"form":form},status=200)
 
 
-
-
+@login_required
 def createuser(request,msg=''):
+    if not is_manager(request.user):
+        raise Http404
     if request.method == "POST" :
         form=userForm(request.POST) 
         if form.is_valid():
@@ -74,32 +105,37 @@ def createuser(request,msg=''):
         form=userForm()
         return render(request,"manager/createuser.html",{"form":form,"message":msg})
 
-
+@login_required
 def showInventory(request):
+    if not is_manager(request.user):
+        raise Http404
     if request.method == "POST":
         data=request.POST.dict()       
-        #define place for message 
-        #fix search again by same filters
-        #filter still need fixing 
         if 'search' in request.POST:
             response= render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location']})
             response.set_cookie('s',data['sku'])
             response.set_cookie('l',data['location'])
             response.set_cookie('n',data['name'])
             response.set_cookie('c',data['category'])
-            return response
+            return response 
         else:
             key=list(data)[0]
             message=manager.function.updateAmount(key,data[key])
             data={'sku':request.COOKIES['s'],'location':request.COOKIES['l'],'name':request.COOKIES['n'],'category':request.COOKIES['c']}
-            return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location'], 'message':message})   
+            return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location'], 'message':message}) 
     else:
         return render(request,"manager/showInventory.html",{'inventorys':None})
 
+@login_required
 def reports(request):
+    if not is_manager(request.user):
+        raise Http404
     return render(request,'manager/reports.html')
-    
+
+@login_required    
 def inventoryToExel(request):
+    if not is_manager(request.user):
+        raise Http404
     response=HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'
     wb=xlwt.Workbook(encoding='utf-8')

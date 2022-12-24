@@ -21,7 +21,7 @@ from website.views import start
 urlpatterns = [
     path('',start,name='login'),
     path('',include('website.urls')),
-    path('student/menu/',menu,name='student_menu'),
+    path('student/menu/',menu,name='Student_menu'),
     path('student/menu/inventory',showInventory,name='inventory'),
     path('student/menu/orders/<int:order_id>/',watchOrder,name='watchorder'),
     path('student/menu/orders',showOrders,name='orders'),

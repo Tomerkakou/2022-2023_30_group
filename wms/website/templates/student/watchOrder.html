@@ -17,7 +17,7 @@ Order number: {{order.order_number}}
 <div style="font-family: 'Tahoma'; font-style: normal; font-weight: bold; font-size: 13px;">
     <br>
       Order number: {{order.order_number}} &nbsp;&nbsp;&nbsp;&nbsp;
-      Created By: {{order.user_id.name}} &nbsp;&nbsp;&nbsp;&nbsp;
+      Created By: {{order.user_id.username}} &nbsp;&nbsp;&nbsp;&nbsp;
       Create date: {{order.str_create_date}} &nbsp;&nbsp;&nbsp;&nbsp;
       Return date: {{order.str_return_date}} &nbsp;&nbsp;&nbsp;&nbsp;
       Status: {{order.return_status}}
@@ -32,51 +32,72 @@ Order number: {{order.order_number}}
             <div class="card shadow-2-strong" style="background-color: #f5f7fa;">
               <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table table-borderless mb-0">
-                    <thead>
-                      <tr >
-                        <th scope="col">Sku</th>
-                        <th scope="col">Item name</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Delete item</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                          <form method="POST">
-                              <td><input type="number" placeholder="Sku" name="sku"></td>
-                              <td>
-                                {% if message != None %}
-                                  <p style="color:red">{{message}}</p>
-                                {% endif %} 
-                              </td>
-                              <td><input type="number" placeholder="Amount" name="amount"></td>
-                              {% csrf_token %}
-                              <td><button type="submit" id=newItem name="newItem" style="background-color: #f5f7fa; color:rgb(5, 167, 45); border: #f5f7fa;">{% bs_icon 'plus-square-fill' size=1.5em %}</button></td>
-                              <td>-----</td>
-                          </form>
+                  {% if order.status == 0 %}
+                    <table class="table table-borderless mb-0">
+                      <thead>
+                        <tr >
+                          <th scope="col">Sku</th>
+                          <th scope="col">Item name</th>
+                          <th scope="col">Amount</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Delete item</th>
                         </tr>
-                        {% for o in o_list %}
-                        <tr>
-                            <td>{{o.sku.sku}}</td>
-                            <td>{{o.sku.name}}</td>
-                            <td>{{o.amount}}</td>
-                            <td>{{o.getStatus}}</td>
-                            <td>
-                              {% if o.completed == 0 %}
-                              <form method="POST" onsubmit="return confirm('Are you sure?');">
+                      </thead>
+                      <tbody>
+                          <tr>
+                            <form method="POST">
+                                <td><input type="number" placeholder="Sku" name="sku"></td>
+                                <td>
+                                  {% for message in messages|slice:":1" %}
+                                    <p style="color:red">{{message}}</p>
+                                  {% endfor %} 
+                                </td>
+                                <td><input type="number" placeholder="Amount" name="amount" min="1"></td>
                                 {% csrf_token %}
-                                <button type="submit" name="{{o.id}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
-                                  <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
-                                </button>
-                              </form>
-                              {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
+                                <td><button type="submit" id=newItem name="newItem" style="background-color: #f5f7fa; color:rgb(5, 167, 45); border: #f5f7fa;">{% bs_icon 'plus-square-fill' size=1.5em %}</button></td>
+                                <td>-----</td>
+                            </form>
+                          </tr>
+                          {% for o in o_list %}
+                          <tr>
+                              <td>{{o.sku.sku}}</td>
+                              <td>{{o.sku.name}}</td>
+                              <td>{{o.amount}}</td>
+                              <td>{{o.getStatus}}</td>
+                              <td>
+                                <form method="POST" onsubmit="return confirm('Are you sure?');">
+                                  {% csrf_token %}
+                                  <button type="submit" name="{{o.id}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
+                                    <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
+                                  </button>
+                                </form>
+                              </td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+                {% else %}
+                <table class="table table-borderless mb-0">
+                  <thead>
+                    <tr >
+                      <th scope="col">Sku</th>
+                      <th scope="col">Item name</th>
+                      <th scope="col">Amount</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {% for o in o_list %}
+                      <tr>
+                          <td>{{o.sku.sku}}</td>
+                          <td>{{o.sku.name}}</td>
+                          <td>{{o.amount}}</td>
+                          <td>{{o.getStatus}}</td>
+                      </tr>
+                      {% endfor %}
                   </tbody>
                 </table>
+                {% endif %}
               </div>
             </div>
           </div>
