@@ -12,6 +12,9 @@ Returns
        <li><a href="#">Reports</a></li>
         {% endblock %}
 {% block main %}
+{% if message != None %}
+      <script>alert("{{message}}");</script>
+{% endif %}
 <div class="inline">
     <form method="post" class="inline">
         <br>
