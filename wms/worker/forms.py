@@ -13,3 +13,10 @@ class inventoryForm(forms.ModelForm):
             'amount':forms.NumberInput(attrs={'class':'form-control'}),
             'serial':forms.TextInput(attrs={'class':'form-control'}),
         }
+
+class locationform(forms.Form):
+    location = forms.ModelChoiceField(queryset=locations.objects.exclude(location='RETRNS'),
+                                    empty_label="---------",widget=forms.Select(),label='')
+
+        
+        
