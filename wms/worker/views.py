@@ -122,22 +122,25 @@ def showReturns(request):
     if request.method == "POST": 
         if 'search' in request.POST:   
             search = request.POST.dict()
-            response=render(request,"worker/returns.html",{"l_returns":function.get_returns(search),"form":locationform()},status=200)  
+            response=render(request,"worker/returns.html",{"l_returns":function.get_returns(search),"form":locationform(),'s':search['sku'],'se':search['serial']},status=200)  
             response.set_cookie('s',search['sku'])
             response.set_cookie('se',search['serial'])
             response.set_cookie('c',search['category'])
             return response
         else:
             data=request.POST.dict()
+            data['sku']=request.COOKIES['s']
+            data['serial']=request.COOKIES['se']
+            data['category']=request.COOKIES['c']
             inventory_id=int(tuple(data.keys())[2])
             new_location=data['location']
             try:
-                obj=inventory.objects.get(inventory_id)
+                obj=inventory.objects.get(id=inventory_id)
                 obj.location=locations.objects.get(location=new_location)
-                obj.save()
+                obj.setAvailable()
                 msg=f'{obj.sku.name} with serial:{obj.serial} moved to {new_location}'
             except:
                 msg=None
-        
+            return render(request,"worker/returns.html",{"l_returns":function.get_returns(data),"form":locationform(),'s':request.COOKIES['s'],'se':request.COOKIES['se'],'message':msg},status=200)
     else:
         return render(request,"worker/returns.html",status=200)
