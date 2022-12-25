@@ -1,4 +1,4 @@
-from website.models import inventory,products,newInventory,orders,specific_order
+from website.models import inventory,products,newInventory,orders,specific_order,locations
 from datetime import datetime,timedelta
 from django.db.models import Count
 
@@ -32,8 +32,8 @@ def getInventory(data):
     kwargs={}
     if data['sku'] != '':
         kwargs['sku__sku']=data['sku']
-    if data['location'] != '':
-        kwargs['location__location']=data['location']
+    if data['location_search'] != '':
+        kwargs['location__location']=data['location_search']
     if data['serial'] != '':
         kwargs['serial']=data['serial'] 
     if data['category'] != '':
@@ -98,5 +98,30 @@ def get_returns(data):
         kwargs['sku__category']=data['category']
 
     return inventory.objects.filter(**kwargs).order_by('sku','-amount')
+
+def move_to(id,location):
+    try:
+        new_location=locations.objects.get(pk=location)
+        inv=inventory.objects.get(pk=id)
+        if inv.serial is None:
+            exsisting_inv=inventory.objects.filter(sku=inv.sku,location=new_location)
+            if exsisting_inv.exists():
+                exsisting_inv=exsisting_inv.first()
+                exsisting_inv.amount+=inv.amount
+                exsisting_inv.available+=inv.available
+                orderToChange=specific_order.objects.filter(inventory_id=inv,completed=False)
+                for order in orderToChange:
+                    order.inventory_id=exsisting_inv
+                    order.save()
+                inv.delete()
+                exsisting_inv.save()
+                return f'item: {inv.sku.name} moved to {new_location}'
+        inv.location=new_location
+        inv.save()
+        return f'item: {inv.sku.name} moved to {new_location}'
+    except:
+        return None
+        
+
 
             
