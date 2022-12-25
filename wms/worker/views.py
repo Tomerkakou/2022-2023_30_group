@@ -2,9 +2,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from website.models import inventory,products,newInventory,orders
+from website.models import inventory,products,newInventory,orders,locations
 from worker import function
-from worker.forms import inventoryForm
+from worker.forms import inventoryForm,locationform
 from manager.forms import productForm
 
 
@@ -113,3 +113,34 @@ def watchOrder(request,order_id):
         return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
     else:
         return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
+
+
+@login_required
+def showReturns(request): 
+    if not is_worker(request.user):
+        raise Http404
+    if request.method == "POST": 
+        if 'search' in request.POST:   
+            search = request.POST.dict()
+            response=render(request,"worker/returns.html",{"l_returns":function.get_returns(search),"form":locationform(),'s':search['sku'],'se':search['serial']},status=200)  
+            response.set_cookie('s',search['sku'])
+            response.set_cookie('se',search['serial'])
+            response.set_cookie('c',search['category'])
+            return response
+        else:
+            data=request.POST.dict()
+            data['sku']=request.COOKIES['s']
+            data['serial']=request.COOKIES['se']
+            data['category']=request.COOKIES['c']
+            inventory_id=int(tuple(data.keys())[2])
+            new_location=data['location']
+            try:
+                obj=inventory.objects.get(id=inventory_id)
+                obj.location=locations.objects.get(location=new_location)
+                obj.setAvailable()
+                msg=f'{obj.sku.name} with serial:{obj.serial} moved to {new_location}'
+            except:
+                msg=None
+            return render(request,"worker/returns.html",{"l_returns":function.get_returns(data),"form":locationform(),'s':request.COOKIES['s'],'se':request.COOKIES['se'],'message':msg},status=200)
+    else:
+        return render(request,"worker/returns.html",status=200)

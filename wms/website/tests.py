@@ -9,8 +9,8 @@ class TestModels(TestCase):
     @classmethod
     def setUpTestData(cls):
         g=Group.objects.create(name='test')
-        user1.objects.create(username='matan1', password='1234', email='matan@gmail.com', full_name='matan', role=g)
-        user1.objects.create(username='osnat1', password='12345', email='os@gmail.com', full_name='osnat' ,role=g)
+        user1.objects.create_user(username='matan1', password='1234', email='matan@gmail.com', full_name='matan', role=g)
+        user1.objects.create_user(username='osnat1', password='12345', email='os@gmail.com', full_name='osnat' ,role=g)
         products.objects.create(sku = 1234, name= 'pencill', price= 50, description = 'pink pen do something',category = 0, serial_item=0)
         locations.objects.create(location = 'A50362')
         
