@@ -3,11 +3,11 @@
 {{title}}
 {% endblock %}
 {% block active %}
-        <li class="active1"a><a href="#" style="color:white;">Products</a></li>
+        <li class="active1"a><a href="{% url 'searchroduct' %}" style="color:white;">Products</a></li>
         <li><a href="{% url 'showinventory' %}">Inventory</a></li>
         <li><a href="{% url 'newinventory' %}">New inventory</a></li>
-        <li><a href="#">Returns</a></li>
-        <li><a href="#">Orders</a></li>
+        <li><a href="{% url 'returns' %}">Returns</a></li>
+        <li><a href="{% url 'ordersW' %}">Orders</a></li>
         <li><a href="#">Reports</a></li>
        
 {% endblock %}

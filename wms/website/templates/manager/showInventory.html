@@ -8,7 +8,7 @@ User managment
         <li><a href="{% url 'newlocation' %}">New Location</a></li>
         <li class="active1"><a href="{% url 'Inventory' %}" style="color:white;">Inventory</a></li>
         <li><a href="{% url 'showusers' %}">User managment</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a href="{% url 'reports' %}">Reports</a></li>
 {% endblock %}
 {% block main %}
 <div class="inline">
@@ -63,7 +63,7 @@ User managment
                       <td>
                         {% if inv.serial is None %}
                           <form method="POST">
-                          <input type="number" id="{{inv.id}}" name="{{inv.id}}"  placeholder="new amount" min="0">
+                          <input type="number" id="{{inv.id}}" name="{{inv.id}}"  placeholder="new amount" min="1">
                           {% csrf_token %}
                           <button type="submit" name="{{inv.id}}-button" style="background-color: #f5f7fa; color:rgb(17, 121, 182); border: #f5f7fa;">
                             <i class="fas fa-times">{% bs_icon 'plus-square-fill' %}</i>

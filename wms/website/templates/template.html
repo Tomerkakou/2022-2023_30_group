@@ -227,7 +227,9 @@
         animation-duration: 11s;
       }
 
-
+      ul.no-bullets {
+        list-style-type:none;
+      }
 
       @keyframes animate {
 
@@ -242,7 +244,7 @@
         opacity: 0;
         border-radius: 50%;
       }
-
+      
       }
     </style>
   </head>
@@ -267,7 +269,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>                        
           </button>
-          <a class="navbar-brand" href=#>WMS</a>
+          <a class="navbar-brand" href=#>SCE-WMS</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav">
@@ -276,7 +278,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'updateUser' %}"><span class="glyphicon"></span> {% bs_icon 'person-circle' size='1em' %} </a></li>
-            <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
           </ul>
         </div>
       </div>

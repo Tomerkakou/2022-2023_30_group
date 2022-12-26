@@ -1,45 +1,62 @@
 from django.shortcuts import render ,redirect,HttpResponse
 import website.function as function
-from website.models import user
-from website.forms import user_updateForm
+from website.models import user1
+from django.contrib.auth import update_session_auth_hash
+from website.forms import user_updateForm,PasswordChangeCustomForm
+from django.contrib.auth import login,logout
+from django.contrib.auth.decorators import login_required
 
+@login_required
+def log_out(request):
+    logout(request)
+    return redirect('login')
             
 def start(request):
     if request.method=="POST":
         if "login" in request.POST :
             login_data = request.POST.dict()
             current=function.login(login_data)
+            print(type(current))
             if current:
-                response=redirect(f"{current.get_role()}_menu")
-                response.set_cookie('user',current.username)
-                response.set_cookie('role',current.role)
-                return response
+                login(request,current)
+                return redirect(f"{current.role}_menu")
             else:
-                return render(request,"website/login-register.html",{'message':"Invalid username or password"})
+                return render(request,"website/login-register.html",{'message':"Invalid username or password"},status=401)
         elif "register" in request.POST :
             return render(request,"website/login-register.html",{'message2': function.register(request.POST.dict())})
     else:
-        return render(request,"website/login-register.html")
+        return render(request,"website/login-register.html",status=200)
 
-
+@login_required
 def changeUser(request):
-    u=user.objects.get(username=request.COOKIES['user'])
-    if u.role == 0:
+    u=request.user
+    if u.role_id == 1:
         x='M'   
-    elif u.role == 1:
+    elif u.role_id == 2:
         x='W'  
-    elif u.role == 2:
+    elif u.role_id == 3:
         x='S'
     if request.method == 'POST':
-        form=user_updateForm(request.POST,instance=u) 
-        if form.is_valid():
-            form.save()
-            msg='User updated successfully'
-            response=render(request,f"website/userupdate{x}.html",{"form":form,"message":msg})
-            response.set_cookie('user',form.cleaned_data['username'])
-            return response
-        else:
-            return render(request,f"website/userupdate{x}.html",{"form":form})
+        if 'change_info' in request.POST:
+            form1=user_updateForm(request.POST,instance=u)
+            form2=PasswordChangeCustomForm(user=u)
+            if form1.is_valid():
+                form1.save()
+                msg='User information updated successfully'
+                return render(request,f"website/userupdate{x}.html",{"form1":form1,'form2':form2,"message":msg},status=200)
+            else:
+                return render(request,f"website/userupdate{x}.html",{"form1":form1,'form2':form2},status=400)
+        if 'change_password' in request.POST:
+            form1=user_updateForm(instance=u)
+            form2=PasswordChangeCustomForm(request.user,request.POST)
+            if form2.is_valid():
+                user=form2.save()
+                update_session_auth_hash(request, user)
+                msg='User password updated successfully'
+                return render(request,f"website/userupdate{x}.html",{"form1":form1,'form2':form2,"message2":msg},status=200)
+            else:
+                return render(request,f"website/userupdate{x}.html",{"form1":form1,'form2':form2},status=400)
     else:
-        form=user_updateForm(instance=u)#initial={'username':u.username,'password':u.password,'email':u.email,'name':u.name})
-        return render(request,f"website/userupdate{x}.html",{"form":form}) 
+        form1=user_updateForm(instance=u)#initial={'username':u.username,'password':u.password,'email':u.email,'name':u.name})
+        form2=PasswordChangeCustomForm(user=u)
+        return render(request,f"website/userupdate{x}.html",{"form1":form1,'form2':form2},status=200) 

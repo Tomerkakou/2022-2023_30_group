@@ -15,15 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from manager.views import menu ,newProduct , newLocation,showUsers,createuser,showInventory
+from manager.views import menu ,newProduct , newLocation,showUsers,createuser,showInventory,inventoryToExel,reports
 from website.views import start
 urlpatterns = [
     path('',start,name='login'),
     path('',include('website.urls')),
-    path('manager/menu/',menu,name='manager_menu'),
+    path('manager/menu/',menu,name='Manager_menu'),
     path('manager/menu/newProduct/',newProduct,name='newproduct'),
     path('manager/menu/newLocation/',newLocation,name='newlocation'),
     path('manager/menu/Users/',showUsers,name='showusers'),
     path('manager/menu/createUser/',createuser,name='createuser'),
     path('manager/menu/Inventory/',showInventory,name='Inventory'),
+    path('manager/menu/reports/',reports,name='reports'),
+    path('inventory-exel',inventoryToExel,name='inventory-exel')
 ]

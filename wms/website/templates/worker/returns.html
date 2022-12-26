@@ -1,23 +1,24 @@
 {% extends "template.html" %}
 {% load bootstrap_icons %}
 {% block title %}
-Inventory
+Returns
 {% endblock %}
 {% block active %}
        <li><a href="{% url 'searchroduct' %}">Products</a></li>
-       <li class="active1"><a href="{% url 'showinventory' %}" style="color:white;">Inventory</a></li>
+       <li><a href="{% url 'showinventory' %}">Inventory</a></li>
        <li><a href="{% url 'newinventory' %}">New inventory</a></li>
-       <li><a href="#">Returns</a></li>
-       <li><a href="#">Orders</a></li>
+       <li class="active1"><a href="{% url 'returns' %}" style="color:white;">Returns</a></li>
+       <li><a href="{% url 'ordersW' %}">Orders</a></li>
        <li><a href="#">Reports</a></li>
         {% endblock %}
 {% block main %}
+{% if message != None %}
+      <script>alert("{{message}}");</script>
+{% endif %}
 <div class="inline">
     <form method="post" class="inline">
         <br>
         <input type="number" id="sku" name="sku" value="{{s}}" placeholder="Sku">
-      
-        <input type="search" id="location" name="location" value="{{l}}" placeholder="Location">
         
         <input type="number" id="serial" name="serial" value="{{se}}" placeholder="Serial">
         Category:
@@ -46,21 +47,29 @@ Inventory
                         <th scope="col">Category</th>
                         <th scope="col">Serial</th>
                         <th scope="col">Product name</th>
-                        <th scope="col">Location</th>
                         <th scope="col">Amount</th>
-                        <th scope="col">Available</th>
+                        <th scope="col">Return to</th>
                       </tr>
                     </thead>
                     <tbody>
-                        {% for inv in l_inventory %}
+                        {% for ret in l_returns %}
                         <tr>
-                            <td><ul><li><a href="{% url 'showproduct' inv.sku.sku %}">{{inv.sku.sku}}</a></li></ul></td>
-                            <td>{{inv.sku.return_category}}</td>
-                            <td>{{inv.serial}}</td>
-                            <td>{{inv.sku.name}}</td>
-                            <td>{{inv.location}}</td>
-                            <td>{{inv.amount}}</td>
-                            <td>{{inv.available}}</td>
+                            <td><ul><li><a href="{% url 'showproduct' ret.sku.sku %}">{{ret.sku.sku}}</a></li></ul></td>
+                            <td>{{ret.sku.return_category}}</td>
+                            <td>{{ret.serial}}</td>
+                            <td>{{ret.sku.name}}</td>
+                            <td>{{ret.amount}}</td>
+                            <td>
+                              <form method="post" class="inline">
+                                {% for field in form %}
+                                {{ field }}
+                                {% endfor %}
+                                {% csrf_token %}
+                                <button type="submit" name="{{ret.id}}" style="background-color: #f5f7fa; color:rgb(17, 121, 182); border: #f5f7fa;">
+                                  <i class="fas fa-times">{% bs_icon 'check-square-fill' %}</i>
+                                </button>
+                              </form>
+                            </td>
                         </tr>
                         {% endfor %}
                   </tbody>
@@ -74,5 +83,3 @@ Inventory
     </div>
 </div>
 {% endblock %}
-
-

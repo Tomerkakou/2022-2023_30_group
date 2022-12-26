@@ -1,21 +1,26 @@
-from website.models import products,locations,user,inventory
+from website.models import products,locations,user1,inventory
+from django.shortcuts import get_object_or_404
 
 def getUsers(data):
-    kwargs={'status':1}
+    kwargs={'is_active':True}
     if data['username'] != '':
         kwargs['username']=data['username']
     if data['fullname'] != '':
-        kwargs['name']=data['fullname']
+        kwargs['full_name']=data['fullname']
     if data['email'] != '':
         kwargs['email']=data['email'] 
     if data['role'] != '':
-        kwargs['role']=data['role']
-    return user.objects.filter(**kwargs)
+        kwargs['role__id']=data['role']
+    return user1.objects.filter(**kwargs)
  
 
 def deleteUser(userTodelete):
-    delete=user.objects.get(username=userTodelete)
-    delete.status=0
+    try:
+        delete=user1.objects.get(username=userTodelete)
+    except:
+        return
+    delete.is_active=False
+    delete.password=0
     delete.save()
 
 def getInventory(data):
@@ -31,10 +36,11 @@ def getInventory(data):
         return inventory.objects.filter(**kwargs).order_by('sku','location','-amount').select_related('sku','location')
         
  
-
 def updateAmount(idInv,newAmount):
+    """ unit tests in manager/tests.py """
+
     newAmount=int(newAmount)
-    inven=inventory.objects.get(id=idInv)
+    inven=get_object_or_404(inventory,id=idInv)
     if (inven.amount-inven.available)<=newAmount:
         inven.available=inven.available+(newAmount-inven.amount)
         inven.amount=newAmount
@@ -44,4 +50,5 @@ def updateAmount(idInv,newAmount):
             inven.save()
         return f"#{inven.sku.name} in {inven.location} updated to {newAmount}"
     else:
-        return "#The new amount does not match the quantity ordered" 
+        return "#The new amount does not match the quantity ordered"
+

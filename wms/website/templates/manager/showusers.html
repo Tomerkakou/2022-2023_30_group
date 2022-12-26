@@ -8,12 +8,12 @@ User managment
         <li><a href="{% url 'newlocation' %}">New Location</a></li>
         <li><a href="{% url 'Inventory' %}">Inventory</a></li>
         <li class="active1"><a href="{% url 'showusers' %}" style="color:white;">User managment</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a href="{% url 'reports' %}">Reports</a></li>
 {% endblock %}
 {% block left_bar %}
 <div class="well">
   <ul>
-    <li><a href="{% url 'createuser' %}">{% bs_icon 'person-add' size='3em' %}</a></li>
+    <a href="{% url 'createuser' %}">{% bs_icon 'person-add' size='3em' %}<p>Create user</p></a>
   </ul>
 </div>
 {% endblock %}
@@ -29,9 +29,9 @@ User managment
         Role:
         <select name="role" id="role">
             <option value="">All</option>
-            <option value="0">Manager</option>
-            <option value="1">Worker</option>
-            <option value="2">Student</option>
+            <option value="1">Manager</option>
+            <option value="2">Worker</option>
+            <option value="3">Student</option>
         </select>
         {% csrf_token %}
         <button type="submit" name="search" class="mybutton">{% bs_icon 'search' %}</button>
@@ -60,8 +60,8 @@ User managment
                       {% for user in users %}
                       <tr>
                         <td>{{user.username}}</td>
-                        <td>{{user.name}}</td>
-                        <td>{{user.get_role}}</td>
+                        <td>{{user.full_name}}</td>
+                        <td>{{user.role}}</td>
                         <td>{{user.email}}</td>
                       <td>
                         <form method="POST" onsubmit="return confirm('Are you sure?');">

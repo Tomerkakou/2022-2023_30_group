@@ -7,17 +7,20 @@ Inventory
        <li><a href="{% url 'searchroduct' %}">Products</a></li>
        <li class="active1"><a href="{% url 'showinventory' %}" style="color:white;">Inventory</a></li>
        <li><a href="{% url 'newinventory' %}">New inventory</a></li>
-       <li><a href="#">Returns</a></li>
-       <li><a href="#">Orders</a></li>
+       <li><a href="{% url 'returns' %}">Returns</a></li>
+       <li><a href="{% url 'ordersW' %}">Orders</a></li>
        <li><a href="#">Reports</a></li>
         {% endblock %}
 {% block main %}
+{% if message != None %}
+      <script>alert("{{message}}");</script>
+{% endif %}
 <div class="inline">
     <form method="post" class="inline">
         <br>
         <input type="number" id="sku" name="sku" value="{{s}}" placeholder="Sku">
       
-        <input type="search" id="location" name="location" value="{{l}}" placeholder="Location">
+        <input type="search" id="location_search" name="location_search" value="{{l}}" placeholder="Location">
         
         <input type="number" id="serial" name="serial" value="{{se}}" placeholder="Serial">
         Category:
@@ -49,6 +52,7 @@ Inventory
                         <th scope="col">Location</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Available</th>
+                        <th scope="col">Move to</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -61,6 +65,17 @@ Inventory
                             <td>{{inv.location}}</td>
                             <td>{{inv.amount}}</td>
                             <td>{{inv.available}}</td>
+                            <td>
+                              <form method="post" class="inline">
+                                {% for field in form %}
+                                {{ field }}
+                                {% endfor %}
+                                {% csrf_token %}
+                                <button type="submit" name="{{inv.id}}" style="background-color: #f5f7fa; color:rgb(17, 121, 182); border: #f5f7fa;">
+                                  <i class="fas fa-times">{% bs_icon 'check-square-fill' %}</i>
+                                </button>
+                              </form>
+                            </td>
                         </tr>
                         {% endfor %}
                   </tbody>
@@ -74,5 +89,3 @@ Inventory
     </div>
 </div>
 {% endblock %}
-
-

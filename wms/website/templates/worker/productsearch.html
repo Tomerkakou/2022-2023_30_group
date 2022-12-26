@@ -7,8 +7,8 @@ Products
        <li class="active1"><a href="{% url 'searchroduct' %}"  style="color:white;">Products</a></li>
        <li><a href="{% url 'showinventory' %}">Inventory</a></li>
        <li><a href="{% url 'newinventory' %}">New inventory</a></li>
-       <li><a href="#">Returns</a></li>
-       <li><a href="#">Orders</a></li>
+       <li><a href="{% url 'returns' %}">Returns</a></li>
+       <li><a href="{% url 'ordersW' %}">Orders</a></li>
        <li><a href="#">Reports</a></li>
         {% endblock %}
 {% block main %}
@@ -47,7 +47,7 @@ Products
                     <tbody>
                         {% for p in products %}
                         <tr>
-                            <td><ul><li><a href="{% url 'showproduct' p.sku %}">{{p}}</a></li></ul></td>
+                            <td><a href="{% url 'showproduct' p.sku %}">{{p}}</a></td>
                         </tr>
                         {% endfor %}
                   </tbody>
