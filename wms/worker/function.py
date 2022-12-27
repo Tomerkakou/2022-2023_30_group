@@ -1,6 +1,9 @@
-from website.models import inventory,products,newInventory,orders,specific_order,locations
+from website.models import inventory,products,newInventory,orders,specific_order,locations,categories
+from django.shortcuts import HttpResponse
 from datetime import datetime,timedelta
 from django.db.models import Count
+import xlwt
+
 
 def addNewInv(data,form,user):
     product=products.objects.get(sku=int(data['sku']))
@@ -124,4 +127,37 @@ def move_to(id,location):
         
 
 
-            
+def create_excel_for_worker(response):
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Full inventory')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['Sku','item name','amount available','Category']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+
+    sum_inventory=inventory.objects.raw(f"""SELECT inventory.id ,inventory.sku_id, inventory.sum_available, website_products.category ,website_products.name
+                                        FROM  (SELECT id, sku_id ,SUM(available) as sum_available 
+		                                FROM website_inventory
+		                                GROUP BY sku_id) AS inventory
+                                        RIGHT JOIN website_products 
+                                        ON inventory.sku_id = website_products.sku;""")
+
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    for row in sum_inventory:
+        if row.sku_id is None:
+            continue
+        row_num+=1
+        ws.write(row_num,0,row.sku_id,style)
+        ws.write(row_num,1,row.name,style)
+        ws.write(row_num,2,row.sum_available,style)
+        ws.write(row_num,3,categories[row.category][1],style)
+
+    wb.save(response) 
+    return response
+
+
+

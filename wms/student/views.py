@@ -1,8 +1,9 @@
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from student import function
 from website.models import orders
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from datetime import datetime
 from django.contrib import messages
 
 def is_student(user):
@@ -58,4 +59,25 @@ def showOrders(request):
             return render(request,"student/showorders.html",status=200)    
     else:
         return render(request,"student/showorders.html",status=200)
+
+
+@login_required
+def reports(request):
+    if not is_student(request.user):
+        raise Http404
+    return render(request,'student/reports_student.html')
+
+
+
+@login_required    
+def inventory_To_Excel_for_student(request):
+    if not is_student(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'
+
+    return function.create_list_products_excel_for_student(response)  
+
+
 

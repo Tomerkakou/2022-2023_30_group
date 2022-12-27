@@ -6,7 +6,7 @@ Order number: {{order.order_number}}
 {% block active %}
         <li class="active1"><a href="{% url 'orders' %}" style="color:white;">Orders</a></li>
         <li><a href="{% url 'inventory' %}">Inventory</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a href="{% url 'reports_student' %}">Reports</a></li>
 {% endblock %}
 {% block left_bar %}
 <div class="well">

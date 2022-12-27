@@ -1,11 +1,17 @@
 
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from website.models import inventory,products,newInventory,orders,locations
+from website.models import inventory,products,newInventory,orders,locations,categories
 from worker import function
 from worker.forms import inventoryForm,locationform
 from manager.forms import productForm
+from datetime import datetime
+import xlwt 
+
+
+
+
 
 
 def is_worker(user):
@@ -152,3 +158,27 @@ def showReturns(request):
             return render(request,"worker/returns.html",{"l_returns":function.get_returns(data),"form":locationform(),'s':request.COOKIES['s'],'se':request.COOKIES['se'],'message':msg},status=200)
     else:
         return render(request,"worker/returns.html",status=200)
+
+
+
+
+
+@login_required
+def reports_for_worker(request):
+    if not is_worker(request.user):
+        raise Http404
+    return render(request,'worker/reports_worker.html')
+
+
+@login_required    
+def inventory_To_Excel_for_worker(request):
+    if not is_worker(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'
+
+    return function.create_excel_for_worker(response)  
+    
+
+

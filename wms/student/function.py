@@ -1,7 +1,8 @@
 
-from website.models import inventory,specific_order,products,orders
+from website.models import inventory,specific_order,products,orders,categories
 from django.db.models import Sum
 from datetime import datetime, timedelta
+import xlwt
 
 def sumInventory(data):
             filter1=''
@@ -94,3 +95,39 @@ def deleteOrder(or_num):
     for i in o_list:
         deleteItem(i)
     order.delete()
+
+
+def create_list_products_excel_for_student(response):
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Full inventory')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['Category','Item name','SKU','availble/Unavailble']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+
+    sum_inventory=inventory.objects.raw(f"""SELECT inventory.id ,inventory.sku_id, inventory.sum_available, website_products.category ,website_products.name
+                                        FROM  (SELECT id, sku_id ,SUM(available) as sum_available 
+		                                FROM website_inventory
+		                                GROUP BY sku_id) AS inventory
+                                        RIGHT JOIN website_products 
+                                        ON inventory.sku_id = website_products.sku;""")
+
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    for row in sum_inventory:
+        if row.sku_id is None:
+            continue
+        row_num+=1
+        ws.write(row_num,0,categories[row.category][1],style)
+        ws.write(row_num,1,row.name,style)
+        ws.write(row_num,2,row.sku_id,style)
+        if row.sum_available>0:
+             ws.write(row_num,3,'availble',style)
+        else:
+             ws.write(row_num,3,'Unavailble',style)
+
+    wb.save(response) 
+    return response

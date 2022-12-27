@@ -130,7 +130,7 @@ def showInventory(request):
 def reports(request):
     if not is_manager(request.user):
         raise Http404
-    return render(request,'manager/reports.html')
+    return render(request,'manager/reports_manager.html')
 
 @login_required    
 def inventoryToExel(request):
