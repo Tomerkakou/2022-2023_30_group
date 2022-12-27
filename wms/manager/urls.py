@@ -26,6 +26,6 @@ urlpatterns = [
     path('manager/menu/Users/',showUsers,name='showusers'),
     path('manager/menu/createUser/',createuser,name='createuser'),
     path('manager/menu/Inventory/',showInventory,name='Inventory'),
-    path('manager/menu/reports_manager/',reports,name='reports_manager'),
+    path('manager/menu/reports/',reports,name='reports_manager'),
     path('inventory-exel',inventoryToExel,name='inventory-exel')
 ]

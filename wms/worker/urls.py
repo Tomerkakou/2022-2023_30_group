@@ -30,6 +30,6 @@ urlpatterns = [
     path('worker/menu/orders/',showOrders,name='ordersW'),
     path('worker/menu/orders/<int:order_id>/',watchOrder,name='watchorderW'),
     path('worker/menu/returns/',showReturns,name='returns'),
-    path('worker/menu/reports_worker/',reports_for_worker,name='reports_worker'),
+    path('worker/menu/reports/',reports_for_worker,name='reports_worker'),
     path('inventory-worker-excel',inventory_To_Excel_for_worker,name='inventory-worker-excel') 
 ]

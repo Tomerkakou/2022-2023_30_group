@@ -167,7 +167,7 @@ def showReturns(request):
 def reports_for_worker(request):
     if not is_worker(request.user):
         raise Http404
-    return render(request,'worker/reports_worker.html')
+    return render(request,'worker/reports.html')
 
 
 @login_required    

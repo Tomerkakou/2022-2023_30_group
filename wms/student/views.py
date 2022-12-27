@@ -65,7 +65,7 @@ def showOrders(request):
 def reports(request):
     if not is_student(request.user):
         raise Http404
-    return render(request,'student/reports_student.html')
+    return render(request,'student/reports.html')
 
 
 
