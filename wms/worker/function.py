@@ -161,6 +161,32 @@ def create_excel_for_worker():
         ws.write(row_num,6,row.sku.return_category(),style)
 
     return wb 
+
+
+def stocktaking_excel():
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Stocktaking')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['Sku','Location','Serial number','Item name','Actual amount']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+
+    sum_inventory=inventory.objects.exclude(location__location='RETRNS')
+
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    for row in sum_inventory:
+        row_num+=1
+        ws.write(row_num,0,row.sku.sku,style)
+        ws.write(row_num,1,row.location.location,style)
+        ws.write(row_num,2,row.serial,style)
+        ws.write(row_num,3,row.sku.name,style)
+        ws.write(row_num,4,'',style)
+
+    return wb 
     
 
 

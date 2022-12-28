@@ -162,7 +162,6 @@ def showReturns(request):
 
 
 
-
 @login_required
 def reports_for_worker(request):
     if not is_worker(request.user):
@@ -181,4 +180,13 @@ def inventory_To_Excel_for_worker(request):
     return response  
     
 
+@login_required    
+def stocktaking_To_Excel(request):
+    if not is_worker(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Stocktaking.xls'
+    function.stocktaking_excel().save(response)
+    return response  
 

@@ -118,7 +118,7 @@ def deleteOrder(or_num):
 
 def create_list_products_excel_for_student():
     wb=xlwt.Workbook(encoding='utf-8')
-    ws=wb.add_sheet('Full inventory')
+    ws=wb.add_sheet('Products list')
     row_num=0
     style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
     columns=['Category','Item name','SKU','Description','Price','Only for borrow','availble/Unavailble']
