@@ -155,7 +155,7 @@ def inventoryToExel(request):
 		                                GROUP BY sku_id) AS inventory
                                         RIGHT JOIN website_products 
                                         ON inventory.sku_id = website_products.sku;""")
-
+    
     style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
     for row in sum_inventory:
         if row.sku_id is None:
