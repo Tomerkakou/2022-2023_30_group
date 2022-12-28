@@ -127,37 +127,33 @@ def move_to(id,location):
         
 
 
-def create_excel_for_worker(response):
+def create_excel_for_worker():
     wb=xlwt.Workbook(encoding='utf-8')
     ws=wb.add_sheet('Full inventory')
     row_num=0
     style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
-    columns=['Sku','item name','amount available','Category']
+    columns=['Sku','Location','Serial number','item name','Amount','Available','Category']
 
     for col_num in range(len(columns)):
         ws.write(row_num,col_num,columns[col_num],style)
 
     
 
-    sum_inventory=inventory.objects.raw(f"""SELECT inventory.id ,inventory.sku_id, inventory.sum_available, website_products.category ,website_products.name
-                                        FROM  (SELECT id, sku_id ,SUM(available) as sum_available 
-		                                FROM website_inventory
-		                                GROUP BY sku_id) AS inventory
-                                        RIGHT JOIN website_products 
-                                        ON inventory.sku_id = website_products.sku;""")
+    sum_inventory=inventory.objects.exclude(location__location='RETRNS')
 
     style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
     for row in sum_inventory:
-        if row.sku_id is None:
-            continue
         row_num+=1
-        ws.write(row_num,0,row.sku_id,style)
-        ws.write(row_num,1,row.name,style)
-        ws.write(row_num,2,row.sum_available,style)
-        ws.write(row_num,3,categories[row.category][1],style)
+        ws.write(row_num,0,row.sku.sku,style)
+        ws.write(row_num,1,row.location.location,style)
+        ws.write(row_num,2,row.serial,style)
+        ws.write(row_num,3,row.sku.name,style)
+        ws.write(row_num,4,row.amount,style)
+        ws.write(row_num,5,row.available,style)
+        ws.write(row_num,6,row.sku.return_category(),style)
 
-    wb.save(response) 
-    return response
+    return wb 
+    
 
 
 

@@ -177,8 +177,8 @@ def inventory_To_Excel_for_worker(request):
 
     response=HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'
-
-    return function.create_excel_for_worker(response)  
+    function.create_excel_for_worker().save(response)
+    return response  
     
 
 
