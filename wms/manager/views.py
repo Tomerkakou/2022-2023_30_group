@@ -1,8 +1,8 @@
 from django.shortcuts import render,HttpResponse,redirect
 import manager.function
 from manager.forms import productForm,locationForm,userForm
-from website.models import user1,inventory,products,categories
-from datetime import datetime
+from website.models import user1,inventory,products,categories,newInventory
+from datetime import datetime,timedelta
 import xlwt
 from django.db.models import Sum
 from django.contrib.auth.models import User,Group
@@ -171,5 +171,41 @@ def inventoryToExel(request):
 
     return response
     
+
+
+
+
+@login_required    
+def report_entry_products(request):
+    if not is_manager(request.user):
+        raise Http404
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Entry_products_'+str(datetime.now())+'.xls'
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Entry products')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['SKU','Item name','Entry amount']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    end , start = datetime.now(),datetime.now()+timedelta(weeks=-4)
+    entrys=newInventory.objects.filter(dt__gt=start,dt__lt=end).values('sku','sku__name','amount').annotate(sum_amount=Sum('amount'))
+
+    for row in entrys:
+        row_num+=1
+        ws.write(row_num,0,row['sku'],style)
+        ws.write(row_num,1,row['sku__name'],style)
+        ws.write(row_num,2,row['sum_amount'],style)
+        
+
+    wb.save(response)
+
+    return response
+    
+
 
 

@@ -2,7 +2,7 @@
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from website.models import inventory,products,newInventory,orders,locations,categories
+from website.models import inventory,products,newInventory,orders,locations,categories,specific_order
 from worker import function
 from worker.forms import inventoryForm,locationform
 from manager.forms import productForm
@@ -190,3 +190,37 @@ def stocktaking_To_Excel(request):
     function.stocktaking_excel().save(response)
     return response  
 
+
+@login_required    
+def order_to_excel_for_worker(request,order_id):
+    if not is_worker(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Specific order '+str(datetime.now())+'.xls'
+
+    wb=xlwt.Workbook(encoding='utf-8')
+    
+    ws=wb.add_sheet(str(order_id)) 
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['Item name','Amount','Location']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+                                               
+    all_orders=specific_order.objects.filter(order_id__order_number=order_id)                
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+
+    for row in all_orders:
+        row_num+=1
+        ws.write(row_num,0,row.sku.name,style)
+        ws.write(row_num,1,row.amount,style)
+        ws.write(row_num,2,row.inventory_id.location.location,style)
+
+
+
+    wb.save(response) 
+    return response
+
+    

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from worker.views import menu,inventory_receipt,showInventory ,showProduct,productSearch,showOrders,watchOrder,showReturns,inventory_To_Excel_for_worker,reports_for_worker,stocktaking_To_Excel
+from worker.views import menu,inventory_receipt,showInventory ,showProduct,productSearch,showOrders,watchOrder,showReturns,inventory_To_Excel_for_worker,reports_for_worker,stocktaking_To_Excel,order_to_excel_for_worker
 from website.views import start,log_out
 
 urlpatterns = [
@@ -32,6 +32,7 @@ urlpatterns = [
     path('worker/menu/returns/',showReturns,name='returns'),
     path('worker/menu/reports/',reports_for_worker,name='reports_worker'),
     path('inventory-worker-excel',inventory_To_Excel_for_worker,name='inventory-worker-excel') ,
-     path('stocktaking-worker-excel',stocktaking_To_Excel,name='stocktaking-worker-excel') ,
+    path('stocktaking-worker-excel',stocktaking_To_Excel,name='stocktaking-worker-excel') ,
+    path('order_to_excel_for_worker/<int:order_id>/',order_to_excel_for_worker,name='order_to_excel_for_worker') 
 
 ]

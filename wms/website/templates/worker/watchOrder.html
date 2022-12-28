@@ -15,6 +15,9 @@ Order number: {{order.order_number}}
 <div class="well">
     <a href="{% url 'ordersW' %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)" name="neworder" id="neworder">{% bs_icon 'list-ul' size='3em' %}<p>Return to orders list</p></a>
 </div>
+<div class="well">
+  <a href="{% url 'order_to_excel_for_worker' order.order_number %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)" name="neworder" id="neworder"><p>Export to Excel</p></a>
+</div>
 {% endblock %}
 {% block main %}
 <div style="font-family: 'Tahoma'; font-style: normal; font-weight: bold; font-size: 13px;">
