@@ -70,12 +70,12 @@ def reports(request):
 
 
 @login_required    
-def inventory_To_Excel_for_student(request):
+def products_To_Excel_for_student(request):
     if not is_student(request.user):
         raise Http404 
 
     response=HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'
+    response['Content-Disposition']='attachment; filename=Products'+str(datetime.now())+'.xls'
     function.create_list_products_excel_for_student().save(response)
     return response  
 
