@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from student import function
-from website.models import orders
+from website.models import orders,specific_order
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from datetime import datetime
@@ -8,7 +8,7 @@ from django.contrib import messages
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 from io import BytesIO
-
+from django.db.models import Sum ,Avg
 def is_student(user):
     return str(user.role)=='Student'
 
@@ -86,25 +86,31 @@ def products_To_Excel_for_student(request):
 
 
 
-def render_to_pdf(template_src, context_dict={}):
-    template = get_template(template_src)
-    html  = template.render(context_dict)
-    result = BytesIO()
-    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
-    if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
-    return None
+
     
 
-
+@login_required
 def recepit(request,order_id): 
-    template = get_template('student/recepit.html') 
-    context = { "invoice_id": 123, "customer_name": "John Cooper", "amount": 1399.99, "today": "Today", } 
-    html = template.render(context) 
+    order=get_object_or_404(orders,order_number=order_id)
+    if not is_student(request.user) or order.user_id != request.user:
+        raise Http404
+    def render_to_pdf(template_src, context_dict={}):
+        template = get_template(template_src)
+        html  = template.render(context_dict)
+        result = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+        if not pdf.err:
+            return HttpResponse(result.getvalue(), content_type='application/pdf')
+        return None
+
+    context =  {}
+    context['order']=order
+    context['o_list']=specific_order.objects.filter(order_id=context['order']).values('sku','sku__name','sku__price','inventory_id__serial','amount').annotate(sum_amount=Sum('amount'),total_price=Sum('amount')*Avg('sku__price'))
+    context['total']=context['o_list'].aggregate(Sum('sum_amount'),Sum("total_price"))
+    print(context['total'])
     pdf = render_to_pdf('student/recepit.html', context) 
      
-    response = HttpResponse(pdf, content_type='application/pdf') 
-    filename = "Invoice_%s.pdf" %("12341231")  
+    response = HttpResponse(pdf, content_type='application/pdf')  
     response['Content-Disposition']='inline; attachment; filename=Recepit'+str(order_id)+'.pdf'
     return response 
     
