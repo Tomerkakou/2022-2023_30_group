@@ -6,7 +6,7 @@ Order number: {{order.order_number}}
 {% block active %}
         <li class="active1"><a href="{% url 'orders' %}" style="color:white;">Orders</a></li>
         <li><a href="{% url 'inventory' %}">Inventory</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a href="{% url 'reports_student' %}">Reports</a></li>
 {% endblock %}
 {% block left_bar %}
 <div class="well">
@@ -60,14 +60,14 @@ Order number: {{order.order_number}}
                           </tr>
                           {% for o in o_list %}
                           <tr>
-                              <td>{{o.sku.sku}}</td>
-                              <td>{{o.sku.name}}</td>
-                              <td>{{o.amount}}</td>
-                              <td>{{o.getStatus}}</td>
+                              <td>{{o.sku}}</td>
+                              <td>{{o.sku__name}}</td>
+                              <td>{{o.sum_amount}}</td>
+                              <td>{% if o.completed == 0 %} Waiting {% else %} Completed {% endif %}</td>
                               <td>
                                 <form method="POST" onsubmit="return confirm('Are you sure?');">
                                   {% csrf_token %}
-                                  <button type="submit" name="{{o.id}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
+                                  <button type="submit" name="{{o.sku}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
                                     <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
                                   </button>
                                 </form>
@@ -89,10 +89,10 @@ Order number: {{order.order_number}}
                   <tbody>
                       {% for o in o_list %}
                       <tr>
-                          <td>{{o.sku.sku}}</td>
-                          <td>{{o.sku.name}}</td>
-                          <td>{{o.amount}}</td>
-                          <td>{{o.getStatus}}</td>
+                        <td>{{o.sku}}</td>
+                        <td>{{o.sku__name}}</td>
+                        <td>{{o.sum_amount}}</td>
+                        <td>{% if o.completed == 0 %} Waiting {% else %} Completed {% endif %}</td>
                       </tr>
                       {% endfor %}
                   </tbody>

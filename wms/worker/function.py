@@ -1,6 +1,9 @@
-from website.models import inventory,products,newInventory,orders,specific_order
+from website.models import inventory,products,newInventory,orders,specific_order,locations,categories
+from django.shortcuts import HttpResponse
 from datetime import datetime,timedelta
 from django.db.models import Count
+import xlwt
+
 
 def addNewInv(data,form,user):
     product=products.objects.get(sku=int(data['sku']))
@@ -32,8 +35,8 @@ def getInventory(data):
     kwargs={}
     if data['sku'] != '':
         kwargs['sku__sku']=data['sku']
-    if data['location'] != '':
-        kwargs['location__location']=data['location']
+    if data['location_search'] != '':
+        kwargs['location__location']=data['location_search']
     if data['serial'] != '':
         kwargs['serial']=data['serial'] 
     if data['category'] != '':
@@ -65,8 +68,16 @@ def getOrders(data):
         kwargs['create_date__lte']=datetime(int(date[0]),int(date[1]),int(date[2]))+timedelta(days=1)
     if data['status'] != '':
         kwargs['status']=data['status']
+    res=list(orders.objects.filter(**kwargs).order_by('status','-create_date'))
+    index=0
+    while index<len(res):
+        count=specific_order.objects.filter(order_id=res[index])
+        if len(count)==0:
+            res.pop(index)
+            index-=1
+        index+=1
+    return res
 
-    return orders.objects.filter(**kwargs).order_by('status','create_date')
 
 def getOrderlist(order):
     
@@ -99,4 +110,58 @@ def get_returns(data):
 
     return inventory.objects.filter(**kwargs).order_by('sku','-amount')
 
-            
+def move_to(id,location):
+    try:
+        new_location=locations.objects.get(pk=location)
+        inv=inventory.objects.get(pk=id)
+        if inv.serial is None:
+            exsisting_inv=inventory.objects.filter(sku=inv.sku,location=new_location)
+            if exsisting_inv.exists():
+                exsisting_inv=exsisting_inv.first()
+                exsisting_inv.amount+=inv.amount
+                exsisting_inv.available+=inv.available
+                orderToChange=specific_order.objects.filter(inventory_id=inv,completed=False)
+                for order in orderToChange:
+                    order.inventory_id=exsisting_inv
+                    order.save()
+                inv.delete()
+                exsisting_inv.save()
+                return f'item: {inv.sku.name} moved to {new_location}'
+        inv.location=new_location
+        inv.save()
+        return f'item: {inv.sku.name} moved to {new_location}'
+    except:
+        return None
+        
+
+
+def create_excel_for_worker():
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Full inventory')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['Sku','Location','Serial number','item name','Amount','Available','Category']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+
+    sum_inventory=inventory.objects.exclude(location__location='RETRNS')
+
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    for row in sum_inventory:
+        row_num+=1
+        ws.write(row_num,0,row.sku.sku,style)
+        ws.write(row_num,1,row.location.location,style)
+        ws.write(row_num,2,row.serial,style)
+        ws.write(row_num,3,row.sku.name,style)
+        ws.write(row_num,4,row.amount,style)
+        ws.write(row_num,5,row.available,style)
+        ws.write(row_num,6,row.sku.return_category(),style)
+
+    return wb 
+    
+
+
+

@@ -1,0 +1,18 @@
+{% extends "template.html" %}
+{% block title %}
+Reports
+{% endblock %}
+{% block active %}
+        <li><a href="{% url 'orders' %}">Orders</a></li>
+        <li><a href="{% url 'inventory' %}">Inventory</a></li>
+        <li class="active1"><a href="{% url 'reports_student' %}"  style="color:white;">Reports</a></li>
+{% endblock %}
+{% block main %}
+<br>
+<div class="well">
+    <ul>
+      <li><a href="{% url 'products-student-exel' %}">Export Products list to EXCELS</a></li>
+    </ul>
+</div>
+{% endblock %}
+

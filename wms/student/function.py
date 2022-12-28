@@ -1,28 +1,39 @@
 
-from website.models import inventory,specific_order,products,orders
+from website.models import inventory,specific_order,products,orders,categories
 from django.db.models import Sum
 from datetime import datetime, timedelta
+import xlwt
 
 def sumInventory(data):
-            filter1=''
-            filter2=''
-            filter3=''
-            
-            if data['sku']!='':
-                filter1=f" AND sku_id='{data['sku']}'"
-            if data['category']!='':
-                filter2=f" AND category='{data['category']}'"
-            if data['name']!='':
-                filter3=f" AND name LIKE '%%{data['name']}%%'"
-            
-            inv=inventory.objects.raw(f"""SELECT inventory.id ,inventory.sku_id, inventory.amount, website_products.category ,website_products.name
-                                        FROM  (SELECT id, sku_id ,SUM(available) as amount
-		                                FROM website_inventory
-		                                GROUP BY sku_id) AS inventory
-                                        RIGHT JOIN website_products 
-                                        ON inventory.sku_id = website_products.sku
-                                        WHERE amount>0{filter1}{filter2}{filter3};""")
-            return inv
+    kwargs={'available__gt':0}
+    if data['sku']!='':
+        kwargs['sku__sku']={data['sku']}
+    if data['category']!='':
+        kwargs['sku__category']={data['category']}
+    if data['name']!='':
+        kwargs['sku__name__contains']={data['name']}
+
+    return inventory.objects.filter(**kwargs).values('sku','sku__name','available','sku__category').annotate(sum_amount=Sum('available'))
+
+    """filter1=''
+    filter2=''
+    filter3=''
+    
+    if data['sku']!='':
+        filter1=f" AND sku_id='{data['sku']}'"
+    if data['category']!='':
+        filter2=f" AND category='{data['category']}'"
+    if data['name']!='':
+        filter3=f" AND name LIKE '%%{data['name']}%%'"
+    
+    inv=inventory.objects.raw(f#SELECT inventory.id ,inventory.sku_id, inventory.amount, website_products.category ,website_products.name
+                                FROM  (SELECT id, sku_id ,SUM(available) as amount
+                                FROM website_inventory
+                                GROUP BY sku_id) AS inventory
+                                RIGHT JOIN website_products 
+                                ON inventory.sku_id = website_products.sku
+                                WHERE amount>0{filter1}{filter2}{filter3};)
+    return inv"""
 
 
 def getOrders(data,user):
@@ -39,11 +50,12 @@ def getOrders(data,user):
     if data['status'] != '':
         kwargs['status']=data['status']
 
-    return orders.objects.filter(**kwargs).order_by('status','create_date')
+    return orders.objects.filter(**kwargs).order_by('status','-create_date')
 
 def getOrderlist(order):
     
-    return specific_order.objects.filter(order_id=order)
+    return specific_order.objects.filter(order_id=order).values('sku','sku__name','completed').annotate(sum_amount=Sum('amount')).order_by('sku','completed')
+     
 
 def newOrder_spec(data,order_obj):
     try:
@@ -64,7 +76,13 @@ def newOrder_spec(data,order_obj):
                 curr_amount=amount_orderd
             else:
                 curr_amount=inv.available
-            specific_order.objects.create(order_id=order_obj,sku=product,amount=curr_amount,inventory_id=inv)
+            check=specific_order.objects.filter(inventory_id=inv,completed=False,order_id=order_obj)
+            if check.exists():
+                check=check.first()
+                check.amount+=curr_amount
+                check.save()
+            else:
+                specific_order.objects.create(order_id=order_obj,sku=product,amount=curr_amount,inventory_id=inv)
             inv.available=inv.available-curr_amount
             amount_orderd=amount_orderd-curr_amount
             inv.save()
@@ -72,18 +90,20 @@ def newOrder_spec(data,order_obj):
         return None
             
     
-def deleteItem(id_num):
-    if isinstance(id_num,specific_order):
-        item=id_num
-        
+def deleteItem(sku_num,order=None):
+    if isinstance(sku_num,specific_order):
+        item=sku_num
+        item.inventory_id.available+=item.amount
+        item.inventory_id.save()
+        item.delete()
     else:
-        try:
-            item=specific_order.objects.get(id=id_num)
-        except:
-            return
-    item.inventory_id.available+=item.amount
-    item.inventory_id.save()
-    item.delete()
+        items=specific_order.objects.filter(order_id=order,sku__sku=sku_num)
+        for item in items:
+            item.inventory_id.available+=item.amount
+            item.inventory_id.save()
+            item.delete()
+
+    
 
 def deleteOrder(or_num):
     try:
@@ -94,3 +114,44 @@ def deleteOrder(or_num):
     for i in o_list:
         deleteItem(i)
     order.delete()
+
+
+def create_list_products_excel_for_student():
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Full inventory')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['Category','Item name','SKU','Description','Price','Only for borrow','availble/Unavailble']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+
+    sum_inventory=inventory.objects.raw(f"""SELECT inventory.id ,inventory.sku_id, inventory.sum_available, website_products.category ,website_products.name ,website_products.description ,website_products.price ,website_products.serial_item
+                                        FROM  (SELECT id, sku_id ,SUM(available) as sum_available 
+		                                FROM website_inventory
+		                                GROUP BY sku_id) AS inventory
+                                        RIGHT JOIN website_products 
+                                        ON inventory.sku_id = website_products.sku;""")
+
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    for row in sum_inventory:
+        if row.sku_id is None:
+            continue
+        row_num+=1
+        ws.write(row_num,0,categories[row.category][1],style)
+        ws.write(row_num,1,row.name,style)
+        ws.write(row_num,2,row.sku_id,style)
+        ws.write(row_num,3,row.description,style)
+        ws.write(row_num,4,row.price,style)
+        if row.serial_item ==1:
+            ws.write(row_num,5,'YES',style)
+        else:
+            ws.write(row_num,5,'NO',style)
+        if row.sum_available>0:
+             ws.write(row_num,6,'availble',style)
+        else:
+             ws.write(row_num,6,'Unavailble',style)
+
+    return wb

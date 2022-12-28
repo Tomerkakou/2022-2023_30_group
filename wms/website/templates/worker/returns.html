@@ -9,9 +9,12 @@ Returns
        <li><a href="{% url 'newinventory' %}">New inventory</a></li>
        <li class="active1"><a href="{% url 'returns' %}" style="color:white;">Returns</a></li>
        <li><a href="{% url 'ordersW' %}">Orders</a></li>
-       <li><a href="#">Reports</a></li>
+       <li><a href="{% url 'reports_worker' %}">Reports</a></li>
         {% endblock %}
 {% block main %}
+{% if message != None %}
+      <script>alert("{{message}}");</script>
+{% endif %}
 <div class="inline">
     <form method="post" class="inline">
         <br>

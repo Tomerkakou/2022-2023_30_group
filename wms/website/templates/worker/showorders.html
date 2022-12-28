@@ -9,7 +9,7 @@ Orders
       <li><a href="{% url 'newinventory' %}">New inventory</a></li>
       <li><a href="{% url 'returns' %}">Returns</a></li>
       <li class="active1"><a href="{% url 'ordersW' %}" style="color:white;">Orders</a></li>
-      <li><a href="#">Reports</a></li>
+      <li><a href="{% url 'reports_worker' %}">Reports</a></li>
 {% endblock %}
 {% block main %}
 <div class="inline">
@@ -21,10 +21,10 @@ Orders
         <input type="date" id="create_date_end" name="create_date_end"  placeholder="Return date">
         Status:
         <select name="status" id="status">
-            <option value="">All</option>
             <option value="0">Waiting</option>
             <option value="1">In progress</option>
             <option value="2">Completed</option>
+            <option value="">All</option>
           </select>
         {% csrf_token %}
         <button type="submit" name="search" class="mybutton">{% bs_icon 'search' %}</button>

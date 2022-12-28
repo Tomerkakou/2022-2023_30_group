@@ -1,18 +1,27 @@
 {% extends "template.html" %}
 {% block title %}
-{{title}}
+Reports
 {% endblock %}
 {% block active %}
-        <li class="active1"a><a href="{% url 'searchroduct' %}" style="color:white;">Products</a></li>
+        <li><a href="{% url 'searchroduct' %}">Inventory</a></li>
         <li><a href="{% url 'showinventory' %}">Inventory</a></li>
         <li><a href="{% url 'newinventory' %}">New inventory</a></li>
         <li><a href="{% url 'returns' %}">Returns</a></li>
         <li><a href="{% url 'ordersW' %}">Orders</a></li>
-        <li><a href="{% url 'reports_worker' %}">Reports</a></li>
+        <li class="active1"a><a href="{% url 'reports_worker' %}" style="color:white;">Reports</a></li>
        
 {% endblock %}
 {% block main %}
 <div>
-    {{product.as_p}}
+  <br>
+  <div class="well">
+      <ul>
+        <li><a href="{% url 'inventory-worker-excel' %}">Export inventory report to EXCELS</a></li> 
+      </ul>
+  </div>
 </div>
 {% endblock %}
+
+
+
+
