@@ -68,8 +68,16 @@ def getOrders(data):
         kwargs['create_date__lte']=datetime(int(date[0]),int(date[1]),int(date[2]))+timedelta(days=1)
     if data['status'] != '':
         kwargs['status']=data['status']
+    res=list(orders.objects.filter(**kwargs).order_by('status','create_date'))
+    index=0
+    while index<len(res):
+        count=specific_order.objects.filter(order_id=res[index])
+        if len(count)==0:
+            res.pop(index)
+            index-=1
+        index+=1
+    return res
 
-    return orders.objects.filter(**kwargs).order_by('status','create_date')
 
 def getOrderlist(order):
     
