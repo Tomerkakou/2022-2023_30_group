@@ -5,6 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from datetime import datetime
 from django.contrib import messages
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from io import BytesIO
 
 def is_student(user):
     return str(user.role)=='Student'
@@ -81,3 +84,27 @@ def products_To_Excel_for_student(request):
 
 
 
+
+
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html  = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+    
+
+
+def recepit(request,order_id): 
+    template = get_template('student/recepit.html') 
+    context = { "invoice_id": 123, "customer_name": "John Cooper", "amount": 1399.99, "today": "Today", } 
+    html = template.render(context) 
+    pdf = render_to_pdf('student/recepit.html', context) 
+     
+    response = HttpResponse(pdf, content_type='application/pdf') 
+    filename = "Invoice_%s.pdf" %("12341231")  
+    response['Content-Disposition']='inline; attachment; filename=Recepit'+str(order_id)+'.pdf'
+    return response 
+    

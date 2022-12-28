@@ -52,7 +52,7 @@ Orders
                         <th scope="col">Create date</th>
                         <th scope="col">Return date</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Delete order</th>
+                        <th scope="col">Delete/Receipt</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -71,6 +71,11 @@ Orders
                                   <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
                                 </button>
                               </form>
+                              {% else %}
+                                {% csrf_token %}
+                                <a href="{% url 'receipt' order.order_number %}" target="_blank" rel="noopener" style="background-color: #f5f7fa; color:rgb(3, 224, 77); border: #f5f7fa;">
+                                  <i class="fas fa-times">{% bs_icon 'receipt' %}</i>
+                                </a>
                               {% endif %}
                             </td>
                         </tr>
