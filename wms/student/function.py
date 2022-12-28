@@ -50,7 +50,7 @@ def getOrders(data,user):
     if data['status'] != '':
         kwargs['status']=data['status']
 
-    return orders.objects.filter(**kwargs).order_by('status','create_date')
+    return orders.objects.filter(**kwargs).order_by('status','-create_date')
 
 def getOrderlist(order):
     

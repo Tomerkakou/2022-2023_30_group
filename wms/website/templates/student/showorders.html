@@ -71,11 +71,13 @@ Orders
                                   <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
                                 </button>
                               </form>
-                              {% else %}
+                              {% elif order.status == 2 %}
                                 {% csrf_token %}
                                 <a href="{% url 'receipt' order.order_number %}" target="_blank" rel="noopener" style="background-color: #f5f7fa; color:rgb(3, 224, 77); border: #f5f7fa;">
                                   <i class="fas fa-times">{% bs_icon 'receipt' %}</i>
                                 </a>
+                              {% else %}
+                              --
                               {% endif %}
                             </td>
                         </tr>
