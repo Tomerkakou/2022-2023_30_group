@@ -155,3 +155,25 @@ def create_list_products_excel_for_student():
              ws.write(row_num,6,'Unavailble',style)
 
     return wb
+
+
+def create_price_list_excel():
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Price list')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['Item name','SKU','Price']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+
+    product_list= products.objects.all()
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    for row in product_list:
+        row_num+=1
+        ws.write(row_num,0,row.name,style)
+        ws.write(row_num,1,row.sku,style)
+        ws.write(row_num,2,row.price,style)
+    return wb

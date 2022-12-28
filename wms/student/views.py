@@ -114,3 +114,13 @@ def recepit(request,order_id):
     response['Content-Disposition']='inline; attachment; filename=Recepit'+str(order_id)+'.pdf'
     return response 
     
+
+@login_required    
+def price_To_Excel(request):
+    if not is_student(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Price_list.xls'
+    function.create_price_list_excel().save(response)
+    return response  

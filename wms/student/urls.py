@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from student.views import menu,showInventory,watchOrder,showOrders,products_To_Excel_for_student,reports,recepit
+from student.views import menu,showInventory,watchOrder,showOrders,products_To_Excel_for_student,reports,recepit,price_To_Excel
 from website.views import start
 
 
@@ -28,6 +28,7 @@ urlpatterns = [
     path('student/menu/orders',showOrders,name='orders'),
     path('student/menu/reports/',reports,name='reports_student'),
     path('products-student-exel',products_To_Excel_for_student,name='products-student-exel'),
-    path('Receipt-<int:order_id>',recepit,name='receipt'),  
+    path('Receipt-<int:order_id>',recepit,name='receipt'), 
+    path('price-student-exel',price_To_Excel,name='price-student-exel'), 
 ]
 
