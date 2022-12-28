@@ -38,7 +38,7 @@ def watchOrder(request,order_id):
             messages.success(request,function.newOrder_spec(request.POST.dict(),order))
             return redirect('watchorder',order_id=order_id)
         else:
-            function.deleteItem(int(list(request.POST.dict())[1]))
+            function.deleteItem(int(list(request.POST.dict())[1]),order)
             return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
     else:
         return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
@@ -76,8 +76,8 @@ def inventory_To_Excel_for_student(request):
 
     response=HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'
-
-    return function.create_list_products_excel_for_student(response)  
+    function.create_list_products_excel_for_student().save(response)
+    return response  
 
 
 
