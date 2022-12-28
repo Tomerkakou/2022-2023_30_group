@@ -121,7 +121,7 @@ def create_list_products_excel_for_student():
     ws=wb.add_sheet('Full inventory')
     row_num=0
     style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
-    columns=['Category','Item name','SKU','Description','Price','Only for borrow','availble/Unavailble']
+    columns=['Category','Item name','SKU','Description','Only for borrow','availble/Unavailble']
 
     for col_num in range(len(columns)):
         ws.write(row_num,col_num,columns[col_num],style)
@@ -144,14 +144,13 @@ def create_list_products_excel_for_student():
         ws.write(row_num,1,row.name,style)
         ws.write(row_num,2,row.sku_id,style)
         ws.write(row_num,3,row.description,style)
-        ws.write(row_num,4,row.price,style)
         if row.serial_item ==1:
-            ws.write(row_num,5,'YES',style)
+            ws.write(row_num,4,'YES',style)
         else:
-            ws.write(row_num,5,'NO',style)
+            ws.write(row_num,4,'NO',style)
         if row.sum_available>0:
-             ws.write(row_num,6,'availble',style)
+             ws.write(row_num,5,'availble',style)
         else:
-             ws.write(row_num,6,'Unavailble',style)
+             ws.write(row_num,5,'Unavailble',style)
 
     return wb
