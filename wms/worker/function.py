@@ -89,7 +89,9 @@ def completeOrder_list(id_list,order):
     for i in order_list:
         if i.id in id_list:
             count+=1
-            i.complete()
+            id=i.complete()
+            if id :
+                inventory.objects.get(sku=id[0],location=id[1]).delete()        
     if count:
         order.status=1
     total=tuple(order_list.aggregate(Count('id')).values())[0]
