@@ -55,8 +55,7 @@ class inventory(models.Model):
         self.save()
     def decAmount(self,val):
         self.amount-=val
-        if self.amount==0:
-            self.delete()
+            
         self.save()
     def changeLocation(self,new_location):
         self.location=new_location
@@ -109,10 +108,14 @@ class specific_order(models.Model):
                 self.inventory_id.decAmount(self.amount)
                 self.completed=True
                 self.save()
+                if self.inventory_id.amount ==0:
+                    return (self.inventory_id.sku,self.inventory_id.location)
+                return None
             else:
                 self.inventory_id.changeLocation(locations.objects.get(location='RETRNS'))
                 self.completed=True
                 self.save()
+                return None
 
 
 
