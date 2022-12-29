@@ -204,7 +204,7 @@ def order_to_excel_for_worker(request,order_id):
     ws=wb.add_sheet(str(order_id)) 
     row_num=0
     style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
-    columns=['Item name','Amount','Location']
+    columns=['SKU','Item name','Serial','Amount','Location','Completed']
 
     for col_num in range(len(columns)):
         ws.write(row_num,col_num,columns[col_num],style)
@@ -214,9 +214,13 @@ def order_to_excel_for_worker(request,order_id):
 
     for row in all_orders:
         row_num+=1
-        ws.write(row_num,0,row.sku.name,style)
-        ws.write(row_num,1,row.amount,style)
-        ws.write(row_num,2,row.inventory_id.location.location,style)
+        ws.write(row_num,0,row.sku.sku,style)
+        ws.write(row_num,1,row.sku.name,style)
+        ws.write(row_num,2,row.inventory_id.serial,style)
+        ws.write(row_num,3,row.amount,style)
+        ws.write(row_num,4,row.inventory_id.location.location,style)
+        if row.completed==1:
+            ws.write(row_num,5,"✅",style)
 
 
 

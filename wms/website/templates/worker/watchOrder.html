@@ -16,7 +16,7 @@ Order number: {{order.order_number}}
     <a href="{% url 'ordersW' %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)" name="neworder" id="neworder">{% bs_icon 'list-ul' size='3em' %}<p>Return to orders list</p></a>
 </div>
 <div class="well">
-  <a href="{% url 'order_to_excel_for_worker' order.order_number %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)" name="neworder" id="neworder"><p>Export to Excel</p></a>
+  <a href="{% url 'order_to_excel_for_worker' order.order_number %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)" ><p>Export order to Excel</p></a>
 </div>
 {% endblock %}
 {% block main %}
