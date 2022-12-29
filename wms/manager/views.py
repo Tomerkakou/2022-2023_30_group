@@ -193,8 +193,8 @@ def report_entry_products(request):
     
     style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
     end , start = datetime.now(),datetime.now()+timedelta(weeks=-4)
-    entrys=newInventory.objects.filter(dt__gt=start,dt__lt=end).values('sku','sku__name','amount').annotate(sum_amount=Sum('amount'))
-
+    entrys=newInventory.objects.filter(dt__gte=start,dt__lte=end).values('sku','sku__name','amount').annotate(sum_amount=Sum('amount'))
+    print(start,"\n",end)
     for row in entrys:
         row_num+=1
         ws.write(row_num,0,row['sku'],style)
