@@ -1,7 +1,7 @@
 from django.shortcuts import render,HttpResponse,redirect
 import manager.function
 from manager.forms import productForm,locationForm,userForm
-from website.models import user1,inventory,products,categories,newInventory
+from website.models import user1,inventory,products,categories,newInventory, specific_order
 from datetime import datetime,timedelta
 import xlwt
 from django.db.models import Sum
@@ -207,5 +207,37 @@ def report_entry_products(request):
     return response
     
 
+@login_required    
+def lendings_to_excel_for_manger(request):
+    if not is_manager(request.user):
+        raise Http404 
 
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=lendings products '+str(datetime.now())+'.xls'
+
+    wb=xlwt.Workbook(encoding='utf-8')
+    
+    ws=wb.add_sheet('lendings products') 
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['SKU','Item name','Return date']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    lending_products=specific_order.objects.filter(inventory_id__location__location='RETRNS')     
+    new_lending_products = []
+    for i in lending_products:
+        new_lending_products += products.objects.filter(sku__serial_item=1)
+
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+
+    for row in lending_products:
+        row_num+=1
+        ws.write(row_num,0,row.sku.sku,style)
+        ws.write(row_num,1,row.sku.name,style)
+        ws.write(row_num,2,row.order_id.str_return_date(),style)
+
+    wb.save(response) 
+    return response
 

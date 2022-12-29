@@ -28,17 +28,18 @@ class products(models.Model):
     price=models.FloatField()
     description=models.TextField()
     category=models.IntegerField(choices=categories)
-    serial_item=models.IntegerField(choices=((0,'No'),(1,'Yes')))
+    serial_item=models.IntegerField(choices=((0,'No'),(1,'Yes'))) 
     
     def __str__(self):
         return f"{self.sku}-{self.name}"
     def return_category(self):
         return categories[self.category][1]
 
+
 class locations(models.Model):
     location=models.CharField(max_length=6,primary_key=True)
     def __str__(self):
-        return self.location
+        return self.location 
 
 
 
