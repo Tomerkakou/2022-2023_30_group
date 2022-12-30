@@ -35,6 +35,11 @@ class products(models.Model):
     def return_category(self):
         return categories[self.category][1]
 
+    def return_serial_item(self):
+        return self.serial_item
+
+
+
 
 class locations(models.Model):
     location=models.CharField(max_length=6,primary_key=True)

@@ -228,15 +228,22 @@ def lendings_to_excel_for_manger(request):
     lending_products=specific_order.objects.filter(inventory_id__location__location='RETRNS')     
     new_lending_products = []
     for i in lending_products:
-        new_lending_products += products.objects.filter(sku__serial_item=1)
+        new_lending_products += products.objects.filter(sku=i.sku.sku, serial_item=1)
 
     style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
 
-    for row in lending_products:
+    for row in new_lending_products:
         row_num+=1
-        ws.write(row_num,0,row.sku.sku,style)
-        ws.write(row_num,1,row.sku.name,style)
-        ws.write(row_num,2,row.order_id.str_return_date(),style)
+        ws.write(row_num,0,row.sku,style)
+        ws.write(row_num,1,row.name,style)
+        for i in lending_products:
+            row_num+=1
+            if i.sku.sku == row.sku:
+                ws.write(row_num,2,i.order_id.str_return_date(),style)
+                break
+                
+                
+                
 
     wb.save(response) 
     return response
