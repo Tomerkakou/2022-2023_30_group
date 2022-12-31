@@ -213,34 +213,31 @@ def lendings_to_excel_for_manger(request):
         raise Http404 
 
     response=HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition']='attachment; filename=lendings products '+str(datetime.now())+'.xls'
+    response['Content-Disposition']='attachment; filename=Stock on loan '+str(datetime.now())+'.xls'
 
     wb=xlwt.Workbook(encoding='utf-8')
     
-    ws=wb.add_sheet('lendings products') 
+    ws=wb.add_sheet('Stock on loan') 
     row_num=0
     style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
-    columns=['SKU','Item name','Return date']
+    columns=['SKU','Item name','Serial number','Loaned by','Return date']
 
     for col_num in range(len(columns)):
         ws.write(row_num,col_num,columns[col_num],style)
 
-    lending_products=specific_order.objects.filter(inventory_id__location__location='RETRNS')     
-    new_lending_products = []
-    for i in lending_products:
-        new_lending_products += products.objects.filter(sku=i.sku.sku, serial_item=1)
-
+    
+    result=specific_order.objects.filter(inventory_id__location__location='RETRNS').order_by('-id').values('sku__sku','sku__name','inventory_id__serial','order_id__user_id__full_name','order_id__return_date')[:len(inventory.objects.filter(location__location='RETRNS'))]
     style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
 
-    for row in new_lending_products:
+    for row in result:
+        print(row)
         row_num+=1
-        ws.write(row_num,0,row.sku,style)
-        ws.write(row_num,1,row.name,style)
-        for i in lending_products:
-            row_num+=1
-            if i.sku.sku == row.sku:
-                ws.write(row_num,2,i.order_id.str_return_date(),style)
-                break
+        ws.write(row_num,0,row['sku__sku'],style)
+        ws.write(row_num,1,row['sku__name'],style)
+        ws.write(row_num,2,row['inventory_id__serial'],style)
+        ws.write(row_num,3,row['order_id__user_id__full_name'],style)
+        ws.write(row_num,4,row['order_id__return_date'].strftime("%d/%m/%Y"),style)
+        
                 
                 
                 
