@@ -1,5 +1,5 @@
 from django.test import TestCase
-from website.models import products,inventory,locations,user1
+from website.models import products,inventory,locations,user1,orders,specific_order
 from worker.function import getInventory,getProducts,addNewInv 
 from worker import function
 from worker.forms import inventoryForm
@@ -12,6 +12,7 @@ class TestWorker_function(TestCase):
     @classmethod
     def setUpTestData(cls):
         x=locations.objects.create(location="A1")
+        locations.objects.create(location="A2")
         returns=locations.objects.create(location="RETRNS")
         for prod in range(10):
             y=products.objects.create(sku=prod,name=prod,price=10,description="csony ",category=0,serial_item=prod%2)
@@ -21,6 +22,7 @@ class TestWorker_function(TestCase):
         
 
     def test_products_objects_search(self):
+        print('test_products_objects_search')
         with self.subTest("clear search"):
             self.assertEqual(len(getProducts({'sku':"",'name':"",'category':""})),11)
         with self.subTest("filter by one parmeters"):
@@ -28,6 +30,7 @@ class TestWorker_function(TestCase):
     
     def test_inventory_search(self):
         """show inventory test"""
+        print('test_inventory_search')
         with self.subTest("clear search"):
             self.assertEqual(len(getInventory({'sku':"",'location_search':"",'category':"",'serial':""})),10)
         with self.subTest("filter by one sku"):
@@ -38,6 +41,7 @@ class TestWorker_function(TestCase):
             self.assertEqual(len(getInventory({'sku':"",'location_search':"",'category':"1",'serial':""})),0)
 
     def test_addInventory(self):
+        print("test_addInventory")
         g=Group.objects.create(name='test')
         form1=inventoryForm(initial={'sku':1,'location':locations.objects.get(location='A1'),'amount':10,"serial":123})
         u=user1.objects.create(username='user1',password='123',email='1@gmail.com',full_name='user',role=g)
@@ -45,6 +49,7 @@ class TestWorker_function(TestCase):
             self.assertRaises(ValueError,addNewInv,data={'sku':'1','serial':'123','amount':2},form=form1,user=u)
 
     def test_return_loan(self):
+        print("test_return_loan")
         with self.subTest("succsesfull return item from loan"):
             location=locations.objects.get(location='A1')
             self.assertEqual(f'123 with serial:1234 moved to A1',function.return_item(20,location))
@@ -55,7 +60,53 @@ class TestWorker_function(TestCase):
             self.assertEqual(None,function.return_item(-1,location))
 
     def change_location_test(self):
-            pass
+            print("change_location_test")
+            with self.subTest("succsesfull change inventory location"):
+                self.assertEqual(function.move_to(20,'A2'),'item: 123 moved to A2')
+                item=inventory.objects.get(id=20)
+                self.assertEqual(item.location.location,'A2')
+            with self.subTest("merge two inventory when one is moved to the others location from same product"):
+                product=products.objects.create(sku=790,name='790',price=10,description=" ",category=0,serial_item=0)
+                a1=locations.objects.get(location='A1')
+                a2=locations.objects.get(location='A2')
+                inventory.objects.create(id=30,sku=product,location=a1,amount=10,available=10)
+                inventory.objects.create(id=40,sku=product,location=a2,amount=10,available=10)
+                self.assertEqual(function.move_to(30,'A2'),'item: 790 moved to A2')
+                self.assertEqual(inventory.objects.get(id=40).amount,20)
+                self.assertRaises(Exception,inventory.objects.get,id=30)
+            with self.subTest("Invalid inventory id or location"):
+                self.assertEqual(function.move_to(50,'A2'),None)
+                self.assertEqual(function.move_to(40,'A'),None)
+
+    def complete_order_test(self):
+        print("complete_order_test")
+        order=orders.objects.create(order_number=10,user_id=user1.objects.get(username='user1'))
+        product1=products.objects.create(sku=800,name='800',price=10,description=" ",category=0,serial_item=0)
+        product2=products.objects.create(sku=810,name='810',price=10,description=" ",category=0,serial_item=1)
+        a1=locations.objects.get(location='A1')
+        a2=locations.objects.get(location='A2')
+        inv1=inventory.objects.create(id=9,sku=product1,location=a1,amount=10,available=5)
+        inv2=inventory.objects.create(id=10,sku=product2,location=a2,amount=1,available=0,serial=1212)
+        specific_order.objects.create(id=9,order_id=order,sku=product1,amount=5,inventory_id=inv1)
+        specific_order.objects.create(id=10,order_id=order,sku=product2,amount=1,inventory_id=inv2)
+        with self.subTest("order status,return date"):
+            self.assertEqual(order.status,'Waiting')
+            self.assertEqual(order.return_date,None)
+        with self.subTest("after completing part of the order status change"):
+            self.assertEqual(function.completeOrder_list((9,),order),'In progress')
+            self.assertEqual(specific_order.objects.get(id=9).completed,True)
+            self.assertEqual(inventory.objects.get(id=9).amount,5)
+        with self.subTest("after completing all of the order status change"):
+            self.assertEqual(function.completeOrder_list((10,),order),'Completed')
+            self.assertEqual(specific_order.objects.get(id=10).completed,True)
+            inv=inventory.objects.get(id=10)
+            self.assertEqual(inv.location.location,'RETRNS')
+            with self.subTest("order got new return date after completed"):
+                self.assertNotEqual(orders.objects.get(pK=10).return_date,None)
+
+
+
+
             
         
     
