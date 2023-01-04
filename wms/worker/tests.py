@@ -80,50 +80,32 @@ class TestWorker_function(TestCase):
 
     def complete_order_test(self):
         print("complete_order_test")
-        order=orders.objects.create(order_number=10,user_id=user1.objects.get(username='user1'))
+        u=user1.objects.create(username='user1',password='123',email='1@gmail.com',full_name='user',role=Group.objects.create(name='test'))
+        order=orders.objects.create(order_number=10,user_id=u)
         product1=products.objects.create(sku=800,name='800',price=10,description=" ",category=0,serial_item=0)
         product2=products.objects.create(sku=810,name='810',price=10,description=" ",category=0,serial_item=1)
         a1=locations.objects.get(location='A1')
         a2=locations.objects.get(location='A2')
-        inv1=inventory.objects.create(id=9,sku=product1,location=a1,amount=10,available=5)
-        inv2=inventory.objects.create(id=10,sku=product2,location=a2,amount=1,available=0,serial=1212)
+        inv1=inventory.objects.create(id=90,sku=product1,location=a1,amount=10,available=5)
+        inv2=inventory.objects.create(id=100,sku=product2,location=a2,amount=1,available=0,serial=1212)
         specific_order.objects.create(id=9,order_id=order,sku=product1,amount=5,inventory_id=inv1)
         specific_order.objects.create(id=10,order_id=order,sku=product2,amount=1,inventory_id=inv2)
         with self.subTest("order status,return date"):
-            self.assertEqual(order.status,'Waiting')
+            self.assertEqual(order.status,0)
             self.assertEqual(order.return_date,None)
         with self.subTest("after completing part of the order status change"):
-            self.assertEqual(function.completeOrder_list((9,),order),'In progress')
+            self.assertEqual(function.completeOrder_list((9,),order),1)
             self.assertEqual(specific_order.objects.get(id=9).completed,True)
-            self.assertEqual(inventory.objects.get(id=9).amount,5)
+            self.assertEqual(inventory.objects.get(id=90).amount,5)
         with self.subTest("after completing all of the order status change"):
-            self.assertEqual(function.completeOrder_list((10,),order),'Completed')
+            self.assertEqual(function.completeOrder_list((10,),order),2)
             self.assertEqual(specific_order.objects.get(id=10).completed,True)
-            inv=inventory.objects.get(id=10)
+            inv=inventory.objects.get(id=100)
             self.assertEqual(inv.location.location,'RETRNS')
             with self.subTest("order got new return date after completed"):
                 self.assertNotEqual(orders.objects.get(pK=10).return_date,None)
 
-
-
-
-            
-        
     
 
-
-    # def test_excel_report_format(self):
-    #     # Call the function to generate the Excel report
-    #     response_to_test=HttpResponse(content_type='application/ms-excel')
-    #     report = function.create_excel_for_worker(response_to_test)
-        
-    #     # Check that the report has the correct number of sheets
-    #     self.assertEqual(len(report.sheets), 1)
-
-    #     # Check that the first sheet has the correct column names
-    #     self.assertEqual(report.sheets[0].column_names, ['ID', 'Name', 'Email'])
-
-    #     # Check that the second sheet has the correct data types
-    #     self.assertEqual(report.sheets[1].data_types, ['integer', 'string', 'email'])
 
 

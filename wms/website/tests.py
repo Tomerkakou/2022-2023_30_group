@@ -16,6 +16,7 @@ class TestModels(TestCase):
         
 
     def test_student_register(self):
+        print("test_student_register")
         matan={'reg_username':'','reg_pass':'1234','reg_name':'matan','reg_email':'matan@gmail.com'}
         self.assertEqual(register(matan),"Not all details have been filled in") 
         matan={'reg_username':'matan1','reg_pass':'1234','reg_name':'matan','reg_email':'matan@gmail.com'}
@@ -23,6 +24,7 @@ class TestModels(TestCase):
 
 
     def test_products(self):    
+        print("test_products")
         with self.subTest("checks product to str"):
             pen = products.objects.get(name = 'pencill')
             self.assertEqual(pen.__str__(),'1234-pencill')
@@ -37,6 +39,7 @@ class TestModels(TestCase):
             self.assertRaises(Exception,products.objects.create,sku = 1234, name= 'notebook', price= 50, description = 'pink notebook do something',category = 0, serial_item=0)
 
     def test_manager_locations(self):
+        print("test_manager_locations")
         with self.subTest("checks get location and return as string"):
             check_location = locations.objects.get(location = 'A50362')
             self.assertEqual(check_location.__str__(),"A50362")  
@@ -48,6 +51,7 @@ class TestModels(TestCase):
             self.assertEqual(type(loc),type(new))
     
     def test_login(self):
+        print("test_login")
         data={'username':'matan1','password':'1234'}
         self.assertEqual(login(data),user1.objects.get(username='matan1'))
         data={'username':'matan1','password':'invaild'}
