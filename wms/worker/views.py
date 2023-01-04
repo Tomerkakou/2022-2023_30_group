@@ -10,10 +10,6 @@ from datetime import datetime
 import xlwt 
 
 
-
-
-
-
 def is_worker(user):
     return str(user.role)=='Worker'
 
