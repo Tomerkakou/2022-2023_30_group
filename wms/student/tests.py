@@ -13,16 +13,16 @@ class Student_Test_function(TestCase):
         a1=locations.objects.create(location='A3')
         a2=locations.objects.create(location='A4')
         inv1=inventory.objects.create(sku=product1,location=a1,amount=20,available=20)
+        data={'product':'830','amount':30}
+        with self.subTest("product with no stock"):
+            self.assertEqual(function.newOrder_spec(data,order),'No stock for product')
         inv2=inventory.objects.create(sku=product2,location=a2,amount=1,available=1,serial=11111)
-        data={'sku':'850','amount':30}
-        with self.subTest("Invalid product"):
-            self.assertEqual(function.newOrder_spec(data,order),'Invalid sku')
-        data['sku']='820'
+        data['product']='820'
         with self.subTest("Not enough available form the product"):
-            self.assertEqual(function.newOrder_spec(data,order),'Invalid amount')
+            self.assertEqual(function.newOrder_spec(data,order),'Only 20 in stock')
         data['amount']=10
         with self.subTest("create one specific order"):
-            self.assertEqual(function.newOrder_spec(data,order),None)
+            self.assertEqual(function.newOrder_spec(data,order),"Order updated")
             self.assertEqual(specific_order.objects.filter(order_id=order).first().amount,10)
         with self.subTest("increase the amount of the specific order instead of creating new one"):
             function.newOrder_spec(data,order)
@@ -83,9 +83,9 @@ class Student_Test_function(TestCase):
         a2=locations.objects.create(location='A4')
         inv1=inventory.objects.create(sku=product1,location=a1,amount=20,available=20)
         inv2=inventory.objects.create(sku=product2,location=a2,amount=1,available=1,serial=11111)
-        data={'sku':'820','amount':20}
+        data={'product':'820','amount':20}
         function.newOrder_spec(data,order)
-        data={'sku':'830','amount':1}
+        data={'product':'830','amount':1}
         function.newOrder_spec(data,order)
         with self.subTest("order created succesfully"):
             self.assertEqual(specific_order.objects.filter(order_id=order).count(),2)

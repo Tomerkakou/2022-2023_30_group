@@ -9,6 +9,7 @@ from xhtml2pdf import pisa
 from django.template.loader import get_template
 from io import BytesIO
 from django.db.models import Sum ,Avg
+from student.forms import productChoose
 def is_student(user):
     return str(user.role)=='Student'
 
@@ -36,15 +37,16 @@ def watchOrder(request,order_id):
     if not is_student(request.user):
         raise Http404
     order=get_object_or_404(orders,order_number=order_id)
+    form=productChoose()
     if request.method=='POST':
         if 'newItem' in request.POST:
             messages.success(request,function.newOrder_spec(request.POST.dict(),order))
             return redirect('watchorder',order_id=order_id)
         else:
             function.deleteItem(int(list(request.POST.dict())[1]),order)
-            return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
+            return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order),'form':form},status=200)
     else:
-        return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
+        return render(request,'student/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order),'form':form},status=200)
 
 @login_required
 def showOrders(request):

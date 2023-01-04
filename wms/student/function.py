@@ -58,14 +58,15 @@ def getOrderlist(order):
      
 
 def newOrder_spec(data,order_obj):
-    try:
-        amount_orderd=int(data['amount'])
-        product=products.objects.get(sku=data['sku'])
-    except:
-        return 'Invalid sku'
-    res=inventory.objects.filter(sku=product).aggregate(Sum('available'))
+    amount_orderd=int(data['amount'])
+    product=products.objects.get(sku=data['product'])
+    res=inventory.objects.filter(sku=product)
+    if res.exists():
+        res=res.aggregate(Sum('available'))
+    else:
+        return 'No stock for product'
     if res['available__sum']<amount_orderd or amount_orderd<1:
-        return 'Invalid amount'
+        return 'Only {} in stock'.format(res['available__sum'])
     else:
         
         inv_list=list(inventory.objects.filter(sku=product,available__gt=0).order_by('available'))
@@ -87,7 +88,7 @@ def newOrder_spec(data,order_obj):
             amount_orderd=amount_orderd-curr_amount
             inv.save()
             index+=1
-        return None
+        return "Order updated"
             
     
 def deleteItem(sku_num,order=None):
