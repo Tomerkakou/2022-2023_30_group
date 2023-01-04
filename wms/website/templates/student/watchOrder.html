@@ -46,13 +46,19 @@ Order number: {{order.order_number}}
                       <tbody>
                           <tr>
                             <form method="POST">
-                                <td><input type="number" placeholder="Sku" name="sku"></td>
+                                <td>{% for field in form %}
+                                    {{ field }}
+                                    {% endfor %}</td>
                                 <td>
-                                  {% for message in messages|slice:":1" %}
-                                    <p style="color:red">{{message}}</p>
+                                  {% for msg in messages|slice:":1" %}
+                                    {% if msg.message == "Order updated" %}
+                                      <p style="color:blue">{{msg}}</p>
+                                    {% else %}
+                                      <p style="color:red">{{msg}}</p>
+                                    {% endif %}
                                   {% endfor %} 
                                 </td>
-                                <td><input type="number" placeholder="Amount" name="amount" min="1"></td>
+                                <td><input type="number" placeholder="Amount" name="amount" min="1" required></td>
                                 {% csrf_token %}
                                 <td><button type="submit" id=newItem name="newItem" style="background-color: #f5f7fa; color:rgb(5, 167, 45); border: #f5f7fa;">{% bs_icon 'plus-square-fill' size=1.5em %}</button></td>
                                 <td>-----</td>
