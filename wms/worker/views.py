@@ -148,13 +148,7 @@ def showReturns(request):
             data['category']=request.COOKIES['c']
             inventory_id=int(tuple(data.keys())[2])
             new_location=data['location']
-            try:
-                obj=inventory.objects.get(id=inventory_id)
-                obj.location=locations.objects.get(location=new_location)
-                obj.setAvailable()
-                msg=f'{obj.sku.name} with serial:{obj.serial} moved to {new_location}'
-            except:
-                msg=None
+            msg=function.return_item(inventory_id,new_location)
             return render(request,"worker/returns.html",{"l_returns":function.get_returns(data),"form":locationform(),'s':request.COOKIES['s'],'se':request.COOKIES['se'],'message':msg},status=200)
     else:
         return render(request,"worker/returns.html",status=200)

@@ -5,20 +5,24 @@ from worker import function
 from worker.forms import inventoryForm
 from django.contrib.auth.models import Group
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
+from django.urls import reverse
 
 
 class TestWorker_function(TestCase):
     @classmethod
     def setUpTestData(cls):
         x=locations.objects.create(location="A1")
+        returns=locations.objects.create(location="RETRNS")
         for prod in range(10):
             y=products.objects.create(sku=prod,name=prod,price=10,description="csony ",category=0,serial_item=prod%2)
             inventory.objects.create(sku=y,location=x,amount=10,available=10)
+        product=products.objects.create(sku=123,name='123',price=10,description="csony ",category=0,serial_item=1)
+        item_to_return=inventory.objects.create(id=20,sku=product,location=returns,amount=1,available=0,serial=1234)
         
 
     def test_products_objects_search(self):
         with self.subTest("clear search"):
-            self.assertEqual(len(getProducts({'sku':"",'name':"",'category':""})),10)
+            self.assertEqual(len(getProducts({'sku':"",'name':"",'category':""})),11)
         with self.subTest("filter by one parmeters"):
             self.assertEqual(len(getProducts({'sku':"1",'name':"",'category':""})),1)
     
@@ -40,7 +44,22 @@ class TestWorker_function(TestCase):
         with self.subTest("item with serial number"):
             self.assertRaises(ValueError,addNewInv,data={'sku':'1','serial':'123','amount':2},form=form1,user=u)
 
+    def test_return_loan(self):
+        with self.subTest("succsesfull return item from loan"):
+            location=locations.objects.get(location='A1')
+            self.assertEqual(f'123 with serial:1234 moved to A1',function.return_item(20,location))
+            item=inventory.objects.get(id=20)
+            self.assertEqual(item.location.location,'A1')
+            self.assertEqual(item.available,1)
+        with self.subTest("Invalid inventory id"):
+            self.assertEqual(None,function.return_item(-1,location))
+
+    def change_location_test(self):
+            pass
+            
+        
     
+
 
     # def test_excel_report_format(self):
     #     # Call the function to generate the Excel report

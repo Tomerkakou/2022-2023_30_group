@@ -189,7 +189,15 @@ def stocktaking_excel():
         ws.write(row_num,4,'',style)
 
     return wb 
-    
+
+def return_item(inventory_id,new_location):
+    try:
+        obj=inventory.objects.get(id=inventory_id)
+        obj.location=locations.objects.get(location=new_location)
+        obj.setAvailable()
+        return f'{obj.sku.name} with serial:{obj.serial} moved to {new_location}'
+    except:
+        return None
 
 
 
