@@ -97,8 +97,9 @@ class Student_Test_function(TestCase):
             function.deleteOrder(order.order_number)
             self.assertEqual(specific_order.objects.filter(order_id=order).count(),0)
             self.assertRaises(Exception,orders.objects.get,pK=order.order_number)
-            
-     def setUpTestData(cls):
+
+    @classmethod
+    def setUpTestData(cls):
         g=Group.objects.create(name='student')
         user = user1.objects.create(username= 'matan',email='matan123@gmail.com', full_name = 'matani',role = g)
         for i in range(10):
