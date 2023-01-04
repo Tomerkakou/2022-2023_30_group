@@ -1,6 +1,9 @@
-from website.models import inventory,products,newInventory,orders,specific_order,locations
+from website.models import inventory,products,newInventory,orders,specific_order,locations,categories
+from django.shortcuts import HttpResponse
 from datetime import datetime,timedelta
 from django.db.models import Count
+import xlwt
+
 
 def addNewInv(data,form,user):
     product=products.objects.get(sku=int(data['sku']))
@@ -65,8 +68,16 @@ def getOrders(data):
         kwargs['create_date__lte']=datetime(int(date[0]),int(date[1]),int(date[2]))+timedelta(days=1)
     if data['status'] != '':
         kwargs['status']=data['status']
+    res=list(orders.objects.filter(**kwargs).order_by('status','-create_date'))
+    index=0
+    while index<len(res):
+        count=specific_order.objects.filter(order_id=res[index])
+        if len(count)==0:
+            res.pop(index)
+            index-=1
+        index+=1
+    return res
 
-    return orders.objects.filter(**kwargs).order_by('status','create_date')
 
 def getOrderlist(order):
     
@@ -78,7 +89,9 @@ def completeOrder_list(id_list,order):
     for i in order_list:
         if i.id in id_list:
             count+=1
-            i.complete()
+            id=i.complete()
+            if id :
+                inventory.objects.get(sku=id[0],location=id[1]).delete()        
     if count:
         order.status=1
     total=tuple(order_list.aggregate(Count('id')).values())[0]
@@ -124,4 +137,67 @@ def move_to(id,location):
         
 
 
-            
+def create_excel_for_worker():
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Full inventory')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['Sku','Location','Serial number','item name','Amount','Available','Category']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+
+    sum_inventory=inventory.objects.exclude(location__location='RETRNS')
+
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    for row in sum_inventory:
+        row_num+=1
+        ws.write(row_num,0,row.sku.sku,style)
+        ws.write(row_num,1,row.location.location,style)
+        ws.write(row_num,2,row.serial,style)
+        ws.write(row_num,3,row.sku.name,style)
+        ws.write(row_num,4,row.amount,style)
+        ws.write(row_num,5,row.available,style)
+        ws.write(row_num,6,row.sku.return_category(),style)
+
+    return wb 
+
+
+def stocktaking_excel():
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Stocktaking')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['Sku','Location','Serial number','Item name','Actual amount']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+
+    sum_inventory=inventory.objects.exclude(location__location='RETRNS')
+
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    for row in sum_inventory:
+        row_num+=1
+        ws.write(row_num,0,row.sku.sku,style)
+        ws.write(row_num,1,row.location.location,style)
+        ws.write(row_num,2,row.serial,style)
+        ws.write(row_num,3,row.sku.name,style)
+        ws.write(row_num,4,'',style)
+
+    return wb 
+
+def return_item(inventory_id,new_location):
+    try:
+        obj=inventory.objects.get(id=inventory_id)
+        obj.location=locations.objects.get(location=new_location)
+        obj.setAvailable()
+        return f'{obj.sku.name} with serial:{obj.serial} moved to {new_location}'
+    except:
+        return None
+
+
+

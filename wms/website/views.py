@@ -31,11 +31,11 @@ def start(request):
 def changeUser(request):
     u=request.user
     if u.role_id == 1:
-        x='M'   
+        x='manager/menu.html'   
     elif u.role_id == 2:
-        x='W'  
+        x='worker/menu.html'  
     elif u.role_id == 3:
-        x='S'
+        x='student/menu.html'
     if request.method == 'POST':
         if 'change_info' in request.POST:
             form1=user_updateForm(request.POST,instance=u)
@@ -43,9 +43,9 @@ def changeUser(request):
             if form1.is_valid():
                 form1.save()
                 msg='User information updated successfully'
-                return render(request,f"website/userupdate{x}.html",{"form1":form1,'form2':form2,"message":msg},status=200)
+                return render(request,f"website/userupdate.html",{"form1":form1,'form2':form2,"message":msg,'menu':x},status=200)
             else:
-                return render(request,f"website/userupdate{x}.html",{"form1":form1,'form2':form2},status=400)
+                return render(request,f"website/userupdate.html",{"form1":form1,'form2':form2,'menu':x},status=400)
         if 'change_password' in request.POST:
             form1=user_updateForm(instance=u)
             form2=PasswordChangeCustomForm(request.user,request.POST)
@@ -53,10 +53,10 @@ def changeUser(request):
                 user=form2.save()
                 update_session_auth_hash(request, user)
                 msg='User password updated successfully'
-                return render(request,f"website/userupdate{x}.html",{"form1":form1,'form2':form2,"message2":msg},status=200)
+                return render(request,f"website/userupdate.html",{"form1":form1,'form2':form2,"message2":msg,'menu':x},status=200)
             else:
-                return render(request,f"website/userupdate{x}.html",{"form1":form1,'form2':form2},status=400)
+                return render(request,f"website/userupdate.html",{"form1":form1,'form2':form2,'menu':x},status=400)
     else:
         form1=user_updateForm(instance=u)#initial={'username':u.username,'password':u.password,'email':u.email,'name':u.name})
         form2=PasswordChangeCustomForm(user=u)
-        return render(request,f"website/userupdate{x}.html",{"form1":form1,'form2':form2},status=200) 
+        return render(request,f"website/userupdate.html",{"form1":form1,'form2':form2,'menu':x},status=200) 

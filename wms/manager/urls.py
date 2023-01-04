@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from manager.views import menu ,newProduct , newLocation,showUsers,createuser,showInventory,inventoryToExel,reports
+from manager.views import menu ,newProduct , newLocation,showUsers,createuser,showInventory,inventoryToExel,reports,report_entry_products,lendings_to_excel_for_manger
 from website.views import start
 urlpatterns = [
     path('',start,name='login'),
@@ -26,6 +26,11 @@ urlpatterns = [
     path('manager/menu/Users/',showUsers,name='showusers'),
     path('manager/menu/createUser/',createuser,name='createuser'),
     path('manager/menu/Inventory/',showInventory,name='Inventory'),
-    path('manager/menu/reports/',reports,name='reports'),
-    path('inventory-exel',inventoryToExel,name='inventory-exel')
+    path('manager/menu/reports/',reports,name='reports_manager'),
+    path('inventory-exel',inventoryToExel,name='inventory-exel'),
+    path('report_entry_products',report_entry_products,name='report_entry_products'),
+    path('lendings_to_excel_for_manger',lendings_to_excel_for_manger,name='lendings_to_excel_for_manger'),
+
+
 ]
+

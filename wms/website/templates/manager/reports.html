@@ -7,13 +7,25 @@ Reports
         <li><a href="{% url 'newlocation' %}">New Location</a></li>
         <li><a href="{% url 'Inventory' %}">Inventory</a></li>
         <li><a href="{% url 'showusers' %}">User managment</a></li>
-        <li class="active1"><a href="{% url 'reports' %}"style="color:white;">Reports</a></li>
+        <li class="active1"><a href="{% url 'reports_manager' %}"style="color:white;">Reports</a></li>
 {% endblock %}
 {% block main %}
 <br>
 <div class="well">
     <ul>
-      <li><a href="{% url 'inventory-exel' %}">Export inventory report to EXCELS</a></li>
+      <li><a href="{% url 'inventory-exel' %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)">Export inventory report to EXCELS</a></li>
     </ul>
 </div>
+<br>
+<div class="well">
+    <ul>
+      <li><a href="{% url 'report_entry_products' %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)">Export entrys of products in last 4 weeks to EXCELS</a></li>
+    </ul>
+</div>
+<div class="well">
+  <ul>
+    <li><a href="{% url 'lendings_to_excel_for_manger' %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)">Export Stock on loan to EXCELS</a></li>
+  </ul>
+</div>
 {% endblock %}
+

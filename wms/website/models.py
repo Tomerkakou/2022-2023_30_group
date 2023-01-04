@@ -28,17 +28,23 @@ class products(models.Model):
     price=models.FloatField()
     description=models.TextField()
     category=models.IntegerField(choices=categories)
-    serial_item=models.IntegerField(choices=((0,'No'),(1,'Yes')))
+    serial_item=models.IntegerField(choices=((0,'No'),(1,'Yes'))) 
     
     def __str__(self):
         return f"{self.sku}-{self.name}"
     def return_category(self):
         return categories[self.category][1]
 
+    def return_serial_item(self):
+        return self.serial_item
+
+
+
+
 class locations(models.Model):
     location=models.CharField(max_length=6,primary_key=True)
     def __str__(self):
-        return self.location
+        return self.location 
 
 
 
@@ -55,8 +61,7 @@ class inventory(models.Model):
         self.save()
     def decAmount(self,val):
         self.amount-=val
-        if self.amount==0:
-            self.delete()
+            
         self.save()
     def changeLocation(self,new_location):
         self.location=new_location
@@ -109,10 +114,14 @@ class specific_order(models.Model):
                 self.inventory_id.decAmount(self.amount)
                 self.completed=True
                 self.save()
+                if self.inventory_id.amount ==0:
+                    return (self.inventory_id.sku,self.inventory_id.location)
+                return None
             else:
                 self.inventory_id.changeLocation(locations.objects.get(location='RETRNS'))
                 self.completed=True
                 self.save()
+                return None
 
 
 

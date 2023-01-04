@@ -6,7 +6,7 @@ Orders
 {% block active %}
         <li class="active1"><a href="{% url 'orders' %}" style="color:white;">Orders</a></li>
         <li><a href="{% url 'inventory' %}">Inventory</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a href="{% url 'reports_student' %}">Reports</a></li>
 {% endblock %}
 {% block left_bar %}
 <div class="well">
@@ -52,7 +52,7 @@ Orders
                         <th scope="col">Create date</th>
                         <th scope="col">Return date</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Delete order</th>
+                        <th scope="col">Delete/Receipt</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -71,6 +71,13 @@ Orders
                                   <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>
                                 </button>
                               </form>
+                              {% elif order.status == 2 %}
+                                {% csrf_token %}
+                                <a href="{% url 'receipt' order.order_number %}" target="_blank" rel="noopener" style="background-color: #f5f7fa; color:rgb(3, 224, 77); border: #f5f7fa;">
+                                  <i class="fas fa-times">{% bs_icon 'receipt' %}</i>
+                                </a>
+                              {% else %}
+                              --
                               {% endif %}
                             </td>
                         </tr>

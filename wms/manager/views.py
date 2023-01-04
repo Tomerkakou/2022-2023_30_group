@@ -1,8 +1,8 @@
 from django.shortcuts import render,HttpResponse,redirect
 import manager.function
 from manager.forms import productForm,locationForm,userForm
-from website.models import user1,inventory,products,categories
-from datetime import datetime
+from website.models import user1,inventory,products,categories,newInventory, specific_order
+from datetime import datetime,timedelta
 import xlwt
 from django.db.models import Sum
 from django.contrib.auth.models import User,Group
@@ -155,7 +155,7 @@ def inventoryToExel(request):
 		                                GROUP BY sku_id) AS inventory
                                         RIGHT JOIN website_products 
                                         ON inventory.sku_id = website_products.sku;""")
-
+    
     style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
     for row in sum_inventory:
         if row.sku_id is None:
@@ -172,4 +172,76 @@ def inventoryToExel(request):
     return response
     
 
+
+
+
+@login_required    
+def report_entry_products(request):
+    if not is_manager(request.user):
+        raise Http404
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Entry_products_'+str(datetime.now())+'.xls'
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Entry products')
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['SKU','Item name','Entry amount']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    end , start = datetime.now(),datetime.now()+timedelta(weeks=-4)
+    entrys=newInventory.objects.filter(dt__gte=start,dt__lte=end).values('sku','sku__name','amount').annotate(sum_amount=Sum('amount'))
+    print(start,"\n",end)
+    for row in entrys:
+        row_num+=1
+        ws.write(row_num,0,row['sku'],style)
+        ws.write(row_num,1,row['sku__name'],style)
+        ws.write(row_num,2,row['sum_amount'],style)
+        
+
+    wb.save(response)
+
+    return response
+    
+
+@login_required    
+def lendings_to_excel_for_manger(request):
+    if not is_manager(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Stock on loan '+str(datetime.now())+'.xls'
+
+    wb=xlwt.Workbook(encoding='utf-8')
+    
+    ws=wb.add_sheet('Stock on loan') 
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['SKU','Item name','Serial number','Loaned by','Return date']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+
+    
+    result=specific_order.objects.filter(inventory_id__location__location='RETRNS').order_by('-id').values('sku__sku','sku__name','inventory_id__serial','order_id__user_id__full_name','order_id__return_date')[:len(inventory.objects.filter(location__location='RETRNS'))]
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+
+    for row in result:
+        print(row)
+        row_num+=1
+        ws.write(row_num,0,row['sku__sku'],style)
+        ws.write(row_num,1,row['sku__name'],style)
+        ws.write(row_num,2,row['inventory_id__serial'],style)
+        ws.write(row_num,3,row['order_id__user_id__full_name'],style)
+        ws.write(row_num,4,row['order_id__return_date'].strftime("%d/%m/%Y"),style)
+        
+                
+                
+                
+
+    wb.save(response) 
+    return response
 

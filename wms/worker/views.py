@@ -1,11 +1,17 @@
 
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from website.models import inventory,products,newInventory,orders,locations
+from website.models import inventory,products,newInventory,orders,locations,categories,specific_order
 from worker import function
 from worker.forms import inventoryForm,locationform
 from manager.forms import productForm
+from datetime import datetime
+import xlwt 
+
+
+
+
 
 
 def is_worker(user):
@@ -17,21 +23,6 @@ def menu(request):
         raise Http404
     return render(request,"worker/menu.html",status=200)
 
-def showInventory(request):
-    """ unit test on worker/tests.py test_inventory_search"""
-    if request.method == "POST": 
-        if 'search' in request.POST:   
-            search = request.POST.dict()
-            response=render(request,"worker/showinventory.html",{"l_inventory":function.getInventory(search),'s':search['sku'],'l':search['location'],'se':search['serial']},status=200)  
-            response.set_cookie('s',search['sku'])
-            response.set_cookie('l',search['location'])
-            response.set_cookie('se',search['serial'])
-            response.set_cookie('c',search['category'])
-            return response
-        else:
-            pass#when change location is added 
-    else:
-        return render(request,"worker/showinventory.html",{"l_inventory":inventory.objects.all()},status=200)
 
 @login_required
 def inventory_receipt(request):
@@ -142,13 +133,77 @@ def showReturns(request):
             data['category']=request.COOKIES['c']
             inventory_id=int(tuple(data.keys())[2])
             new_location=data['location']
-            try:
-                obj=inventory.objects.get(id=inventory_id)
-                obj.location=locations.objects.get(location=new_location)
-                obj.setAvailable()
-                msg=f'{obj.sku.name} with serial:{obj.serial} moved to {new_location}'
-            except:
-                msg=None
+            msg=function.return_item(inventory_id,new_location)
             return render(request,"worker/returns.html",{"l_returns":function.get_returns(data),"form":locationform(),'s':request.COOKIES['s'],'se':request.COOKIES['se'],'message':msg},status=200)
     else:
         return render(request,"worker/returns.html",status=200)
+
+
+
+
+@login_required
+def reports_for_worker(request):
+    if not is_worker(request.user):
+        raise Http404
+    return render(request,'worker/reports.html')
+
+
+@login_required    
+def inventory_To_Excel_for_worker(request):
+    if not is_worker(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'
+    function.create_excel_for_worker().save(response)
+    return response  
+    
+
+@login_required    
+def stocktaking_To_Excel(request):
+    if not is_worker(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Stocktaking.xls'
+    function.stocktaking_excel().save(response)
+    return response  
+
+
+@login_required    
+def order_to_excel_for_worker(request,order_id):
+    if not is_worker(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Specific order '+str(datetime.now())+'.xls'
+
+    wb=xlwt.Workbook(encoding='utf-8')
+    
+    ws=wb.add_sheet(str(order_id)) 
+    row_num=0
+    style = xlwt.easyxf('font: bold on, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+    columns=['SKU','Item name','Serial','Amount','Location','Completed']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],style)
+                                               
+    all_orders=specific_order.objects.filter(order_id__order_number=order_id)                
+    style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
+
+    for row in all_orders:
+        row_num+=1
+        ws.write(row_num,0,row.sku.sku,style)
+        ws.write(row_num,1,row.sku.name,style)
+        ws.write(row_num,2,row.inventory_id.serial,style)
+        ws.write(row_num,3,row.amount,style)
+        ws.write(row_num,4,row.inventory_id.location.location,style)
+        if row.completed==1:
+            ws.write(row_num,5,"✅",style)
+
+
+
+    wb.save(response) 
+    return response
+
+    

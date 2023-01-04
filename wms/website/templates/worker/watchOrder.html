@@ -9,11 +9,14 @@ Order number: {{order.order_number}}
       <li><a href="{% url 'newinventory' %}">New inventory</a></li>
       <li><a href="{% url 'returns' %}">Returns</a></li>
       <li class="active1"><a href="{% url 'ordersW' %}" style="color:white;">Orders</a></li>
-      <li><a href="#">Reports</a></li>
+      <li><a href="{% url 'reports_worker' %}">Reports</a></li>
 {% endblock %}
 {% block left_bar %}
 <div class="well">
     <a href="{% url 'ordersW' %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)" name="neworder" id="neworder">{% bs_icon 'list-ul' size='3em' %}<p>Return to orders list</p></a>
+</div>
+<div class="well">
+  <a href="{% url 'order_to_excel_for_worker' order.order_number %}" style="background: #f5f5f5; border:#f5f5f5; color:rgb(0, 47, 255)" ><p>Export order to Excel</p></a>
 </div>
 {% endblock %}
 {% block main %}
