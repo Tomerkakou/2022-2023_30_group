@@ -1,16 +1,19 @@
 from django.test import TestCase
+from worker.function import getInventory,getProducts,addNewInv,getOrders,getOrderlist
 from website.models import products,inventory,locations,user1,orders,specific_order
-from worker.function import getInventory,getProducts,addNewInv 
 from worker import function
 from worker.forms import inventoryForm
 from django.contrib.auth.models import Group
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
-from django.urls import reverse
+from django.urls import reverse 
 
 
 class TestWorker_function(TestCase):
     @classmethod
     def setUpTestData(cls):
+        
+        g=Group.objects.create(name='worker')
+
         x=locations.objects.create(location="A1")
         locations.objects.create(location="A2")
         returns=locations.objects.create(location="RETRNS")
@@ -19,6 +22,12 @@ class TestWorker_function(TestCase):
             inventory.objects.create(sku=y,location=x,amount=10,available=10)
         product=products.objects.create(sku=123,name='123',price=10,description="csony ",category=0,serial_item=1)
         item_to_return=inventory.objects.create(id=20,sku=product,location=returns,amount=1,available=0,serial=1234)
+
+        item=inventory.objects.create(id=19,sku=product,location=returns,amount=1,available=0,serial=134) 
+        user = user1.objects.create(username= 'osnat',email='123@gmail.com', full_name = 'osnat shabtay',role = g)
+        order = orders.objects.create(order_number = 1000,user_id = user)
+        spe_order = specific_order.objects.create(order_id = order,sku=product,amount = 10,inventory_id = item)
+
         
 
     def test_products_objects_search(self):
@@ -58,6 +67,18 @@ class TestWorker_function(TestCase):
             self.assertEqual(item.available,1)
         with self.subTest("Invalid inventory id"):
             self.assertEqual(None,function.return_item(-1,location))
+
+    def test_get_orders(self):
+        with self.subTest("Wthout fillter"):
+            self.assertEqual(len(getOrders({'order_number':"",'create_date':"",'create_date_end':"",'status':""})),1)
+    
+    def test_get_order_list(self):
+            with self.subTest("same msg"):
+                order = orders.objects.get(order_number = 1000)
+                list_specific_order = getOrderlist(order)
+                self.assertEqual(len(list_specific_order),1)
+                self.assertEqual(list_specific_order[0].amount,10)
+
 
     def change_location_test(self):
             print("change_location_test")
