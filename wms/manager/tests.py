@@ -13,7 +13,7 @@ class Manager_tests(TestCase):
             user1.objects.create(username=str(i),password='1234',email=str(i)+'@gmail.com',full_name='user',role=g)
         locations.objects.create(location="123456")
         products.objects.create(sku=1234,price=150,description="test item",name="test", category=1,serial_item=0) 
-   
+
     def test_getUser(self):
         print("test_getUser")
         data={'username':"",'fullname':"",'email':"","role":""}
