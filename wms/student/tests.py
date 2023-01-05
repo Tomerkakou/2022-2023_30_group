@@ -106,6 +106,7 @@ class Student_Test_function(TestCase):
             orders.objects.create(order_number = i+1*400,user_id = user)
             
     def test_status_order(self):
+        print("test_status_order")
         with self.subTest("Without fillter"):
             user = user1.objects.get(username= 'matan')
             self.assertEqual(len(function.getOrders({'order_number':"",'create_date':"",'create_date_end':"",'status':""},user)),10)

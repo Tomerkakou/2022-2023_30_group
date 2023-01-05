@@ -69,10 +69,12 @@ class TestWorker_function(TestCase):
             self.assertEqual(None,function.return_item(-1,location))
 
     def test_get_orders(self):
+        print("test_get_orders")
         with self.subTest("Wthout fillter"):
             self.assertEqual(len(getOrders({'order_number':"",'create_date':"",'create_date_end':"",'status':""})),1)
     
     def test_get_order_list(self):
+            print("test_get_order_list")
             with self.subTest("same msg"):
                 order = orders.objects.get(order_number = 1000)
                 list_specific_order = getOrderlist(order)
