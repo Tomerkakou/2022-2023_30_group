@@ -5,7 +5,7 @@ from website.function import register,login
 
 # Create your tests here.
 
-class TestModels(TestCase):
+class TestModels_homePage(TestCase):
     @classmethod
     def setUpTestData(cls):
         g=Group.objects.create(name='test')

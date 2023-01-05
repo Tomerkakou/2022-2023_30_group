@@ -23,7 +23,7 @@ class TestWorker_function(TestCase):
         product=products.objects.create(sku=123,name='123',price=10,description="csony ",category=0,serial_item=1)
         item_to_return=inventory.objects.create(id=20,sku=product,location=returns,amount=1,available=0,serial=1234)
 
-        item=inventory.objects.create(id=19,sku=product,location=returns,amount=1,available=0,serial=134) 
+        item=inventory.objects.create(id=979,sku=product,location=returns,amount=1,available=0,serial=134) 
         user = user1.objects.create(username= 'osnat',email='123@gmail.com', full_name = 'osnat shabtay',role = g)
         order = orders.objects.create(order_number = 1000,user_id = user)
         spe_order = specific_order.objects.create(order_id = order,sku=product,amount = 10,inventory_id = item)
@@ -82,8 +82,8 @@ class TestWorker_function(TestCase):
                 self.assertEqual(list_specific_order[0].amount,10)
 
 
-    def change_location_test(self):
-            print("change_location_test")
+    def test_change_location(self):
+            print("test_change_location")
             with self.subTest("succsesfull change inventory location"):
                 self.assertEqual(function.move_to(20,'A2'),'item: 123 moved to A2')
                 item=inventory.objects.get(id=20)
@@ -101,8 +101,8 @@ class TestWorker_function(TestCase):
                 self.assertEqual(function.move_to(50,'A2'),None)
                 self.assertEqual(function.move_to(40,'A'),None)
 
-    def complete_order_test(self):
-        print("complete_order_test")
+    def test_complete_order(self):
+        print("test_complete_order")
         u=user1.objects.create(username='user1',password='123',email='1@gmail.com',full_name='user',role=Group.objects.create(name='test'))
         order=orders.objects.create(order_number=10,user_id=u)
         product1=products.objects.create(sku=800,name='800',price=10,description=" ",category=0,serial_item=0)
@@ -126,7 +126,7 @@ class TestWorker_function(TestCase):
             inv=inventory.objects.get(id=100)
             self.assertEqual(inv.location.location,'RETRNS')
             with self.subTest("order got new return date after completed"):
-                self.assertNotEqual(orders.objects.get(pK=10).return_date,None)
+                self.assertNotEqual(orders.objects.get(order_number=10).return_date,None)
 
     
 

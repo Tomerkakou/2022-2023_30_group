@@ -13,7 +13,7 @@ class Manager_tests(TestCase):
             user1.objects.create(username=str(i),password='1234',email=str(i)+'@gmail.com',full_name='user',role=g)
         locations.objects.create(location="123456")
         products.objects.create(sku=1234,price=150,description="test item",name="test", category=1,serial_item=0) 
-
+    
     def test_getUser(self):
         print("test_getUser")
         data={'username':"",'fullname':"",'email':"","role":""}
@@ -23,14 +23,14 @@ class Manager_tests(TestCase):
         data['role']="0"
         self.assertEqual(len(getUsers(data)),0)
     
-    def delete_user(self):
-        print("delete_user")
+    def test_delete_user(self):
+        print("test_delete_user")
         deleteUser('0')
         data={'username':"",'fullname':"",'email':"","role":""}
-        self.assertEqual(len(getUsers(data)),9) 
+        self.assertEqual(len(getUsers(data)),9)
     
-    def update_amount_test(self): 
-        print("update_amount_test")
+    def test_update_amount(self): 
+        print("test_update_amount")
         loc = locations.objects.get(location="123456") 
         item = products.objects.get(sku=1234)
         inv=inventory.objects.create(id=1,sku=item,location=loc,amount=50,available=20)
