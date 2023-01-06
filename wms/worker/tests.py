@@ -1,16 +1,19 @@
 from django.test import TestCase
+from worker.function import getInventory,getProducts,addNewInv,getOrders,getOrderlist
 from website.models import products,inventory,locations,user1,orders,specific_order
-from worker.function import getInventory,getProducts,addNewInv 
 from worker import function
 from worker.forms import inventoryForm
 from django.contrib.auth.models import Group
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
-from django.urls import reverse
+from django.urls import reverse 
 
 
 class TestWorker_function(TestCase):
     @classmethod
     def setUpTestData(cls):
+        
+        g=Group.objects.create(name='Worker')
+
         x=locations.objects.create(location="A1")
         locations.objects.create(location="A2")
         returns=locations.objects.create(location="RETRNS")
@@ -19,6 +22,12 @@ class TestWorker_function(TestCase):
             inventory.objects.create(sku=y,location=x,amount=10,available=10)
         product=products.objects.create(sku=123,name='123',price=10,description="csony ",category=0,serial_item=1)
         item_to_return=inventory.objects.create(id=20,sku=product,location=returns,amount=1,available=0,serial=1234)
+
+        item=inventory.objects.create(id=979,sku=product,location=returns,amount=1,available=0,serial=134) 
+        user = user1.objects.create(username= 'osnat',email='123@gmail.com', full_name = 'osnat shabtay',role = g)
+        order = orders.objects.create(order_number = 1000,user_id = user)
+        spe_order = specific_order.objects.create(order_id = order,sku=product,amount = 10,inventory_id = item)
+
         
 
     def test_products_objects_search(self):
@@ -59,8 +68,22 @@ class TestWorker_function(TestCase):
         with self.subTest("Invalid inventory id"):
             self.assertEqual(None,function.return_item(-1,location))
 
-    def change_location_test(self):
-            print("change_location_test")
+    def test_get_orders(self):
+        print("test_get_orders")
+        with self.subTest("Wthout fillter"):
+            self.assertEqual(len(getOrders({'order_number':"",'create_date':"",'create_date_end':"",'status':""})),1)
+    
+    def test_get_order_list(self):
+            print("test_get_order_list")
+            with self.subTest("same msg"):
+                order = orders.objects.get(order_number = 1000)
+                list_specific_order = getOrderlist(order)
+                self.assertEqual(len(list_specific_order),1)
+                self.assertEqual(list_specific_order[0].amount,10)
+
+
+    def test_change_location(self):
+            print("test_change_location")
             with self.subTest("succsesfull change inventory location"):
                 self.assertEqual(function.move_to(20,'A2'),'item: 123 moved to A2')
                 item=inventory.objects.get(id=20)
@@ -78,8 +101,8 @@ class TestWorker_function(TestCase):
                 self.assertEqual(function.move_to(50,'A2'),None)
                 self.assertEqual(function.move_to(40,'A'),None)
 
-    def complete_order_test(self):
-        print("complete_order_test")
+    def test_complete_order(self):
+        print("test_complete_order")
         u=user1.objects.create(username='user1',password='123',email='1@gmail.com',full_name='user',role=Group.objects.create(name='test'))
         order=orders.objects.create(order_number=10,user_id=u)
         product1=products.objects.create(sku=800,name='800',price=10,description=" ",category=0,serial_item=0)
@@ -103,9 +126,17 @@ class TestWorker_function(TestCase):
             inv=inventory.objects.get(id=100)
             self.assertEqual(inv.location.location,'RETRNS')
             with self.subTest("order got new return date after completed"):
-                self.assertNotEqual(orders.objects.get(pK=10).return_date,None)
+                self.assertNotEqual(orders.objects.get(order_number=10).return_date,None)
 
-    
+    def test_stocktaking_worker_excel(self):
+        print("test_stocktaking_worker_excel")
+        user1.objects.create_user(username='test',password='test',email='test@gmail.com',role=Group.objects.get(name='Worker'))
+        self.client.login(username='test',password='test')
+        response=self.client.get(reverse('stocktaking-worker-excel'))
+        with self.subTest("get the correct view function"):
+            self.assertEqual(response.status_code,200)
+        with self.subTest("return an exel file"):
+            self.assertEqual(response.get('content-type'),'application/ms-excel')
 
 
 
