@@ -94,7 +94,7 @@ def products_To_Excel_for_student(request):
 @login_required
 def recepit(request,order_id): 
     order=get_object_or_404(orders,order_number=order_id)
-    if not is_student(request.user) or order.user_id != request.user:
+    if not is_student(request.user) or order.user_id != request.user or order.status!=2:
         raise Http404
     def render_to_pdf(template_src, context_dict={}):
         template = get_template(template_src)

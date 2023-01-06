@@ -12,7 +12,7 @@ class TestWorker_function(TestCase):
     @classmethod
     def setUpTestData(cls):
         
-        g=Group.objects.create(name='worker')
+        g=Group.objects.create(name='Worker')
 
         x=locations.objects.create(location="A1")
         locations.objects.create(location="A2")
@@ -128,7 +128,15 @@ class TestWorker_function(TestCase):
             with self.subTest("order got new return date after completed"):
                 self.assertNotEqual(orders.objects.get(order_number=10).return_date,None)
 
-    
+    def test_stocktaking_worker_excel(self):
+        print("test_stocktaking_worker_excel")
+        user1.objects.create_user(username='test',password='test',email='test@gmail.com',role=Group.objects.get(name='Worker'))
+        self.client.login(username='test',password='test')
+        response=self.client.get(reverse('stocktaking-worker-excel'))
+        with self.subTest("get the correct view function"):
+            self.assertEqual(response.status_code,200)
+        with self.subTest("return an exel file"):
+            self.assertEqual(response.get('content-type'),'application/ms-excel')
 
 
 

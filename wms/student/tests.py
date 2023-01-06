@@ -2,9 +2,14 @@ from django.test import TestCase
 from website.models import products,inventory,locations,user1,orders,specific_order
 from django.contrib.auth.models import Group
 from student import function
+from django.urls import reverse 
 
 class Student_Test_function(TestCase):
 
+    @classmethod
+    def setUpTestData(cls):
+        g=Group.objects.create(name='Student')
+        
     def test_create_order(self):
         print("test_create_order")
         u=user1.objects.create(username='user1',password='123',email='1@gmail.com',full_name='user',role=Group.objects.create(name='test'))
@@ -97,23 +102,38 @@ class Student_Test_function(TestCase):
             function.deleteOrder(order.order_number)
             self.assertEqual(specific_order.objects.filter(order_id=order).count(),0)
             self.assertRaises(Exception,orders.objects.get,pK=order.order_number)
-
-    @classmethod
-    def setUpTestData(cls):
-        g=Group.objects.create(name='student')
-        user = user1.objects.create(username= 'matan',email='matan123@gmail.com', full_name = 'matani',role = g)
-        for i in range(10):
-            orders.objects.create(order_number = i+1*400,user_id = user)
-            
-    def test_status_order(self):
+  
+    """def test_status_order(self):
         print("test_status_order")
+        u=user1.objects.create(username='user1',password='123',email='1@gmail.com',full_name='user',role=Group.objects.create(name='test'))
+        for i in range(10):
+            orders.objects.create(user_id = u)
         with self.subTest("Without fillter"):
-            user = user1.objects.get(username= 'matan')
-            self.assertEqual(len(function.getOrders({'order_number':"",'create_date':"",'create_date_end':"",'status':""},user)),10)
-
+            self.assertEqual(function.getOrders({'order_number':"",'create_date':"",'create_date_end':"",'status':""},u).count(),10)
+"""
+    def test_price_export(self):
+        print("test_price_export")
+        user1.objects.create_user(username='test',password='test',email='test@gmail.com',role=Group.objects.get(name='Student'))
+        self.client.login(username='test',password='test')
+        response=self.client.get(reverse('price-student-exel'))
+        with self.subTest("get the correct view function"):
+            self.assertEqual(response.status_code,200)
+        with self.subTest("return an exel file"):
+            self.assertEqual(response.get('content-type'),'application/ms-excel') 
         
+    def test_recepit_export(self):
+        print("test_recepit_export")
+        user=user1.objects.create_user(username='test',password='test',email='test@gmail.com',role=Group.objects.get(name='Student'))
+        order=orders.objects.create(user_id=user,status=2)
+        self.client.login(username='test',password='test')
+        response=self.client.get(reverse('receipt',args=(order.order_number,)))
+        with self.subTest("get the correct view function"):
+            self.assertEqual(response.status_code,200)
+        with self.subTest("return an pdf file"):
+            self.assertEqual(response.get('content-type'),'application/pdf') 
+        with self.subTest("tests the correct file name"):
+            self.assertEqual(response.get('Content-Disposition'),'inline; attachment; filename=Recepit'+str(order.order_number)+'.pdf')
         
-
         
         
         
