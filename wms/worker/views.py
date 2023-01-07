@@ -134,38 +134,6 @@ def showReturns(request):
     else:
         return render(request,"worker/returns.html",status=200)
 
-
-
-
-@login_required
-def reports_for_worker(request):
-    if not is_worker(request.user):
-        raise Http404
-    return render(request,'worker/reports.html')
-
-
-@login_required    
-def inventory_To_Excel_for_worker(request):
-    if not is_worker(request.user):
-        raise Http404 
-
-    response=HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'
-    function.create_excel_for_worker().save(response)
-    return response  
-    
-
-@login_required    
-def stocktaking_To_Excel(request):
-    if not is_worker(request.user):
-        raise Http404 
-
-    response=HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition']='attachment; filename=Stocktaking.xls'
-    function.stocktaking_excel().save(response)
-    return response  
-
-
 @login_required    
 def order_to_excel_for_worker(request,order_id):
     if not is_worker(request.user):
@@ -197,9 +165,38 @@ def order_to_excel_for_worker(request,order_id):
         if row.completed==1:
             ws.write(row_num,5,"✅",style)
 
-
-
     wb.save(response) 
     return response
+
+
+@login_required
+def reports_for_worker(request):
+    if not is_worker(request.user):
+        raise Http404
+    return render(request,'worker/reports.html')
+
+
+@login_required    
+def inventory_To_Excel_for_worker(request):
+    if not is_worker(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Inventory'+str(datetime.now())+'.xls'
+    function.create_excel_for_worker().save(response)
+    return response  
+
+@login_required    
+def stocktaking_To_Excel(request):
+    if not is_worker(request.user):
+        raise Http404 
+
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; filename=Stocktaking.xls'
+    function.stocktaking_excel().save(response)
+    return response  
+
+
+
 
     
