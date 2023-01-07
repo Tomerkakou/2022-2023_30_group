@@ -1,7 +1,7 @@
 # 2022-2023_30_group
 WMS project is an inventory management system written in Python.
 A web inventory management system that provides a service to the visual communication department in undergraduate studies.
-The system enables inventory management for the warehouse itsel (employees and manager) and a products ordering system for the customer (students).
+The system enables inventory management for the warehouse itself (employees and manager) and a products ordering system for the customer (students).
 
 
 ## Installation
