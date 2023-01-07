@@ -38,7 +38,7 @@ class TestWorker_function(TestCase):
             self.assertEqual(len(getProducts({'sku':"1",'name':"",'category':""})),1)
     
     def test_inventory_search(self):
-        """show inventory test"""
+        """inventory search test"""
         print('test_inventory_search')
         with self.subTest("clear search"):
             self.assertEqual(len(getInventory({'sku':"",'location_search':"",'category':"",'serial':""})),10)
@@ -137,6 +137,36 @@ class TestWorker_function(TestCase):
             self.assertEqual(response.status_code,200)
         with self.subTest("return an exel file"):
             self.assertEqual(response.get('content-type'),'application/ms-excel')
+        
+    def test_all_inventory_worker_excel(self):
+        print("test_all_inventory_worker_excel")
+        user1.objects.create_user(username='test',password='test',email='test@gmail.com',role=Group.objects.get(name='Worker'))
+        self.client.login(username='test',password='test')
+        response=self.client.get(reverse('inventory-worker-excel'))
+        with self.subTest("get the correct view function"):
+            self.assertEqual(response.status_code,200)
+        with self.subTest("return an exel file"):
+            self.assertEqual(response.get('content-type'),'application/ms-excel')
+
+    def test_product_list_order_worker_excel(self):
+        print("test_product_list_order_worker_excel")
+        user = user1.objects.create_user(username='test',password='test',email='test@gmail.com',role=Group.objects.get(name='Worker'))
+        order=orders.objects.create(user_id=user,status=2)
+        self.client.login(username='test',password='test')
+        response=self.client.get(reverse('order_to_excel_for_worker',args=(order.order_number,)))
+        with self.subTest("get the correct view function"):
+            self.assertEqual(response.status_code,200)
+        with self.subTest("return an exel file"):
+            self.assertEqual(response.get('content-type'),'application/ms-excel')
+        
+    def test_show_inventory(self):
+        print('test_show_inventory')
+        with self.subTest("without filter"):
+            self.assertEqual(len(getInventory({'sku':"",'location_search':"",'category':"",'serial':""})),10)
+
+        
+
+      
 
 
 

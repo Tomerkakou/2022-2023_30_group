@@ -50,7 +50,29 @@ class Manager_tests(TestCase):
         with self.subTest("return an exel file"):
             self.assertEqual(response.get('content-type'),'application/ms-excel')
 
-        
+    
+    def test_lending_products_export(self):
+        print("test_lending_products_export")
+        user1.objects.create_user(username='test',password='test',email='test@gmail.com',role=Group.objects.get(name='Manager'))
+        self.client.login(username='test',password='test')
+        response=self.client.get(reverse('lendings_to_excel_for_manger'))
+        with self.subTest("get the correct view function"):
+            self.assertEqual(response.status_code,200)
+        with self.subTest("return an exel file"):
+            self.assertEqual(response.get('content-type'),'application/ms-excel')
+
+
+    def test_entry_products_export(self):
+        print("test_entry_products_export")
+        user1.objects.create_user(username='test',password='test',email='test@gmail.com',role=Group.objects.get(name='Manager'))
+        self.client.login(username='test',password='test')
+        response=self.client.get(reverse('report_entry_products'))
+        with self.subTest("get the correct view function"):
+            self.assertEqual(response.status_code,200)
+        with self.subTest("return an exel file"):
+            self.assertEqual(response.get('content-type'),'application/ms-excel')
+
+
 
         
 

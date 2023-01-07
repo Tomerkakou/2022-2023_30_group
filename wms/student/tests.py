@@ -135,6 +135,20 @@ class Student_Test_function(TestCase):
             self.assertEqual(response.get('Content-Disposition'),'inline; attachment; filename=Recepit'+str(order.order_number)+'.pdf')
         
         
+            
+    def test_products_list_export(self):
+        print("test_products_list_export")
+        user1.objects.create_user(username='test',password='test',email='test@gmail.com',role=Group.objects.get(name='Student'))
+        self.client.login(username='test',password='test')
+        response=self.client.get(reverse('products-student-exel'))
+        with self.subTest("get the correct view function"):
+            self.assertEqual(response.status_code,200)
+        with self.subTest("return an exel file"):
+            self.assertEqual(response.get('content-type'),'application/ms-excel') 
+        
+
+    
+
         
         
       
