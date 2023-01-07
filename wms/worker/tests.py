@@ -49,6 +49,19 @@ class TestWorker_function(TestCase):
         with self.subTest("filter by category"):
             self.assertEqual(len(getInventory({'sku':"",'location_search':"",'category':"1",'serial':""})),0)
 
+    def test_get_order_list(self):
+        print("test_get_order_list")
+        with self.subTest("same msg"):
+            order = orders.objects.get(order_number = 1000)
+            list_specific_order = getOrderlist(order)
+            self.assertEqual(len(list_specific_order),1)
+            self.assertEqual(list_specific_order[0].amount,10)
+
+    def test_get_orders(self):
+        print("test_get_orders")
+        with self.subTest("Wthout fillter"):
+            self.assertEqual(len(getOrders({'order_number':"",'create_date':"",'create_date_end':"",'status':""})),1)
+
     def test_addInventory(self):
         print("test_addInventory")
         g=Group.objects.create(name='test')
@@ -67,19 +80,6 @@ class TestWorker_function(TestCase):
             self.assertEqual(item.available,1)
         with self.subTest("Invalid inventory id"):
             self.assertEqual(None,function.return_item(-1,location))
-
-    def test_get_orders(self):
-        print("test_get_orders")
-        with self.subTest("Wthout fillter"):
-            self.assertEqual(len(getOrders({'order_number':"",'create_date':"",'create_date_end':"",'status':""})),1)
-    
-    def test_get_order_list(self):
-            print("test_get_order_list")
-            with self.subTest("same msg"):
-                order = orders.objects.get(order_number = 1000)
-                list_specific_order = getOrderlist(order)
-                self.assertEqual(len(list_specific_order),1)
-                self.assertEqual(list_specific_order[0].amount,10)
 
 
     def test_change_location(self):
