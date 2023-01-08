@@ -6,7 +6,7 @@ The system enables inventory management for the warehouse itself (employees and 
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install django, mySQL, xlwt, django-bootstrap-icons.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install django, mySQL, xlwt, django-bootstrap-icons, xhtml2pdf, PyMySQL.
 
 ```bash
 $ pip install Django==4.0
