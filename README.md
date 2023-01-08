@@ -9,11 +9,11 @@ The system enables inventory management for the warehouse itself (employees and 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install django, mySQL, xlwt, django-bootstrap-icons.
 
 ```bash
-$ python -m pip install Django
+$ pip install Django==4.0
 ```
 
 ```bash
-sudo yum install mysql-shell
+pip install PyMySQL
 ```
 
 ```bash
@@ -25,13 +25,12 @@ pip install mysql-connector-python
 ```
 
 ```bash
-pip install mysqlalchemy
-```
-
-```bash
 pip install django-bootstrap-icons
 ```
 
+```bash
+pip install --pre xhtml2pdf
+```
 
 ## Contributing
 
