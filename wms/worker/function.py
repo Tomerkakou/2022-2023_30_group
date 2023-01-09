@@ -112,7 +112,27 @@ def move_to(id,location):
     except:
         return None
         
+def getOrderlist(order):
+    
+    return specific_order.objects.filter(order_id=order)
 
+def completeOrder_list(id_list,order):
+    order_list=getOrderlist(order)
+    count=0
+    for i in order_list:
+        if i.id in id_list:
+            count+=1
+            id=i.complete()
+            if id :
+                inventory.objects.get(sku=id[0],location=id[1]).delete()        
+    if count:
+        order.status=1
+    total=tuple(order_list.aggregate(Count('id')).values())[0]
+    completed=tuple(order_list.filter(completed=True).aggregate(Count('id')).values())[0]
+    if total==completed:
+        order.complete_order()
+    order.save()
+    return order.status
 
 def create_excel_for_worker():
     wb=xlwt.Workbook(encoding='utf-8')
@@ -178,24 +198,4 @@ def return_item(inventory_id,new_location):
 
 
 
-def getOrderlist(order):
-    
-    return specific_order.objects.filter(order_id=order)
 
-def completeOrder_list(id_list,order):
-    order_list=getOrderlist(order)
-    count=0
-    for i in order_list:
-        if i.id in id_list:
-            count+=1
-            id=i.complete()
-            if id :
-                inventory.objects.get(sku=id[0],location=id[1]).delete()        
-    if count:
-        order.status=1
-    total=tuple(order_list.aggregate(Count('id')).values())[0]
-    completed=tuple(order_list.filter(completed=True).aggregate(Count('id')).values())[0]
-    if total==completed:
-        order.complete_order()
-    order.save()
-    return order.status

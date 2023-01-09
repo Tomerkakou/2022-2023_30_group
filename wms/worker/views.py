@@ -41,6 +41,16 @@ def inventory_receipt(request):
         return render(request,"worker/new_inventory.html",{"form":form},status=200)
 
 @login_required
+def showProduct(request,id):
+    if not is_worker(request.user):
+        raise Http404
+    p=get_object_or_404(products,sku=id)
+    form=productForm(initial={'sku':p.sku,'name':p.name,'description':p.description,'price':p.price,'category':p.category,'serial_item':p.serial_item})
+    form=productForm(initial={'sku':p.sku,'name':p.name,'description':p.description,'price':p.price,'category':p.category,'serial_item':p.serial_item})
+    return render(request,"worker/product.html",{"product":form,'title':str(p)},status=200)
+
+
+@login_required
 def showInventory(request): 
     if not is_worker(request.user):
         raise Http404
@@ -66,14 +76,6 @@ def showInventory(request):
     else:
         return render(request,"worker/showinventory.html",status=200)
 
-@login_required
-def showProduct(request,id):
-    if not is_worker(request.user):
-        raise Http404
-    p=get_object_or_404(products,sku=id)
-    form=productForm(initial={'sku':p.sku,'name':p.name,'description':p.description,'price':p.price,'category':p.category,'serial_item':p.serial_item})
-    form=productForm(initial={'sku':p.sku,'name':p.name,'description':p.description,'price':p.price,'category':p.category,'serial_item':p.serial_item})
-    return render(request,"worker/product.html",{"product":form,'title':str(p)},status=200)
 
 @login_required
 def productSearch(request):
@@ -120,6 +122,21 @@ def showReturns(request):
             return render(request,"worker/returns.html",{"l_returns":function.get_returns(data),"form":locationform(),'s':request.COOKIES['s'],'se':request.COOKIES['se'],'message':msg},status=200)
     else:
         return render(request,"worker/returns.html",status=200)
+
+
+@login_required
+def watchOrder(request,order_id):
+    if not is_worker(request.user):
+        raise Http404
+    order=get_object_or_404(orders,order_number=order_id)
+    if request.method=='POST':
+        data=request.POST.dict()
+        data.pop('csrfmiddlewaretoken')
+        data.pop('submit')
+        order.status=function.completeOrder_list(tuple(map(lambda x: int(x),data.keys())),order)
+        return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
+    else:
+        return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
 
 @login_required    
 def order_to_excel_for_worker(request,order_id):
@@ -185,16 +202,3 @@ def stocktaking_To_Excel(request):
 
 
 
-@login_required
-def watchOrder(request,order_id):
-    if not is_worker(request.user):
-        raise Http404
-    order=get_object_or_404(orders,order_number=order_id)
-    if request.method=='POST':
-        data=request.POST.dict()
-        data.pop('csrfmiddlewaretoken')
-        data.pop('submit')
-        order.status=function.completeOrder_list(tuple(map(lambda x: int(x),data.keys())),order)
-        return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
-    else:
-        return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
