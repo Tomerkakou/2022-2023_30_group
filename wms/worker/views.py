@@ -95,19 +95,6 @@ def showOrders(request):
     else:
         return render(request,"worker/showorders.html",status=200)
 
-@login_required
-def watchOrder(request,order_id):
-    if not is_worker(request.user):
-        raise Http404
-    order=get_object_or_404(orders,order_number=order_id)
-    if request.method=='POST':
-        data=request.POST.dict()
-        data.pop('csrfmiddlewaretoken')
-        data.pop('submit')
-        order.status=function.completeOrder_list(tuple(map(lambda x: int(x),data.keys())),order)
-        return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
-    else:
-        return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
 
 
 @login_required
@@ -198,5 +185,16 @@ def stocktaking_To_Excel(request):
 
 
 
-
-    
+@login_required
+def watchOrder(request,order_id):
+    if not is_worker(request.user):
+        raise Http404
+    order=get_object_or_404(orders,order_number=order_id)
+    if request.method=='POST':
+        data=request.POST.dict()
+        data.pop('csrfmiddlewaretoken')
+        data.pop('submit')
+        order.status=function.completeOrder_list(tuple(map(lambda x: int(x),data.keys())),order)
+        return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
+    else:
+        return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
