@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path ,include
-import debug_toolbar
 from website.views import start
 
 urlpatterns = [
@@ -23,7 +22,5 @@ urlpatterns = [
     path('',start,name='login'),
     path('',include('manager.urls')),
     path('',include('worker.urls')),
-    path('',include('student.urls')),
-    path('__debug__/',include(debug_toolbar.urls))
-    
+    path('',include('student.urls')),   
 ]
