@@ -18,20 +18,7 @@ def menu(request):
     if not is_student(request.user):
         raise Http404
     return render(request,"student/menu.html",status=200)
-
-@login_required    
-def showInventory(request):
-    if not is_student(request.user):
-        raise Http404
-    if request.method == "POST":
-        if 'search' in request.POST:
-            return render(request,"student/showinventory.html",{"inventorys":function.sumInventory(request.POST.dict())},status=200)
-        else:
-            return render(request,"student/showinventory.html",status=200)    
-    else:
-        return render(request,"student/showinventory.html",status=200)
-
-        
+  
 @login_required
 def watchOrder(request,order_id):
     if not is_student(request.user):
@@ -73,7 +60,19 @@ def reports(request):
     return render(request,'student/reports.html')
 
 
+@login_required    
+def showInventory(request):
+    if not is_student(request.user):
+        raise Http404
+    if request.method == "POST":
+        if 'search' in request.POST:
+            return render(request,"student/showinventory.html",{"inventorys":function.sumInventory(request.POST.dict())},status=200)
+        else:
+            return render(request,"student/showinventory.html",status=200)    
+    else:
+        return render(request,"student/showinventory.html",status=200)
 
+      
 @login_required    
 def products_To_Excel_for_student(request):
     if not is_student(request.user):
@@ -85,11 +84,6 @@ def products_To_Excel_for_student(request):
     return response  
 
 
-
-
-
-
-    
 
 @login_required
 def recepit(request,order_id): 
