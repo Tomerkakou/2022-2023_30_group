@@ -87,15 +87,6 @@ def productSearch(request):
     else:
         return render(request,"worker/productsearch.html",status=200)
 
-@login_required
-def showOrders(request):
-    if not is_worker(request.user):
-        raise Http404
-    if request.method == "POST":
-        if 'search' in request.POST:
-            return render(request,"worker/showorders.html",{"orders":function.getOrders(request.POST.dict())},status=200)   
-    else:
-        return render(request,"worker/showorders.html",status=200)
 
 
 
@@ -137,6 +128,17 @@ def watchOrder(request,order_id):
         return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
     else:
         return render(request,'worker/watchOrder.html',{'order':order,'o_list':function.getOrderlist(order)},status=200)
+
+@login_required
+def showOrders(request):
+    if not is_worker(request.user):
+        raise Http404
+    if request.method == "POST":
+        if 'search' in request.POST:
+            return render(request,"worker/showorders.html",{"orders":function.getOrders(request.POST.dict())},status=200)   
+    else:
+        return render(request,"worker/showorders.html",status=200)
+
 
 @login_required    
 def order_to_excel_for_worker(request,order_id):

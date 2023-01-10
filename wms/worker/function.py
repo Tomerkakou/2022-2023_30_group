@@ -55,28 +55,6 @@ def getProducts(data):
 
     return products.objects.filter(**kwargs).order_by('sku','category')
 
-def getOrders(data):
-    print(data['create_date'])
-    kwargs={}
-    if data['order_number'] != '':
-        kwargs['order_number']=data['order_number']
-    if data['create_date'] != '':
-        date=data['create_date'].split('-')
-        kwargs['create_date__gte']=datetime(int(date[0]),int(date[1]),int(date[2]))
-    if data['create_date_end'] != '':
-        date=data['create_date_end'].split('-')
-        kwargs['create_date__lte']=datetime(int(date[0]),int(date[1]),int(date[2]))+timedelta(days=1)
-    if data['status'] != '':
-        kwargs['status']=data['status']
-    res=list(orders.objects.filter(**kwargs).order_by('status','-create_date'))
-    index=0
-    while index<len(res):
-        count=specific_order.objects.filter(order_id=res[index])
-        if len(count)==0:
-            res.pop(index)
-            index-=1
-        index+=1
-    return res
 
 def get_returns(data):
     kwargs={"location__location":"RETRNS"}
@@ -133,6 +111,32 @@ def completeOrder_list(id_list,order):
         order.complete_order()
     order.save()
     return order.status
+
+    
+def getOrders(data):
+    print(data['create_date'])
+    kwargs={}
+    if data['order_number'] != '':
+        kwargs['order_number']=data['order_number']
+    if data['create_date'] != '':
+        date=data['create_date'].split('-')
+        kwargs['create_date__gte']=datetime(int(date[0]),int(date[1]),int(date[2]))
+    if data['create_date_end'] != '':
+        date=data['create_date_end'].split('-')
+        kwargs['create_date__lte']=datetime(int(date[0]),int(date[1]),int(date[2]))+timedelta(days=1)
+    if data['status'] != '':
+        kwargs['status']=data['status']
+    res=list(orders.objects.filter(**kwargs).order_by('status','-create_date'))
+    index=0
+    while index<len(res):
+        count=specific_order.objects.filter(order_id=res[index])
+        if len(count)==0:
+            res.pop(index)
+            index-=1
+        index+=1
+    return res
+
+
 
 def create_excel_for_worker():
     wb=xlwt.Workbook(encoding='utf-8')
