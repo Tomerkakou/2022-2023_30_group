@@ -61,9 +61,7 @@ Returns
                             <td>{{ret.amount}}</td>
                             <td>
                               <form method="post" class="inline">
-                                {% for field in form %}
-                                {{ field }}
-                                {% endfor %}
+                                {{form.location}}
                                 {% csrf_token %}
                                 <button type="submit" name="{{ret.id}}" style="background-color: #f5f7fa; color:rgb(17, 121, 182); border: #f5f7fa;">
                                   <i class="fas fa-times">{% bs_icon 'check-square-fill' %}</i>

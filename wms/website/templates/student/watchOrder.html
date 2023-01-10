@@ -46,9 +46,7 @@ Order number: {{order.order_number}}
                       <tbody>
                           <tr>
                             <form method="POST">
-                                <td>{% for field in form %}
-                                    {{ field }}
-                                    {% endfor %}</td>
+                                <td>{{form.product}}</td>
                                 <td>
                                   {% for msg in messages|slice:":1" %}
                                     {% if msg.message == "Order updated" %}
@@ -71,7 +69,7 @@ Order number: {{order.order_number}}
                               <td>{{o.sum_amount}}</td>
                               <td>{% if o.completed == 0 %} Waiting {% else %} Completed {% endif %}</td>
                               <td>
-                                <form method="POST" onsubmit="return confirm('Are you sure?');">
+                                <form method="POST" onsubmit="return confirm('Are you sure you want to delete {{o.sum_amount}} {{o.sku__name}} ?');">
                                   {% csrf_token %}
                                   <button type="submit" name="{{o.sku}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
                                     <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>

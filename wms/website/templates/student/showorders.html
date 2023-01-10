@@ -65,7 +65,7 @@ Orders
                             <td>{{order.return_status}}</td>
                             <td>
                               {% if order.status == 0 %}
-                              <form method="POST" onsubmit="return confirm('Are you sure?');">
+                              <form method="POST" onsubmit="return confirm('Are you sure you want to delete order number:{{order.order_number}} ?');">
                                 {% csrf_token %}
                                 <button type="submit" name="{{order.order_number}}" style="background-color: #f5f7fa; color:rgb(204, 27, 27); border: #f5f7fa;">
                                   <i class="fas fa-times">{% bs_icon 'x-square-fill' %}</i>

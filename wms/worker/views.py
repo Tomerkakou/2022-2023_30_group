@@ -29,8 +29,8 @@ def inventory_receipt(request):
         if form.is_valid():
             try:
                 msg=function.addNewInv(request.POST.dict(),form,request.user)
-            except:
-                msg2="Item with serial number"
+            except ValueError as err:
+                msg2=str(err)
                 return render(request,"worker/new_inventory.html",{"form":form,"message2":msg2},status=400)
             form=inventoryForm()
             return render(request,"worker/new_inventory.html",{"form":form,"message":msg},status=201)

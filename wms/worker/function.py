@@ -8,8 +8,10 @@ import xlwt
 def addNewInv(data,form,user):
     product=products.objects.get(sku=int(data['sku']))
     if product.serial_item == 1 :
-        if data['serial']=='' or int(data['amount'])>1:
-            raise ValueError
+        if data['serial']=='' :
+            raise ValueError("This product must contain serial number")
+        elif int(data['amount'])>1:
+            raise ValueError("Product with serial number can only have amount: 1")
         else:
             temp=form.save()
             temp.setAvailable()

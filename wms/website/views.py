@@ -6,6 +6,7 @@ from website.forms import user_updateForm,PasswordChangeCustomForm
 from django.contrib.auth import login,logout
 from django.contrib.auth.decorators import login_required
 
+
 @login_required
 def log_out(request):
     logout(request)
@@ -17,11 +18,11 @@ def start(request):
             login_data = request.POST.dict()
             current=function.login(login_data)
             print(type(current))
-            if current:
+            if type(current) == user1:
                 login(request,current)
                 return redirect(f"{current.role}_menu")
             else:
-                return render(request,"website/login-register.html",{'message':"Invalid username or password"},status=401)
+                return render(request,"website/login-register.html",{'message':current},status=401)
         elif "register" in request.POST :
             return render(request,"website/login-register.html",{'message2': function.register(request.POST.dict())})
     else:

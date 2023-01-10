@@ -1,23 +1,31 @@
 from website.models import user1
 from django.contrib.auth.models import User,Group
-
-
+from django.contrib.auth.password_validation import password_validators_help_texts,validate_password
+from django.forms import ValidationError
 def register(data):
-    try:
-        if data['reg_username']!= '' and data['reg_pass']!= '' and data['reg_name']!= '' and data['reg_email']!= '':
-            student=Group.objects.get(name='Student')
-            user=user1.objects.create_user(username=data['reg_username'],password=data['reg_pass'],full_name=data['reg_name'],email=data['reg_email'],role=student)
-            return 'User created succsesfully'
+    if data['reg_username']!= '' and data['reg_pass']!= '' and data['reg_name']!= '' and data['reg_email']!= '':
+        student=Group.objects.get(name='Student')
+        if user1.objects.filter(username=data['reg_username']).count()==0:
+            if user1.objects.filter(email=data['reg_email']).count()==0:
+                try:
+                    validate_password(data['reg_pass'])
+                except ValidationError:
+                    return password_validators_help_texts()
+
+                user=user1.objects.create_user(username=data['reg_username'],password=data['reg_pass'],full_name=data['reg_name'],email=data['reg_email'],role=student)
+                return 'User created succsesfully'
+            else:
+                 return 'Email already in use'
         else:
-            return "Not all details have been filled in"      
-    except:
-         return "Username or Email already in use"
+            return 'Username already in use'
+    else:
+        return "Not all details have been filled in"      
 
 def login(data):
     try:
             current= user1.objects.get(username=data['username'])
             if current.check_password(data['password']):
                 return  current
-            raise ValueError        
+            return 'Invalid password'      
     except:
-            return None
+            return 'Invalid username'

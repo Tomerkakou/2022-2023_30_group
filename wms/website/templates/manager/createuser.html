@@ -12,7 +12,7 @@ Create user
 {% endblock %}
 {% block left_bar %}
 <div class="well">
-    <ul><a href="{% url 'showusers' %}">{% bs_icon 'people' size='3em' %}<p>Return to user list</p></a></li>
+    <ul><a href="{% url 'showusers' %}" style="color:blue;">{% bs_icon 'people' size='3em' %}<p>Return to user list</p></a></li>
 </div>
 {% endblock %}
 {% block main %}
@@ -21,6 +21,7 @@ Create user
       {% csrf_token %}
       {{form.as_p}}
       <button type="submit" class="mybutton">Create</button>
+      <br>
       <h4 style="color:blue;">{{message}}</h4>
     </form>
 {% endblock %}

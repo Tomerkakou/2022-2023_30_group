@@ -2,7 +2,8 @@ from django import forms
 from website.models import products,locations,user1
 from django.contrib.auth.models import User,Group
 from django.contrib.auth.forms import UserCreationForm
-
+from django.contrib.auth.password_validation import validate_password
+from django.forms import ValidationError
 class productForm(forms.ModelForm):
     class Meta:
         model=products
@@ -38,6 +39,16 @@ class userForm(forms.ModelForm):
         data=self.clean()
         user=user1.objects.create_user(username=data['username'],password=data['password'],full_name=data['full_name'],email=data['email'],role=data['role'])
         user.set_password(data['password'])
+
+    def clean(self):
+        super(userForm,self).clean()
+        cd = self.cleaned_data
+        password = cd.get("password")
+        try:
+            validate_password(password)
+        except ValueError as err:
+            self.add_error('password',err)
+        return cd
   
         
 
