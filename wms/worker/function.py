@@ -55,18 +55,6 @@ def getProducts(data):
 
     return products.objects.filter(**kwargs).order_by('sku','category')
 
-
-def get_returns(data):
-    kwargs={"location__location":"RETRNS"}
-    if data['sku'] != '':
-        kwargs['sku__sku']=data['sku']
-    if data['serial'] != '':
-        kwargs['serial']=data['serial'] 
-    if data['category'] != '':
-        kwargs['sku__category']=data['category']
-
-    return inventory.objects.filter(**kwargs).order_by('sku','-amount')
-
 def move_to(id,location):
     try:
         new_location=locations.objects.get(pk=location)
@@ -111,6 +99,18 @@ def completeOrder_list(id_list,order):
         order.complete_order()
     order.save()
     return order.status
+
+
+def get_returns(data):
+    kwargs={"location__location":"RETRNS"}
+    if data['sku'] != '':
+        kwargs['sku__sku']=data['sku']
+    if data['serial'] != '':
+        kwargs['serial']=data['serial'] 
+    if data['category'] != '':
+        kwargs['sku__category']=data['category']
+
+    return inventory.objects.filter(**kwargs).order_by('sku','-amount')
 
     
 def getOrders(data):

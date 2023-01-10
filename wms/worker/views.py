@@ -76,20 +76,6 @@ def showInventory(request):
     else:
         return render(request,"worker/showinventory.html",status=200)
 
-
-@login_required
-def productSearch(request):
-    if not is_worker(request.user):
-        raise Http404
-    if request.method == 'POST':
-        data=request.POST.dict()
-        return render(request,"worker/productsearch.html",{'products':function.getProducts(data)},status=200)
-    else:
-        return render(request,"worker/productsearch.html",status=200)
-
-
-
-
 @login_required
 def showReturns(request): 
     if not is_worker(request.user):
@@ -113,6 +99,18 @@ def showReturns(request):
             return render(request,"worker/returns.html",{"l_returns":function.get_returns(data),"form":locationform(),'s':request.COOKIES['s'],'se':request.COOKIES['se'],'message':msg},status=200)
     else:
         return render(request,"worker/returns.html",status=200)
+
+
+@login_required
+def productSearch(request):
+    if not is_worker(request.user):
+        raise Http404
+    if request.method == 'POST':
+        data=request.POST.dict()
+        return render(request,"worker/productsearch.html",{'products':function.getProducts(data)},status=200)
+    else:
+        return render(request,"worker/productsearch.html",status=200)
+
 
 
 @login_required
