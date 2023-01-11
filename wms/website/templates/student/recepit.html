@@ -60,44 +60,48 @@
                 User: {{order.user_id.username}}&nbsp;&nbsp;&nbsp;&nbsp;
                 <hr class='hrItem' />
             </div>
-        <div>
-        <div class='details'>
-            <table>
-                <thead>
-                    <tr>
-                        <th>---</th>
-                        <th>Sku</th>
-                        <th>Item name</th>
-                        <th>Serial number</th>
-                        <th>Amount</th>
-                        <th>Price for Unit</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for o in o_list %}
+            <div>
+            <div class='details'>
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{forloop.counter}}</td>
-                            <td>{{o.sku}}</td>
-                            <td>{{o.sku__name}}</td>
-                            <td>{{o.inventory_id__serial}}</td>
-                            <td>{{o.sum_amount}}</td>
-                            <td>{{o.sku__price}}</td>
-                            <td>{{o.total_price}}</td>
+                            <th>---</th>
+                            <th>Sku</th>
+                            <th>Item name</th>
+                            <th>Serial number</th>
+                            <th>Amount</th>
+                            <th>Price for Unit</th>
+                            <th>Price</th>
                         </tr>
-                    {% endfor %}
-                    <tr>
-                        <td>Total:</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>{{total.sum_amount__sum}}</td>
-                        <td>-</td>
-                        <td>{{total.total_price__sum}}</td>
-                    </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for o in o_list %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{o.sku}}</td>
+                                <td>{{o.sku__name}}</td>
+                                <td>{{o.inventory_id__serial}}</td>
+                                <td>{{o.sum_amount}}</td>
+                                <td>{{o.sku__price}}</td>
+                                <td>{{o.total_price}}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>Total:</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>{{total.sum_amount__sum}}</td>
+                            <td>-</td>
+                            <td>{{total.total_price__sum}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class='header'>
+                <hr class='hrItem' />
+                <p>Any product with a serial number must be returned to the storage by the specified return date! </p>
+            </div>
         </div>
-    </div>
     </body>
 </html>
