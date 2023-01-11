@@ -117,6 +117,6 @@ def price_To_Excel(request):
         raise Http404 
 
     response=HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition']='attachment; filename=Price_list.xls'
+    response['Content-Disposition']='attachment; filename=Price list.xls'
     function.create_price_list_excel().save(response)
     return response  

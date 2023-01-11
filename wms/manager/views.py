@@ -180,7 +180,7 @@ def report_entry_products(request):
     if not is_manager(request.user):
         raise Http404
     response=HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition']='attachment; filename=Entry_products_'+str(datetime.now())+'.xls'
+    response['Content-Disposition']='attachment; filename=Entry products '+str(datetime.now())+'.xls'
     wb=xlwt.Workbook(encoding='utf-8')
     ws=wb.add_sheet('Entry products')
     row_num=0
