@@ -17,10 +17,23 @@ class TestModels_homePage(TestCase):
 
     def test_student_register(self):
         print("test_student_register")
-        matan={'reg_username':'','reg_pass':'1234','reg_name':'matan','reg_email':'matan@gmail.com'}
-        self.assertEqual(register(matan),"Not all details have been filled in") 
-        matan={'reg_username':'matan1','reg_pass':'1234','reg_name':'matan','reg_email':'matan@gmail.com'}
-        self.assertEqual(register(matan),"Username or Email already in use")  
+        Group.objects.create(name='Student')
+        with self.subTest("Not all details have been filled in"):
+            matan={'reg_username':'','reg_pass':'1234','reg_name':'matan','reg_email':'matan@gmail.com'}
+            self.assertEqual(register(matan),"Not all details have been filled in") 
+        with self.subTest("Username already in use"):
+            matan={'reg_username':'matan1','reg_pass':'1234TT','reg_name':'matan','reg_email':'matan121341@gmail.com'}
+            self.assertEqual(register(matan),'Username already in use')
+        with self.subTest("Email already in use"):
+            matan={'reg_username':'matan11213','reg_pass':'1234TT','reg_name':'matan','reg_email':'matan@gmail.com'}
+            self.assertEqual(register(matan),'Email already in use')
+        with self.subTest("User created succsesfully"):
+            matan={'reg_username':'matan11213','reg_pass':'1234TT','reg_name':'matan','reg_email':'matan1231@gmail.com'}
+            self.assertEqual(register(matan),'User created succsesfully')
+        with self.subTest("Password is two weak"):
+            matan={'reg_username':'matan11213','reg_pass':'1234','reg_name':'matan','reg_email':'matan1231@gmail.com'}
+            self.assertNotEqual(register(matan),'User created succsesfully')
+
 
 
     def test_products(self):    
@@ -55,9 +68,9 @@ class TestModels_homePage(TestCase):
         data={'username':'matan1','password':'1234'}
         self.assertEqual(login(data),user1.objects.get(username='matan1'))
         data={'username':'matan1','password':'invaild'}
-        self.assertEqual(login(data),None) 
+        self.assertEqual(login(data),'Invalid username or password') 
         data={'username':'matan1234','password':'1234'}
-        self.assertEqual(login(data),None)    
+        self.assertEqual(login(data),'Invalid username or password')    
 
     
 
