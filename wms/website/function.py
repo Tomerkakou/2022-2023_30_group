@@ -26,6 +26,6 @@ def login(data):
             current= user1.objects.get(username=data['username'])
             if current.check_password(data['password']):
                 return  current
-            return 'Invalid password'      
+            return 'Invalid username or password'      
     except:
-            return 'Invalid username'
+            return 'Invalid username or password'

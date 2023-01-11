@@ -24,7 +24,12 @@ def start(request):
             else:
                 return render(request,"website/login-register.html",{'message':current},status=401)
         elif "register" in request.POST :
-            return render(request,"website/login-register.html",{'message2': function.register(request.POST.dict())})
+            msg=function.register(request.POST.dict())
+            if msg!='User created succsesfully':
+                check='checked'
+            else:
+                check=''
+            return render(request,"website/login-register.html",{'message2':msg,'checked':check})
     else:
         return render(request,"website/login-register.html",status=200)
 
