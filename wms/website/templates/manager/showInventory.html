@@ -62,7 +62,7 @@ Inventory
                         <td>{{inv.serial}}</td>
                       <td>
                         {% if inv.serial is None %}
-                          <form method="POST">
+                          <form method="POST" onsubmit="return confirm('Are you sure you want to update the amount of {{inv.sku.name}}?');">
                           <input type="number" id="{{inv.id}}" name="{{inv.id}}"  placeholder="new amount" min="0">
                           {% csrf_token %}
                           <button type="submit" name="{{inv.id}}-button" style="background-color: #f5f7fa; color:rgb(17, 121, 182); border: #f5f7fa;">
