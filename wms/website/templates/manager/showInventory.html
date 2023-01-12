@@ -16,7 +16,6 @@ Inventory
         <br>
         <input type="number" id="sku" name="sku"  placeholder="Sku" value="{{s}}">
         <input type="search" id="location" name="location"  placeholder="Location" value="{{l}}">
-        <input type="search" id="name" name="name" placeholder="Product name" value="{{n}}">
         Category:
         <select name="category" id="category">
             <option value="">All</option>
@@ -25,7 +24,7 @@ Inventory
           </select>
         {% csrf_token %}
         <button type="submit" name="search" class="mybutton">{% bs_icon 'search' %}</button>
-        <p>{{message}}</p>
+        <p style="color:{{color}};">{{message}}</p>
       </form>
 </div>
 <div class="mask d-flex align-items-center h-100">
@@ -41,7 +40,7 @@ Inventory
                       <tr >
                         <th scope="col">Sku</th>
                         <th scope="col">Location</th>
-                        <th scope="col">Product name</th>
+                        
                         <th scope="col">Category</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Available</th>
@@ -55,7 +54,7 @@ Inventory
                       <tr>
                         <td>{{inv.sku_id}}</td>
                         <td>{{inv.location}}</td>
-                        <td>{{inv.sku.name}}</td>
+                        
                         <td>{{inv.sku.return_category}}</td>
                         <td>{{inv.amount}}</td>
                         <td>{{inv.available}}</td>

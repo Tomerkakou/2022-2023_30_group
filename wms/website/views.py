@@ -1,4 +1,4 @@
-from django.shortcuts import render ,redirect,HttpResponse
+from django.shortcuts import render ,redirect
 import website.function as function
 from website.models import user1
 from django.contrib.auth import update_session_auth_hash

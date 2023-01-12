@@ -1,5 +1,5 @@
 from django import forms
-from website.models import orders,products
+from website.models import products
 
 class productChoose(forms.Form):
     product = forms.ModelChoiceField(queryset=products.objects.all(),

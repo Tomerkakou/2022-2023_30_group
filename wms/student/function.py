@@ -1,4 +1,3 @@
-
 from website.models import inventory,specific_order,products,orders,categories
 from django.db.models import Sum
 from datetime import datetime, timedelta
@@ -98,27 +97,25 @@ def create_list_products_excel_for_student():
 
     
 
-    sum_inventory=inventory.objects.raw(f"""SELECT inventory.id ,inventory.sku_id, inventory.sum_available, website_products.category ,website_products.name ,website_products.description ,website_products.price ,website_products.serial_item
-                                        FROM  (SELECT id, sku_id ,SUM(available) as sum_available 
+    sum_inventory=products.objects.raw(f"""SELECT website_products.sku,inventory.id, inventory.sum_available, website_products.category ,website_products.name ,website_products.description ,website_products.price ,website_products.serial_item
+                                        FROM  website_products
+                                        LEFT JOIN (SELECT id, sku_id ,SUM(available) as sum_available 
 		                                FROM website_inventory
-		                                GROUP BY sku_id) AS inventory
-                                        RIGHT JOIN website_products 
+		                                GROUP BY sku_id) AS inventory 
                                         ON inventory.sku_id = website_products.sku;""")
 
     style = xlwt.easyxf('font: bold off, color black; borders: left thin, right thin, top thin, bottom thin; pattern: pattern solid, fore_color white;')
     for row in sum_inventory:
-        if row.sku_id is None:
-            continue
         row_num+=1
         ws.write(row_num,0,categories[row.category][1],style)
         ws.write(row_num,1,row.name,style)
-        ws.write(row_num,2,row.sku_id,style)
+        ws.write(row_num,2,row.sku,style)
         ws.write(row_num,3,row.description,style)
         if row.serial_item ==1:
             ws.write(row_num,4,'YES',style)
         else:
             ws.write(row_num,4,'NO',style)
-        if row.sum_available>0:
+        if row.sum_available and row.sum_available>0:
              ws.write(row_num,5,'availble',style)
         else:
              ws.write(row_num,5,'Unavailble',style)
@@ -144,36 +141,16 @@ def create_price_list_excel():
         row_num+=1
         ws.write(row_num,0,row.name,style)
         ws.write(row_num,1,row.sku,style)
-        ws.write(row_num,2,row.price,style)
+        ws.write(row_num,2,str(row.price)+'₪',style)
     return wb
 
 def sumInventory(data):
     kwargs={'available__gt':0}
     if data['sku']!='':
-        kwargs['sku__sku']={data['sku']}
+        kwargs['sku__sku']=data['sku']
     if data['category']!='':
-        kwargs['sku__category']={data['category']}
+        kwargs['sku__category']=data['category']
     if data['name']!='':
-        kwargs['sku__name__contains']={data['name']}
+        kwargs['sku__name__contains']=data['name']
 
     return inventory.objects.filter(**kwargs).values('sku','sku__name','available','sku__category').annotate(sum_amount=Sum('available'))
-
-    """filter1=''
-    filter2=''
-    filter3=''
-    
-    if data['sku']!='':
-        filter1=f" AND sku_id='{data['sku']}'"
-    if data['category']!='':
-        filter2=f" AND category='{data['category']}'"
-    if data['name']!='':
-        filter3=f" AND name LIKE '%%{data['name']}%%'"
-    
-    inv=inventory.objects.raw(f#SELECT inventory.id ,inventory.sku_id, inventory.amount, website_products.category ,website_products.name
-                                FROM  (SELECT id, sku_id ,SUM(available) as amount
-                                FROM website_inventory
-                                GROUP BY sku_id) AS inventory
-                                RIGHT JOIN website_products 
-                                ON inventory.sku_id = website_products.sku
-                                WHERE amount>0{filter1}{filter2}{filter3};)
-    return inv"""

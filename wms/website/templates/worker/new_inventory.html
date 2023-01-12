@@ -18,6 +18,8 @@ New inventory
         <button type="submit" class="mybutton">Add</button>
     </form>
     <br>
-    <p style="color:rgb(38, 0, 255)">{{message}}</p>
+    {% for msg in messages|slice:":1" %}
+    <p style="color:rgb(38, 0, 255)">{{msg}}</p>  
+    {% endfor %}                       
     <p style="color:red">{{message2}}</p>
 {% endblock %}

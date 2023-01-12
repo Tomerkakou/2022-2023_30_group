@@ -2,13 +2,13 @@
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from website.models import inventory,products,newInventory,orders,locations,categories,specific_order
+from website.models import products,orders,specific_order
 from worker import function
 from worker.forms import inventoryForm,locationform
 from manager.forms import productForm
 from datetime import datetime
 import xlwt 
-
+from django.contrib import messages
 
 def is_worker(user):
     return str(user.role)=='Worker'
@@ -29,15 +29,16 @@ def inventory_receipt(request):
         if form.is_valid():
             try:
                 msg=function.addNewInv(request.POST.dict(),form,request.user)
+                messages.success(request,msg)
+                return redirect('newinventory')
             except ValueError as err:
                 msg2=str(err)
                 return render(request,"worker/new_inventory.html",{"form":form,"message2":msg2},status=400)
-            form=inventoryForm()
-            return render(request,"worker/new_inventory.html",{"form":form,"message":msg},status=201)
         else:
             return render(request,"worker/new_inventory.html",{"form":form},status=400)
     else:
         form=inventoryForm()
+
         return render(request,"worker/new_inventory.html",{"form":form},status=200)
 
 @login_required
@@ -168,6 +169,8 @@ def order_to_excel_for_worker(request,order_id):
         ws.write(row_num,4,row.inventory_id.location.location,style)
         if row.completed==1:
             ws.write(row_num,5,"✅",style)
+        else:
+            ws.write(row_num,5,"",style)
 
     wb.save(response) 
     return response

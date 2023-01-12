@@ -1,9 +1,7 @@
 from django import forms
 from website.models import products,locations,user1
-from django.contrib.auth.models import User,Group
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.password_validation import validate_password
-from django.forms import ValidationError
+
 class productForm(forms.ModelForm):
     class Meta:
         model=products

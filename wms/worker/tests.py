@@ -4,7 +4,6 @@ from website.models import products,inventory,locations,user1,orders,specific_or
 from worker import function
 from worker.forms import inventoryForm
 from django.contrib.auth.models import Group
-from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.urls import reverse 
 
 

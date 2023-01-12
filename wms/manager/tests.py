@@ -2,7 +2,6 @@ from django.test import TestCase
 from website.models import user1,inventory,products,locations
 from manager.function import getUsers,deleteUser,updateAmount
 from django.contrib.auth.models import Group
-from django.http import Http404
 from django.urls import reverse 
 
 class Manager_tests(TestCase):
@@ -36,9 +35,13 @@ class Manager_tests(TestCase):
         item = products.objects.get(sku=1234)
         inv=inventory.objects.create(id=1,sku=item,location=loc,amount=50,available=20)
         with self.subTest("available amount - greater than new amount"):
-            self.assertEqual(updateAmount(1,10),"#The new amount does not match the quantity ordered")
+            result=updateAmount(1,10)
+            self.assertEqual(result[0],"#The new amount does not match the quantity ordered")
+            self.assertEqual(result[1],'red')
         with self.subTest("good updated amount"):
-            self.assertEqual(updateAmount(1,30),f"#{inv.sku.name} in {inv.location} updated to 30")
+            result=updateAmount(1,30)
+            self.assertEqual(result[0],f"#{inv.sku.name} in {inv.location} updated to 30")
+            self.assertEqual(result[1],'blue')
 
     def test_inventory_export(self):
         print("test_inventory_export")

@@ -1,7 +1,6 @@
 from django.db import models
-from enum import Enum
 from datetime import datetime, timedelta
-from django.core.validators import EmailValidator , MinValueValidator
+from django.core.validators import  MinValueValidator
 from django.contrib.auth.models import AbstractUser,Group
 
 
@@ -31,7 +30,10 @@ class products(models.Model):
     serial_item=models.IntegerField(choices=((0,'No'),(1,'Yes'))) 
     
     def __str__(self):
-        return f"{self.sku}-{self.name}"
+        serial=''
+        if self.serial_item==1:
+            serial='-(SI)'
+        return f"{self.sku}-{self.name}"+serial
     def return_category(self):
         return categories[self.category][1]
 

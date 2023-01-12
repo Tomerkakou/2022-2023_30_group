@@ -1,11 +1,10 @@
-from django.shortcuts import render,HttpResponse,redirect
+from django.shortcuts import render,HttpResponse
 import manager.function
 from manager.forms import productForm,locationForm,userForm
-from website.models import user1,inventory,products,categories,newInventory, specific_order
+from website.models import inventory,categories,newInventory, specific_order
 from datetime import datetime,timedelta
 import xlwt
 from django.db.models import Sum
-from django.contrib.auth.models import User,Group
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 
@@ -112,17 +111,16 @@ def showInventory(request):
     if request.method == "POST":
         data=request.POST.dict()       
         if 'search' in request.POST:
-            response= render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location']})
+            response= render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"l":data['location']})
             response.set_cookie('s',data['sku'])
             response.set_cookie('l',data['location'])
-            response.set_cookie('n',data['name'])
             response.set_cookie('c',data['category'])
             return response 
         else:
             key=list(data)[0]
-            message=manager.function.updateAmount(key,data[key])
-            data={'sku':request.COOKIES['s'],'location':request.COOKIES['l'],'name':request.COOKIES['n'],'category':request.COOKIES['c']}
-            return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"n":data['name'],"l":data['location'], 'message':message}) 
+            message,color=manager.function.updateAmount(key,data[key])
+            data={'sku':request.COOKIES['s'],'location':request.COOKIES['l'],'category':request.COOKIES['c']}
+            return render(request,"manager/showInventory.html",{"inventorys":manager.function.getInventory(data),"s":data['sku'],"l":data['location'], 'message':message,'color':color}) 
     else:
         return render(request,"manager/showInventory.html",{'inventorys':None})
 
@@ -236,7 +234,10 @@ def lendings_to_excel_for_manger(request):
         ws.write(row_num,1,row['sku__name'],style)
         ws.write(row_num,2,row['inventory_id__serial'],style)
         ws.write(row_num,3,row['order_id__user_id__full_name'],style)
-        ws.write(row_num,4,row['order_id__return_date'].strftime("%d/%m/%Y"),style)
+        if row['order_id__return_date'] is None:
+            ws.write(row_num,4,"Order not completed yet",style)
+        else:
+            ws.write(row_num,4,row['order_id__return_date'].strftime("%d/%m/%Y"),style)
         
                 
                 

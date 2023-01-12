@@ -3,7 +3,6 @@ from website.models import user1,products,locations
 from django.contrib.auth.models import Group
 from website.function import register,login
 
-# Create your tests here.
 
 class TestModels_homePage(TestCase):
     @classmethod

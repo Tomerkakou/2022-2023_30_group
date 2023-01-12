@@ -36,8 +36,8 @@ Order number: {{order.order_number}}
                     <table class="table table-borderless mb-0">
                       <thead>
                         <tr >
-                          <th scope="col">Sku</th>
                           <th scope="col">Item name</th>
+                          <th scope="col">Sku</th>
                           <th scope="col">Amount</th>
                           <th scope="col">Status</th>
                           <th scope="col">Delete item</th>
@@ -64,8 +64,8 @@ Order number: {{order.order_number}}
                           </tr>
                           {% for o in o_list %}
                           <tr>
-                              <td>{{o.sku}}</td>
                               <td>{{o.sku__name}}</td>
+                              <td>{{o.sku}}</td>
                               <td>{{o.sum_amount}}</td>
                               <td>{% if o.completed == 0 %} Waiting {% else %} Completed {% endif %}</td>
                               <td>

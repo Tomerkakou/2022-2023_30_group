@@ -1,5 +1,4 @@
-from website.models import inventory,products,newInventory,orders,specific_order,locations,categories
-from django.shortcuts import HttpResponse
+from website.models import inventory,products,newInventory,orders,specific_order,locations
 from datetime import datetime,timedelta
 from django.db.models import Count
 import xlwt
@@ -44,7 +43,7 @@ def getInventory(data):
     if data['category'] != '':
         kwargs['sku__category']=data['category']
 
-    return inventory.objects.filter(**kwargs).exclude(location__location='RETRNS').order_by('sku','location','-amount')
+    return inventory.objects.filter(**kwargs).exclude(location__location='RETRNS').order_by('location','sku','-amount')
 
 def getProducts(data):
     kwargs={}
@@ -82,7 +81,7 @@ def move_to(id,location):
         
 def getOrderlist(order):
     
-    return specific_order.objects.filter(order_id=order)
+    return specific_order.objects.filter(order_id=order).order_by('sku','inventory_id__location')
 
 def completeOrder_list(id_list,order):
     order_list=getOrderlist(order)
