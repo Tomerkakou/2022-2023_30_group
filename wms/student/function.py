@@ -2,7 +2,7 @@ from website.models import inventory,specific_order,products,orders,categories
 from django.db.models import Sum
 from datetime import datetime, timedelta
 import xlwt
-
+from django.shortcuts import get_object_or_404
 
 def getOrders(data,user):
     print(data['create_date'])
@@ -18,7 +18,7 @@ def getOrders(data,user):
     if data['status'] != '':
         kwargs['status']=data['status']
 
-    return orders.objects.filter(**kwargs).order_by('status','-create_date')
+    return orders.objects.filter(**kwargs).order_by('status','-order_number')
 
 def getOrderlist(order):
     
@@ -26,6 +26,8 @@ def getOrderlist(order):
      
 
 def newOrder_spec(data,order_obj):
+    if order_obj.status!=0:
+        return ''
     amount_orderd=int(data['amount'])
     product=products.objects.get(sku=data['product'])
     res=inventory.objects.filter(sku=product)
@@ -66,6 +68,8 @@ def deleteItem(sku_num,order=None):
         item.inventory_id.save()
         item.delete()
     else:
+        if order.status!=0:
+            return
         items=specific_order.objects.filter(order_id=order,sku__sku=sku_num)
         for item in items:
             item.inventory_id.available+=item.amount
@@ -79,6 +83,8 @@ def deleteOrder(or_num):
         order=orders.objects.get(order_number=or_num)
     except:
         return
+    if order.status!=0:
+            return
     o_list=specific_order.objects.filter(order_id=order)
     for i in o_list:
         deleteItem(i)

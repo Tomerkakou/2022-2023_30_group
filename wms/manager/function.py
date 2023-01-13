@@ -1,5 +1,5 @@
 from website.models import user1,inventory
-from django.shortcuts import get_object_or_404
+
 
 def getUsers(data):
     kwargs={'is_active':True}
@@ -36,17 +36,18 @@ def getInventory(data):
  
 def updateAmount(idInv,newAmount):
     """ unit tests in manager/tests.py """
-
-    newAmount=int(newAmount)
-    inven=get_object_or_404(inventory,id=idInv)
-    if (inven.amount-inven.available)<=newAmount:
-        inven.available=inven.available+(newAmount-inven.amount)
-        inven.amount=newAmount
-        if inven.amount==0:
-            inven.delete()
+    try:
+        newAmount=int(newAmount)
+        inven=inventory.objects.get(id=idInv)
+        if (inven.amount-inven.available)<=newAmount:
+            inven.available=inven.available+(newAmount-inven.amount)
+            inven.amount=newAmount
+            if inven.amount==0:
+                inven.delete()
+            else:
+                inven.save()
+            return (f"#{inven.sku.name} in {inven.location} updated to {newAmount}",'blue')
         else:
-            inven.save()
-        return (f"#{inven.sku.name} in {inven.location} updated to {newAmount}",'blue')
-    else:
-        return ("#The new amount does not match the quantity ordered",'red')
-
+            return ("#The new amount does not match the quantity ordered",'red')
+    except:
+        return ('#EROR pls try again','red')
