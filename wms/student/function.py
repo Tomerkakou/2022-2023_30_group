@@ -159,4 +159,4 @@ def sumInventory(data):
     if data['name']!='':
         kwargs['sku__name__contains']=data['name']
 
-    return inventory.objects.filter(**kwargs).values('sku','sku__name','available','sku__category').annotate(sum_amount=Sum('available'))
+    return inventory.objects.filter(**kwargs).values('sku','sku__name','sku__category').annotate(sum_amount=Sum('available'))
