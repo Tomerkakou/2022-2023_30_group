@@ -137,4 +137,4 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 LOGIN_URL = 'login'
 
-CSRF_TRUSTED_ORIGINS = ['https://tomer.frlogi.com/']
+CSRF_TRUSTED_ORIGINS = ['https://tomer.frlogi.com']
